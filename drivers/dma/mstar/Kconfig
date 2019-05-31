@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+config MSTAR_MSC313_BDMA
+	tristate "MStar MSC313 BDMA support"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	select DMA_ENGINE
+
