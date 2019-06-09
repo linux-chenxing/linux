@@ -409,6 +409,9 @@ config XILINX_GMII2RGMII
 	  the Reduced Gigabit Media Independent Interface(RGMII) between
 	  Ethernet physical media devices and the Gigabit Ethernet controller.
 
+config MSC313_PHY
+	tristate "MStar MSC313 phy"
+
 endif # PHYLIB
 
 config MICREL_KS8995MA
