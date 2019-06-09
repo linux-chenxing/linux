@@ -46,6 +46,16 @@
 		clocks = <&xtal_div2>;
 		status = "disabled";
 	};
+
+	phyana: syscon@1f006200 {
+		/* albany ethernet phy
+	         * 0x1f006200
+		 * 0x1f006400
+		 * 0x1f006600
+		 */
+		compatible = "syscon";
+		reg = <0x1f006200 0x600>;
+	};
 };
 
 &cpu0 {

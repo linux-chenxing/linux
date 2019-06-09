@@ -76,3 +76,7 @@
 		clocks = <&xtal_div2>;
 	};
 };
+
+&phy {
+	compatible = "ethernet-phy-idDEAD.B33F";
+};
