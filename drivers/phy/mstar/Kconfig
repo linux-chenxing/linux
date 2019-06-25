@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Phy drivers for MStar/SigmaStar devices
+#
+
+config PHY_MSC313_USB
+	tristate "MSC313 USB PHY driver"
+	select GENERIC_PHY
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	depends on OF
+	depends on HAS_IOMEM
+	default ARCH_MSTARV7
+	help
+	  Enable this to support the USB PHY in MStar/SigmaStar SoCs
