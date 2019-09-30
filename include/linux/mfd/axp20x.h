@@ -12,6 +12,7 @@
 
 enum axp20x_variants {
 	AXP152_ID = 0,
+	AXP192_ID,
 	AXP202_ID,
 	AXP209_ID,
 	AXP221_ID,
@@ -287,6 +288,15 @@ enum axp20x_variants {
 #define AXP288_FG_TUNE5             0xed
 
 /* Regulators IDs */
+enum {
+	AXP192_LDO2 = 0,
+	AXP192_LDO3,
+	AXP192_DCDC1,
+	AXP192_DCDC2,
+	AXP192_DCDC3,
+	AXP192_REG_ID_MAX,
+};
+
 enum {
 	AXP20X_LDO1 = 0,
 	AXP20X_LDO2,

@@ -534,6 +534,24 @@ static const struct linear_range axp20x_ldo4_ranges[] = {
 			       100000),
 };
 
+static const struct regulator_desc axp192_regulators[] = {
+	AXP_DESC(AXP192, LDO2, "ldo2", "ldoin", 1800, 3300, 100,
+		 AXP20X_LDO24_V_OUT, AXP20X_LDO2_V_OUT_MASK,
+		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO2_MASK),
+	AXP_DESC(AXP192, LDO3, "ldo3", "ldoin", 1800, 3300, 100,
+		AXP20X_LDO24_V_OUT, AXP20X_LDO2_V_OUT_MASK,
+		AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO4_MASK),
+	AXP_DESC(AXP192, DCDC1, "dcdc1", "vin1", 700, 3500, 25,
+		AXP152_DCDC1_V_OUT, AXP20X_DCDC2_V_OUT_MASK,
+		AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_DCDC2_MASK),
+	AXP_DESC(AXP192, DCDC2, "dcdc2", "vin2", 700, 2275, 25,
+		 AXP20X_DCDC2_V_OUT, AXP20X_DCDC2_V_OUT_MASK,
+		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_DCDC2_MASK),
+	AXP_DESC(AXP192, DCDC3, "dcdc3", "vin3", 700, 3500, 25,
+		 AXP20X_DCDC3_V_OUT, AXP20X_DCDC3_V_OUT_MASK,
+		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_DCDC3_MASK),
+};
+
 static const struct regulator_desc axp20x_regulators[] = {
 	AXP_DESC(AXP20X, DCDC2, "dcdc2", "vin2", 700, 2275, 25,
 		 AXP20X_DCDC2_V_OUT, AXP20X_DCDC2_V_OUT_MASK,
@@ -1008,6 +1026,7 @@ static int axp20x_set_dcdc_freq(struct platform_device *pdev, u32 dcdcfreq)
 	u32 min, max, def, step;
 
 	switch (axp20x->variant) {
+	case AXP192_ID:
 	case AXP202_ID:
 	case AXP209_ID:
 		min = 750;
@@ -1100,6 +1119,7 @@ static int axp20x_set_dcdc_workmode(struct regulator_dev *rdev, int id, u32 work
 	unsigned int mask;
 
 	switch (axp20x->variant) {
+	case AXP192_ID:
 	case AXP202_ID:
 	case AXP209_ID:
 		if ((id != AXP20X_DCDC2) && (id != AXP20X_DCDC3))
@@ -1220,6 +1240,10 @@ static int axp20x_regulator_probe(struct platform_device *pdev)
 	bool drivevbus = false;
 
 	switch (axp20x->variant) {
+	case AXP192_ID:
+		regulators = axp192_regulators;
+		nregulators = AXP192_REG_ID_MAX;
+		break;
 	case AXP202_ID:
 	case AXP209_ID:
 		regulators = axp20x_regulators;
