@@ -2163,6 +2163,15 @@ config MFD_QCOM_PM8008
 	  under it in the device tree. Additional drivers must be enabled in
 	  order to use the functionality of the device.
 
+config MFD_IP6XXX
+	tristate "Support for Injoinic IP6XXX series PMICs"
+	depends on I2C
+	depends on OF || COMPILE_TEST
+	select MFD_CORE
+	select REGMAP_I2C
+	help
+	  Support for Injoinic IP6XXX series PMICs.
+
 menu "Multimedia Capabilities Port drivers"
 	depends on ARCH_SA1100
 

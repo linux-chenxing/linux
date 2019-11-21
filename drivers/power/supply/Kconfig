@@ -854,6 +854,13 @@ config CHARGER_WILCO
 	  by the Embedded Controller on the Chromebook named Wilco. Further
 	  information can be found in
 	  Documentation/ABI/testing/sysfs-class-power-wilco
+	  
+config CHARGER_IP6XXX
+	tristate "IP6XXX PMIC Charger Driver"
+	depends on MFD_IP6XXX
+	default MFD_IP6XXX
+	help
+	  Support for the lipo charger in IP6XXX PMICs.
 
 config RN5T618_POWER
 	tristate "RN5T618 charger/fuel gauge support"
