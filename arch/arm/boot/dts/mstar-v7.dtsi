@@ -581,6 +581,28 @@
 				#dma-cells = <3>;
 			};
 
+			miu: miu@202000 {
+				compatible = "mstar,msc313-miu";
+				reg = <0x202000	0x200>,
+				      <0x202400 0x200>,
+				      <0x202200 0x200>;
+				interrupt-parent = <&intc_irq>;
+				interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+				clock-names = "miu", "ddr";
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MIU 0>,
+						 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_DDR_SYN 0>;
+				/*mstar,rd-timing = <0xB>;*/
+				mstar,trcd = <0x6>;
+				mstar,trp = <0x6>;
+				#clock-cells = <0>;
+				clock-output-names = "ddrpll";
+				/* Comments suggest the miu size is 256MB */
+				#address-cells = <1>;
+				#size-cells = <1>;
+				dma-ranges = <0x00000000 0x20000000 0x10000000>;
+				#interconnect-cells = <1>;
+			};
+
 			l3bridge: l3bridge@204400 {
 				compatible = "mstar,l3bridge";
 				reg = <0x204400 0x200>;
