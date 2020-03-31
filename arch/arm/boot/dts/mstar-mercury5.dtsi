@@ -64,3 +64,7 @@
 	interrupts-extended = <&gpio_pm 0 29 IRQ_TYPE_LEVEL_HIGH>;
 			      /*<&intc_fiq 23 IRQ_TYPE_LEVEL_HIGH>;*/
 };
+
+&miu {
+	compatible = "mstar,ssc8336-miu";
+};
