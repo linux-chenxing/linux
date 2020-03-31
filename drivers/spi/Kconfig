@@ -1111,6 +1111,14 @@ config SPI_AMD
 	help
 	  Enables SPI controller driver for AMD SoC.
 
+config SPI_MSC313
+	tristate "MStar MSC313 SPI controller"
+	select REGMAP_MMIO
+	select SSTAR_SSD20XD_MOVEDMA
+	depends on ARCH_MSTARV7 && SPI_MASTER
+	help
+	  Enables MStar MSC313 SPI controller driver.
+
 #
 # Add new SPI master controllers in alphabetical order above this line
 #
