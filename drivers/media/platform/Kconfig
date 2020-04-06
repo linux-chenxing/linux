@@ -84,5 +84,5 @@ source "drivers/media/platform/ti/Kconfig"
 source "drivers/media/platform/verisilicon/Kconfig"
 source "drivers/media/platform/via/Kconfig"
 source "drivers/media/platform/xilinx/Kconfig"
-
+source "drivers/media/platform/mstar/Kconfig"
 endif # MEDIA_PLATFORM_DRIVERS
