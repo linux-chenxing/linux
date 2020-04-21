@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0-only
+menu "ASoC support for MStar platforms"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+
+config SND_MSTAR_INFINITY
+	tristate "Audio support for iNfinity"
+	depends on MACH_INFINITY
+
+endmenu
