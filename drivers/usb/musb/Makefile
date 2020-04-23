@@ -24,6 +24,7 @@ obj-$(CONFIG_USB_MUSB_JZ4740)			+= jz4740.o
 obj-$(CONFIG_USB_MUSB_SUNXI)			+= sunxi.o
 obj-$(CONFIG_USB_MUSB_MEDIATEK)      		+= mediatek.o
 obj-$(CONFIG_USB_MUSB_POLARFIRE_SOC)		+= mpfs.o
+obj-$(CONFIG_USB_MUSB_MSTAR)                    += mstar.o
 
 # the kconfig must guarantee that only one of the
 # possible I/O schemes will be enabled at a time ...
