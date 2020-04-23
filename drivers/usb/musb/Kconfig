@@ -134,6 +134,10 @@ config USB_MUSB_POLARFIRE_SOC
 	  This support is also available as a module.  If so, the module
 	  will be called mpfs.
 
+config USB_MUSB_MSTAR
+	tristate "MSTAR"
+	depends on USB_MUSB_GADGET
+
 comment "MUSB DMA mode"
 
 config MUSB_PIO_ONLY
