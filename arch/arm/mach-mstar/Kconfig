@@ -10,8 +10,7 @@ menuconfig ARCH_MSTARV7
 	select MSTAR_MSC313_MPLL
 	select MSC313_PM_INTC
 	select PINCTRL_MSTAR
-	select CONFIG_PM
-	select SIMPLE_PM_BUS
+	select MSTAR_RIU
 	help
 	  Support for newer MStar/Sigmastar SoC families that are
 	  based on Armv7 cores like the Cortex A7 and share the same
