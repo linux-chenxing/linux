@@ -1,0 +1,32 @@
+/*
+ */
+
+/dts-v1/;
+#include "mstar-infinity3-msc313d.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	model = "mc400l";
+	compatible = "mc400l", "mstar,msc313", "mstar,msc313d";
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	aliases {
+		console = &pm_uart;
+	};
+};
+
+&pm_uart {
+	status = "okay";
+};
+
+&emac {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+};
+
