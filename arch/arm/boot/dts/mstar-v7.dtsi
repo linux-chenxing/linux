@@ -846,6 +846,29 @@
 			};
 		};
 
+		/* gop - framebuffer */
+		gop0: gop@1f246200 {
+			compatible = "mstar,gop";
+			reg = <0x1f246200 0x400>;
+			interrupt-names = "gop";
+			interrupts-extended = <&intc_irq 50 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&clkgen_mux_gop 0>;
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				gop0_out: port@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0>;
+		
+					gop0_out_pnl: endpoint@1 {
+						reg = <1>;
+						remote-endpoint = <&pnl_in_gop0>;
+					};
+				};
+			};
+		};
+
 		usbphy0: usbphy@0 {
 			#phy-cells = <1>;
 			compatible = "mstar,msc313-usb-phy";
