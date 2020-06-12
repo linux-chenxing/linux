@@ -593,6 +593,16 @@
 				#dma-cells = <1>;
 			};
 
+			mailbox: mailbox@200800 {
+				reg = <0x200800 0x200>;
+				/*
+				 * 0x0 - boot rom writes 0xbabe here right near the start.
+				 * 0x4 - something to do with "SRAM and MCM gates".
+				 * 0x8 - boot rom writes values into here during startup.
+				 *       seems to be for debugging?
+				 * 0x20 - 24 - vendor kernel writes the log buf addr here. Debugging?
+				 */
+			};
 			miu: miu@202000 {
 				compatible = "mstar,msc313-miu";
 				reg = <0x202000	0x200>,
