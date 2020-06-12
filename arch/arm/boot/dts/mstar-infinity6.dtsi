@@ -9,6 +9,12 @@
 / {
 };
 
+&soc {
+	isp_sc_vif: isp_sc_vif@1f263200 {
+
+	};
+};
+
 &bdma {
 	interrupts = <40 IRQ_TYPE_LEVEL_HIGH>,
 		     <41 IRQ_TYPE_LEVEL_HIGH>,
