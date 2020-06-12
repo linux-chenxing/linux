@@ -43,6 +43,39 @@
 };
 
 &soc {
+	/*
+		m5 clkgens
+		1f207164 - mipi tx csi
+
+	*/
+
+	/* guess! */
+	clkgen_mux_sr1_sr1_mclk: clkgen_mux@1f20718c {
+		compatible = "mstar,msc313e-clkgen-mux";
+		reg = <0x1f20718c 0x4>;
+		#clock-cells = <1>;
+		clock-output-names = "sr1", "sr1_mclk";
+		shifts = <0>, <8>;
+		mux-shifts = <2>, <10>;
+		mux-widths = <2>, <3>;
+		mux-ranges = <0 4>, <4 8>;
+		clocks =
+		/* sr */
+		<&pad2isp_sr_pclk>,
+		<&csi2_mac>,
+		<&clk_utmi_160_div4>,
+		<&clkgen_pll MSTAR_MPLL_GATE_MPLL_86>,
+		/* sr_mclk */
+		<&clk_mpll_216_div8>,
+		<&clk_mpll_86_div4>,
+		<&xtal12>,
+		<&clk_mpll_86_div16>,
+		<&clk_mpll_288_div8>,
+		<&clk_mpll_216_div4>,
+		<&clk_mpll_86_div2>,
+		<&clk_mpll_123_div2>;
+	};
+
 	sd: sd@1f282600 {
 		compatible = "mstar,msc313-sdio";
 		reg = <0x1f282600 0x200>;
