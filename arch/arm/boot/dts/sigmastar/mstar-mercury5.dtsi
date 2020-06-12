@@ -49,6 +49,34 @@
 
 	*/
 
+	clkgen_mux_sd: clkgen_mux@1f2071b8 {
+		compatible = "mstar,msc313e-clkgen-mux";
+		reg = <0x1f2071b8 0x4>;
+		#clock-cells = <1>;
+		clock-output-names = "sd";
+		shifts = <0>;
+		mux-shifts = <2>;
+		mux-widths = <4>;
+		mstar,deglitches = <6>;
+		clocks = <&xtal12>,
+			 <&clk_utmi_160_div8>,
+			 <&clk_utmi_160_div5>,
+			 <&clk_mpll_288_div8>,
+			 <&clk_utmi_160_div4>,
+			 <&xtal12>,
+			 <&clk_mpll_86_div2>,
+			 <&xtal12>,
+			 <&xtal12>,
+			 <&xtal12>,
+			 <&xtal12>,
+			 <&xtal12>,
+			 <&xtal12>,
+			 <&xtal12_div40>,
+			 <&xtal12>,
+			 <&clk_utmi_192_div4>,
+			 /* deglitch */
+			 <&xtal12>;
+	};
 	/* guess! */
 	clkgen_mux_sr1_sr1_mclk: clkgen_mux@1f20718c {
 		compatible = "mstar,msc313e-clkgen-mux";
@@ -82,7 +110,7 @@
 		no-1-8-v;
 		cap-sd-highspeed;
 		bus-width = <4>;
-		clocks = <&clkgen_mux_sdio 0>;
+		clocks = <&clkgen_mux_sd 0>;
 		interrupts-extended = <&intc_irq 60 IRQ_TYPE_LEVEL_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&sdio_pins>;
@@ -92,6 +120,10 @@
 
 &imi {
 	reg = <0xa0000000 0x20000>;
+};
+
+&upll {
+	reg = <0x1f004200 0x20>;
 };
 
 &utmi0 {
