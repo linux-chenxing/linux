@@ -826,6 +826,27 @@
 			interrupts-extended = <&intc_irq GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
 		};
 
+		/* pnl - RGB lcd driver? */
+		/* different address on m5? */
+		pnl: pnl@1f243400 {
+			compatible = "mstar,pnl";
+			reg = <0x1f243400 0x200>;
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				pnl_in: port@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0>;
+
+					pnl_in_gop0: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&gop0_out_pnl>;
+					};
+				};
+			};
+		};
+
 		usbphy0: usbphy@0 {
 			#phy-cells = <1>;
 			compatible = "mstar,msc313-usb-phy";
