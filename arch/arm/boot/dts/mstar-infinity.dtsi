@@ -58,6 +58,11 @@
 	sramgates: gates@1f226640 {
 	};
 
+	mcm2: mcm@1f226800 {
+		compatible = "mstar,msc313-mcm";
+		reg = <0x1f226800 0xa8>;
+	};
+
 	pm_pwm: pwm@1f001da0 {
 		compatible = "mstar,msc313-pwm";
 		reg = <0x1f001da0 0xc>;
