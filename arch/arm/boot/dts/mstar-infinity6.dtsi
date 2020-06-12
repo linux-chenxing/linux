@@ -21,3 +21,30 @@
 		     <61 IRQ_TYPE_LEVEL_HIGH>,
 		     <62 IRQ_TYPE_LEVEL_HIGH>;
 };
+
+&clkgen_mux_sr_sr_mclk {
+	mux-widths = <2>, <4>;
+	clocks = <&clkgen_pll 10>; /* this is wrong */
+	/* Where do these come from?!
+		00: clk_sr from sr_pad
+		01: clk_sr from mipi_atop
+		10: 40MHz	-  
+		11: 86MHz	- mpll_86
+
+		0000: 27MHz	- clk_mpll_216_div8
+		0001: 72MHz	- clk_mpll_288_div4
+		0010: 61.7MHz	- 
+		0011: 54MHz	- clk_mpll_216_div4
+		0100: 48MHz	- clk_utmi_192_div4
+		0101: 43.2MHz	- 
+		0110: 36MHz	- clk_mpll_144_div4
+		0111: 24MHz
+		1000: 21.6MHz
+		1001: 12MHz     - xtal12
+		1010: 5p4MHz
+		1011: lpll_buf
+		1100: lpll_buf/2
+		1101: lpll_buf/4
+		1110: lpll_buf/8
+	*/
+};
