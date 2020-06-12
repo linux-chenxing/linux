@@ -235,6 +235,12 @@
 			reg = <0x1f004000 0x8>;
 		};
 
+		ir: ir@1f007a00 {
+		 // maybe
+			interrupts-extended = <&intc_fiq GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+					      <&intc_fiq GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
 		gic: interrupt-controller@16001000 {
 			compatible = "arm,cortex-a7-gic";
 			reg = <0x16001000 0x1000>,
