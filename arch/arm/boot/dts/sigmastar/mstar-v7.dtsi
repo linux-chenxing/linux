@@ -820,6 +820,12 @@
 			};
 		};
 
+		/* csi - camera interface */
+		csi: csi@1f240800 {
+			reg = <0x1f240800 0x200>;
+			interrupts-extended = <&intc_irq GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
 		usbphy0: usbphy@0 {
 			#phy-cells = <1>;
 			compatible = "mstar,msc313-usb-phy";
