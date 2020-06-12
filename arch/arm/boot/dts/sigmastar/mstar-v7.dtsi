@@ -393,6 +393,11 @@
 				interrupts-extended = <&intc_fiq GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
 			};
 
+			did: did@7000 {
+				compatible = "mstar,msc313-did";
+				reg = <0x7000 0x8>;
+			};
+
 			intc_fiq: interrupt-controller@201310 {
 				compatible = "mstar,mst-intc";
 				reg = <0x201310 0x40>;
