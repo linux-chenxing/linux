@@ -870,6 +870,20 @@
 			};
 		};
 
+		/*
+		gop1: gop@0x1f246800 {
+		
+		};
+		
+		gop2: gop@0x1f246e00 {
+		
+		};*/
+
+		display@0 {
+			compatible = "mstar,drm";
+			ports = <&gop0_out>;
+		};
+
 		usbphy0: usbphy@0 {
 			#phy-cells = <1>;
 			compatible = "mstar,msc313-usb-phy";
