@@ -42,6 +42,11 @@
 };
 
 &soc {
+	mcm0: mcm@1f226000 {
+		compatible = "mstar,msc313-mcm";
+		reg = <0x1f226000 0x8>;
+	};
+
 	mcm1: mcm@1f226400 {
 		compatible = "mstar,msc313-mcm";
 		reg = <0x1f226400 0x8>;
