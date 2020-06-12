@@ -7,6 +7,7 @@
 #include "mstar-v7.dtsi"
 
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/gpio/mstar.h>
 #include <dt-bindings/gpio/msc313-gpio.h>
 #include <dt-bindings/clock/mstar-msc313-clkgen.h>
 #include <dt-bindings/clock/mstar-msc313-sc-gp.h>
