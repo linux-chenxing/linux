@@ -5,7 +5,10 @@
  */
 
 /dts-v1/;
+
 #include "mstar-mercury5-ssc8336n.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/gpio/mstar.h>
 
 / {
 	model = "70mai Midrive D08";
@@ -18,8 +21,229 @@
 	chosen {
 		stdout-path = "serial0:115200n8";
 	};
+
+	dummyirq: dummyirq@0 {
+		compatible = "dummy-irq";
+		interrupts-extended = <&intc_irq 63 IRQ_TYPE_LEVEL_HIGH>,
+				      <&intc_irq 62 IRQ_TYPE_LEVEL_HIGH>,
+			      <&intc_irq 61 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 60 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 59 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 58 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 57 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 56 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 55 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 54 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 53 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 52 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 51 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 50 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 49 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 48 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 47 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 46 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 45 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 44 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 43 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 42 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 41 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 40 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 39 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 38 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 37 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 36 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 35 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 34 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 33 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 32 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 31 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 30 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 29 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 28 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 27 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 26 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 25 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 24 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 23 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 22 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 21 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 20 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 19 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 18 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 17 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 16 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 15 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 14 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 13 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 12 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 11 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 10 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 9 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 8 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 7 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 6 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 5 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 4 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 3 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 2 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 1 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_irq 0 IRQ_TYPE_LEVEL_HIGH>,
+
+				<&intc_fiq 31 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 30 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 29 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 28 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 27 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 26 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 25 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 24 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 23 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 22 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 21 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 20 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 19 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 18 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 17 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 16 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 15 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 14 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 13 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 12 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 11 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 10 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 9 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 8 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 7 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 6 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 5 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 4 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 3 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 2 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 1 IRQ_TYPE_LEVEL_HIGH>,
+				<&intc_fiq 0 IRQ_TYPE_LEVEL_HIGH>;
+		status = "disabled";
+	};
+
+	 wifi_pwr: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "wifi_pwr";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio_pm SSC8336_PM_GPIO8 0>;
+		vin-supply = <&vcc_io>;
+	};
+
+	camera_en_maybe: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "camera_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio SSC8336_SPI0_CK GPIO_ACTIVE_HIGH>;
+	};
+
+};
+
+&cpu0 {
+	cpu-supply = <&vcc_core>;
 };
 
 &pm_uart {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+	nor: nor@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+	};
+};
+
+&i2c0 {
+	status = "okay";
+	sc7a30e: sc7a30e@30 {
+		reg = <0x1d>;
+	};
+
+	ip6303: ip6303@30 {
+		compatible = "injoinic,ip6303-regulator";
+		reg = <0x30>;
+		regulators {
+			vcc_core: dc1 {
+				regulator-name = "vcc-core";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <1200000>;
+				regulator-always-on;
+			};
+
+			vcc_ddr: dc2 {
+				regulator-name = "vcc-ddr";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+				regulator-always-on;
+			};
+
+			vcc_io: dc3 {
+				regulator-name = "vcc-io";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+			};
+		};
+	};
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+&sar {
+	// front buttons are on here
+	status = "okay";
+};
+
+&sd {
+	vmmc-supply = <&vcc_io>;
+	vqmmc-supply = <&vcc_io>;
+	cd-gpios = <&gpio_pm SSC8336_PM_SD_SDZ GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+
+&miu {
+	ddr-supply = <&vcc_ddr>;
+};
+
+&usbphy0 {
+	mstar,utmi-dxswap;
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&usbphy1 {
+	mstar,utmi-dxswap;
+	status = "okay";
+};
+
+&uhc1 {
+	status = "okay";
+};
+
+&vif0 {
+	mstar,vif-src = "mipi-4-lane";
+	pinctrl-names = "default";
+	pinctrl-0 = <&sr0_mipi_mode2_pins>;
+	status = "okay";
+};
+
+&dsi_dphy {
+	mstar,dphy-mode = "2 lanes";
+	pinctrl-names = "default";
+	pinctrl-0 = <&tx_mipi_mode2_pins>;
 	status = "okay";
 };
