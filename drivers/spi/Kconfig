@@ -1140,6 +1140,12 @@ config SPI_AMD
 	help
 	  Enables SPI controller driver for AMD SoC.
 
+config SPI_MSC313_ISP
+	tristate "MStar MSC313 ISP SPI controller"
+	select REGMAP_MMIO
+	depends on ARCH_MSTARV7 && SPI_MASTER
+	help
+	  Enables MStar MSC313 SPI ISP controller driver.
 #
 # Add new SPI master controllers in alphabetical order above this line
 #
