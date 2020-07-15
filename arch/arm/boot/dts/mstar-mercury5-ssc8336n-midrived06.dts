@@ -57,7 +57,7 @@
 	};
 
 	ip6303: ip6303@30 {
-		compatible = "injoinic,ip6303-regulator";
+		compatible = "injoinic,ip6303";
 		reg = <0x30>;
 		regulators {
 			vcc_core: dc1 {
