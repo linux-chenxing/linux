@@ -8,6 +8,7 @@
 
 #include <linux/regmap.h>
 #include <linux/power_supply.h>
+#include <linux/gpio/driver.h>
 
 /* IP6303 */
 #define IP6303_DC_CTL		0x20
@@ -33,6 +34,16 @@
 #define IP6303_ADC_DATA_GP1	0x67
 #define IP6303_ADC_DATA_GP2	0x68
 #define IP6303_MFP_CTL1		0x76
+#define IP6303_GPIO_OE0		0x78
+#define IP6303_GPIO_OE1		0x79
+#define IP6303_GPIO_IE0		0x7a
+#define IP6303_GPIO_IE1		0x7b
+#define IP6303_GPIO_DAT0	0x7c
+#define IP6303_GPIO_DAT1	0x7d
+#define IP6303_GPIO_PU0		0x7e
+#define IP6303_GPIO_PU1		0x7f
+#define IP6303_GPIO_PD0		0x80
+#define IP6303_GPIO_PD1		0x81
 
 #define IP6303_DCDC_MIN_UV	600000
 #define IP6303_DCDC_STEP_UV	12500
@@ -156,6 +167,10 @@ struct ip6xxx {
 	struct regmap_field *batext_ok;
 	struct regmap_field *chg_en;
 	struct regmap_field *io8_mfp;
+#endif
+
+#ifdef CONFIG_GPIO_IP6XXX
+	struct gpio_chip gpiochip;
 #endif
 };
 
