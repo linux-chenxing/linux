@@ -317,6 +317,12 @@ config RTC_DRV_HYM8563
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-hym8563.
 
+config RTC_DRV_IP6XXX
+	tristate "Injoinic IP6xxx RTC driver"
+	depends on MFD_IP6XXX
+	help
+	  Say Y to enable support for the IP6XXX RTC.
+
 config RTC_DRV_LP8788
 	tristate "TI LP8788 RTC driver"
 	depends on MFD_LP8788

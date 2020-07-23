@@ -9,6 +9,7 @@
 #include <linux/regmap.h>
 #include <linux/power_supply.h>
 #include <linux/gpio/driver.h>
+#include <linux/rtc.h>
 
 /* IP6303 */
 #define IP6303_DC_CTL		0x20
@@ -44,6 +45,25 @@
 #define IP6303_GPIO_PU1		0x7f
 #define IP6303_GPIO_PD0		0x80
 #define IP6303_GPIO_PD1		0x81
+
+/*
+ * RTC; Not documented in the datasheet
+ * but exists in code dumps and seems to
+ * be present and functional
+ */
+#define IP6303_RTC_CTL		0xa0
+#define IP6303_RTC_SEC_ALM	0xa1
+#define IP6303_RTC_MIN_ALM	0xa2
+#define IP6303_RTC_HOUR_ALM	0xa3
+#define IP6303_RTC_DATE_ALM	0xa4
+#define IP6303_RTC_MON_ALM	0xa5
+#define IP6303_RTC_YEAR_ALM	0xa6
+#define IP6303_RTC_SEC		0xa7
+#define IP6303_RTC_MIN		0xa8
+#define IP6303_RTC_HOUR		0xa9
+#define IP6303_RTC_DATE		0xaa
+#define IP6303_RTC_MON		0xab
+#define IP6303_RTC_YEAR		0xac
 
 #define IP6303_DCDC_MIN_UV	600000
 #define IP6303_DCDC_STEP_UV	12500
@@ -148,6 +168,24 @@ enum ip6xxx_charge_states {
 #define IP6303_CHR_CUR_STEP_HIGH	50
 #define IP6303_CHR_CUR_MAX		1000
 
+static const struct reg_field ip6303_rtc_wday = {
+	.reg = IP6303_RTC_MON,
+	.lsb = 4,
+	.msb = 6,
+};
+
+static const struct reg_field ip6303_rtc_mon = {
+	.reg = IP6303_RTC_MON,
+	.lsb = 0,
+	.msb = 3,
+};
+
+static const struct reg_field ip6303_rtc_year = {
+	.reg = IP6303_RTC_YEAR,
+	.lsb = 0,
+	.msb = 6,
+};
+
 enum ip6xxx_variants {
 	IP6303_ID = 0,
 	NR_IP6XXX_VARIANTS,
@@ -171,6 +209,13 @@ struct ip6xxx {
 
 #ifdef CONFIG_GPIO_IP6XXX
 	struct gpio_chip gpiochip;
+#endif
+
+#ifdef CONFIG_RTC_DRV_IP6XXX
+	struct rtc_device *rtc_dev;
+	struct regmap_field *rtc_wday;
+	struct regmap_field *rtc_mon;
+	struct regmap_field *rtc_year;
 #endif
 };
 
