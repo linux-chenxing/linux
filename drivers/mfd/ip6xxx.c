@@ -31,6 +31,9 @@ static const struct mfd_cell ip6303_cells[] = {
 	{
 		.name		= "ip6xxx-gpio",
 	},
+	{
+		.name		= "ip6xxx-rtc",
+	},
 };
 
 static const struct ip6xxx_data ip6303_data = {
