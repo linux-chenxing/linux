@@ -12,6 +12,16 @@
 #include <linux/rtc.h>
 
 /* IP6303 */
+#define IP6303_PSTATE_CTL0	0x0
+#define IP6303_PSTATE_CTL1	0x1
+#define IP6303_PSTATE_CTL2	0x3
+#define IP6303_PSTATE_SET	0x4
+#define IP6303_PPATH_CTL	0x5
+#define IP6303_PROTECT_CTL2	0x8
+#define IP6303_PROTECT_CTL3	0x9
+#define IP6303_PROTECT_CTL4	0xa
+#define IP6303_PROTECT_CTL5	0x97 // weird but matches the datasheet
+#define IP6303_WDOG_CTL		0x1a
 #define IP6303_DC_CTL		0x20
 #define IP6303_DC1_VSET		0x21
 #define IP6303_DC2_VSET		0x26
