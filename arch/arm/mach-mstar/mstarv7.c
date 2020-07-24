@@ -42,11 +42,13 @@ static void __iomem *l3bridge;
 
 static const char * const mstarv7_board_dt_compat[] __initconst = {
 	"mstar,infinity",
+	"mstar,infinity2",
 	"mstar,infinity2m",
 	"mstar,infinity3",
 	"mstar,infinity5",
 	"mstar,infinity6",
 	"mstar,infinity6b0",
+	"mstar,infinity6e",
 	"mstar,mercury5",
 	NULL,
 };
