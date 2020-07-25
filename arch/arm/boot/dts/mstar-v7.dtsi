@@ -105,6 +105,20 @@
 			ranges = <0x0 0x1f000000 0x00400000>;
 
 			pmsleep: syscon@1c00 {
+				/* msc313e notes
+				 *
+				 * 1f001c24 -- bit 11 disables pm uart rx
+				 * -- bit 15 is set when going into deep sleep
+				 *
+				 *
+				 * 0x1f001cec -- return address after resume
+				 * 0x1f001cf0
+				 * 0x1f001cf4 -- clk for timers?
+				 * 0x1f001cc0 -- ??
+				 * 0x1f001cc8  -- set to 9fe8 before deep sleep
+				 * 0x1f001ccc  -- set to 9fe8 before deep sleep
+				 * 0x1f001cdc  -- set to 0xa5 before deep sleep
+				 */
 				compatible = "mstar,msc313-pmsleep", "syscon", "simple-mfd";
 				reg = <0x1c00 0x100>;
 				use-raw-spinlock;
