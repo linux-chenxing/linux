@@ -103,7 +103,7 @@ struct mstar_sar_info {
 /* */
 
 #ifdef CONFIG_MACH_INFINITY
-/* msc313e */
+/* msc313 and msc313e */
 #define PIN_MSC313_SAR_GPIO3	9
 #define PIN_MSC313_SAR_GPIO2	10
 #define PIN_MSC313_SAR_GPIO1	11
@@ -144,6 +144,46 @@ static const struct mstar_sar_info msc313_info = {
 	.ngroups = ARRAY_SIZE(msc313_sar_pinctrl_groups),
 	.rangepins = msc313e_rangepins,
 	.nrangepins = ARRAY_SIZE(msc313e_rangepins),
+};
+
+/* SSD201 and SS202 */
+
+#define PIN_SSD20X_SAR_GPIO0 22
+#define PIN_SSD20X_SAR_GPIO1 21
+#define PIN_SSD20X_SAR_GPIO2 20
+
+#define SSD20X_PIN(n) \
+	PINCTRL_PIN(PIN_SSD20X_SAR_GPIO##n, PINNAME_SAR_GPIO##n)
+
+static struct pinctrl_pin_desc ssd20x_sar_pins[] = {
+	SSD20X_PIN(2),
+	SSD20X_PIN(1),
+	SSD20X_PIN(0),
+};
+
+#define SSD20X_SAR_PINCTRL_GROUP(n) \
+	SAR_PINCTRL_GROUP(PINNAME_SAR_GPIO##n, PIN_SSD20X_SAR_GPIO##n)
+
+static const struct sar_pinctrl_group ssd20x_sar_pinctrl_groups[] = {
+	SSD20X_SAR_PINCTRL_GROUP(2),
+	SSD20X_SAR_PINCTRL_GROUP(1),
+	SSD20X_SAR_PINCTRL_GROUP(0),
+};
+
+/* pin and gpio order are reversed */
+static const unsigned ssd20x_rangepins[] = {
+		PIN_SSD20X_SAR_GPIO0,
+		PIN_SSD20X_SAR_GPIO1,
+		PIN_SSD20X_SAR_GPIO2,
+};
+
+static const struct mstar_sar_info ssd20x_info = {
+	.pins = ssd20x_sar_pins,
+	.npins = ARRAY_SIZE(ssd20x_sar_pins),
+	.groups = ssd20x_sar_pinctrl_groups,
+	.ngroups = ARRAY_SIZE(ssd20x_sar_pinctrl_groups),
+	.rangepins = ssd20x_rangepins,
+	.nrangepins = ARRAY_SIZE(ssd20x_rangepins),
 };
 #endif /* infinity */
 
@@ -659,6 +699,10 @@ static const struct of_device_id msc313e_sar_dt_ids[] = {
 	{
 		.compatible = "mstar,msc313e-sar",
 		.data = &msc313_info,
+	},
+	{
+		.compatible = "sstar,ssd20x-sar",
+		.data = &ssd20x_info,
 	},
 #endif
 #ifdef CONFIG_MACH_MERCURY
