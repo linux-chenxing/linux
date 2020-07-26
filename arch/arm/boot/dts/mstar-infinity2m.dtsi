@@ -101,6 +101,12 @@
 	};
 };
 
+&pmu {
+		interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+			     <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-affinity = <&cpu0>, <&cpu1>;
+};
+
 &riu {
 	pwm: pwm@3400 {
 		compatible = "mstar,ssd20xd-pwm";
