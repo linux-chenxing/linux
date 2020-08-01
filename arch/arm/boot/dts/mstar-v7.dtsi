@@ -119,6 +119,14 @@
 						groups = "pm_irin";
 					};
 				};
+
+				pmintc: interrupt-controller@1c10 {
+					compatible = "mstar,msc313-pm-intc";
+					interrupt-parent = <&intc_irq>;
+					interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+					interrupt-controller;
+					#interrupt-cells = <1>;
+				};
 			};
 
 			reboot {
