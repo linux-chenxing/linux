@@ -707,6 +707,12 @@
 				status = "disabled";
 			};
 
+			rng: rng@224400 {
+				compatible = "mstar,msc313-rng";
+				reg = <0x224400 0x10>;
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MIU 0>;
+			};
+
 			aesdma: aesdma@224540 {
 				reg = <0x224540 0xc0>;
 				compatible = "mstar,msc313-aesdma";
