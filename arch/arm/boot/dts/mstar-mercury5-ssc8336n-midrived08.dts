@@ -164,7 +164,8 @@
 
 &i2c0 {
 	status = "okay";
-	sc7a30e: sc7a30e@30 {
+	sc7a30e: sc7660@1d {
+		compatible = "silan,sc7660-accel";
 		reg = <0x1d>;
 	};
 
