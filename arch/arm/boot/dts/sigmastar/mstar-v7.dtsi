@@ -502,6 +502,13 @@
 				clocks = <&xtal>;
 			};
 
+			miupll: miupll@206200 {
+				compatible = "mstar,miupll";
+				reg = <0x206200 0x200>;
+				#clock-cells = <0>;
+				clocks = <&xtal24>;
+			};
+
 			cpupll: cpupll@206400 {
 				compatible = "mstar,msc313-cpupll";
 				reg = <0x206400 0x200>;
