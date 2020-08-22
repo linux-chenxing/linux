@@ -55,10 +55,93 @@
 	};
 
 	clocks: clocks {
+		unknownclk: unknownclk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <1>;
+		};
+
+		/*
+		 * For the msc313e there is only a 24mhz clock input so everything else must come
+		 * from this base clock unless there are some on-die oscillators that aren't mentioned
+		 * anywhere.
+		 */
 		xtal: xtal {
 			#clock-cells = <0>;
 			compatible = "fixed-clock";
 			clock-frequency = <24000000>;
+		};
+
+		xtal_div2: xtal_div2 {
+			#clock-cells = <0>;
+			compatible = "fixed-factor-clock";
+			clocks = <&xtal>;
+			clock-div = <2>;
+			clock-mult = <1>;
+		};
+		
+		xtal_div2_div2: xtal_div2_div2 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <2>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div4: xtal_div2_div4 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <4>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div8: xtal_div2_div8 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <8>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div12: xtal_div2_div12 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <12>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div16: xtal_div2_div16 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <16>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div40: xtal_div2_div40 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <40>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div64: xtal_div2_div64 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <64>;
+			clock-mult = <1>;
+		};
+
+		xtal_div2_div128: xtal_div2_div128 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal_div2>;
+			clock-div = <128>;
+			clock-mult = <1>;
 		};
 
 		rtc_xtal: rtc_xtal {
@@ -68,12 +151,36 @@
 			status = "disabled";
 		};
 
-		xtal_div2: xtal_div2 {
-			#clock-cells = <0>;
+		rtc_xtal_div4: rtc_xtal_div4 {
 			compatible = "fixed-factor-clock";
-			clocks = <&xtal>;
-			clock-div = <2>;
+			#clock-cells = <0>;
+			clocks = <&rtc_xtal>;
+			clock-div = <4>;
 			clock-mult = <1>;
+		};
+
+		eth_buf: eth_buf {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <25000000>;
+		};
+
+		rmii_buf: rmii_buf {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <25000000>;
+		};
+		
+		pad2isp_sr_pclk: pad2isp_sr_pclk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <1>;
+		};
+	
+		csi2_mac: csi2_mac {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <25000000>;
 		};
 	};
 
