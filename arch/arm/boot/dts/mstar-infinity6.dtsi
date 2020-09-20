@@ -7,13 +7,16 @@
 #include "mstar-infinity.dtsi"
 
 / {
+
 };
 
+#if 0
 &soc {
 	isp_sc_vif: isp_sc_vif@1f263200 {
 
 	};
 };
+
 
 &bdma {
 	interrupts = <40 IRQ_TYPE_LEVEL_HIGH>,
@@ -21,6 +24,7 @@
 		     <61 IRQ_TYPE_LEVEL_HIGH>,
 		     <62 IRQ_TYPE_LEVEL_HIGH>;
 };
+
 
 &clkgen_mux_sr_sr_mclk {
 	mux-widths = <2>, <4>;
@@ -47,4 +51,6 @@
 		1101: lpll_buf/4
 		1110: lpll_buf/8
 	*/
+	status = "disabled";
 };
+#endif
