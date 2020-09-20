@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (c) 2020 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+#include "mstar-infinity6b0-ssc337de.dtsi"
+
+/ {
+	model = "MC-F50";
+	compatible = "sstar,mcf50", "mstar,infinity6b0";
+
+	aliases {
+		serial0 = &pm_uart;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
+	};
+};
+
+&pm_uart {
+	status = "okay";
+};
+
+&emac {
+	status = "okay";
+};
