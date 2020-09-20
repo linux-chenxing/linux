@@ -1,0 +1,152 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (c) 2019 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+
+#include "mstar-mercury5-ssc8336n.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/gpio/mstar.h>
+
+/ {
+	model = "mercury5";
+	compatible = "mstar,mercury5";
+	
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 root=/dev/mtdblock3 clk_ignore_unused earlyprintk=serial,ttyS0,115200";
+	};
+	
+	vcc_core: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_core";
+		regulator-min-microvolt = <1000000>;
+		regulator-max-microvolt = <1000000>;
+		regulator-boot-on;
+	};
+
+	vcc_dram: fixedregulator@1 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_dram";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-boot-on;
+	};
+
+	vcc_io: fixedregulator@2 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_io";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+	};
+	
+	lcd_bl_en: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "lcd_bl_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio_pm SSC8336_PM_GPIO0 GPIO_ACTIVE_HIGH>;
+	};
+
+	charger_en_maybe: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "lcd_bl_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio SSC8336_SPI0_CZ GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&vcc_core>;
+};
+
+&pm_uart {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+	nor: nor@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+	};
+};
+
+&i2c0 {
+	status = "okay";
+	ts@14 {
+		compatible = "goodix,gt9271";
+		reg = <0x14>;
+		interrupts-extends = <&gpio_pm SSC8336_PM_GPIO5 IRQ_TYPE_LEVEL_HIGH>;
+		irq-gpios = <&gpio_pm SSC8336_PM_GPIO5 PM_GPIO5_IRQ 0>;
+		reset-gpios = <&gpio_pm SSC8336_PM_GPIO4 0>;
+		vddio-supply = <&vcc_io>;
+	};
+};
+
+&i2c1 {
+	status = "okay";
+
+	// looks like this can also be 0x5a
+	rn6752m@0x2d {
+		reg = <0x2d>;
+		/* clock for this comes from the csi block of the soc */
+	};
+};
+
+&sar {
+	status = "okay";
+};
+
+&sd {
+	vmmc-supply = <&vcc_io>;
+	vqmmc-supply = <&vcc_io>;
+	cd-gpios = <&gpio_pm SSC8336_PM_SD_SDZ GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+
+&usbphy0 {
+	mstar,utmi-dxswap;
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&usbphy1 {
+	mstar,utmi-dxswap;
+	status = "okay";
+};
+
+&uhc1 {
+	status = "okay";
+};
+
+&vif0 {
+	mstar,vif-src = "mipi-4-lane";
+	pinctrl-names = "default";
+	pinctrl-0 = <&sr0_mipi_mode2_pins>;
+	status = "okay";
+};
+
+&vif1 {
+	mstar,vif-src = "bt656";
+	pinctrl-names = "default";
+	pinctrl-0 = <&sr1_bt656_pins>;
+	status = "okay";
+};
+
+&dsi_dphy {
+	mstar,dphy-mode = "4 lanes";
+	pinctrl-names = "default";
+	pinctrl-0 = <&tx_mipi_mode2_pins>;
+	status = "okay";
+};
