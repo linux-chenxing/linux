@@ -51,5 +51,7 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-infinity3-msc313e-breadbee.dtb \
 	mstar-infinity3-msc313e-wiibee.dtb \
 	mstar-infinity3-msc313d-mc400l.dtb \
-	mstar-mercury5-ssc8336n-midrived08.dtb \
-	mstar-mercury5-ssc8336n-midrived06.dtb
+	mstar-infinity6b0-ssc337de-mcf50.dtb \
+	mstar-mercury5-ssc8336-mirrorcam.dtb \
+	mstar-mercury5-ssc8336n-midrived06.dtb \
+	mstar-mercury5-ssc8336n-midrived08.dtb
