@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2020 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+#include "mstar-mercury5-ssc8336n.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/gpio/mstar.h>
+
+/ {
+	model = "70mai Midrive D06";
+	compatible = "70mai,midrived06", "mstar,mercury5";
+
+	aliases {
+		serial0 = &pm_uart;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	 wifi_pwr: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "wifi_pwr";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio_pm SSC8336_PM_GPIO8 0>;
+		vin-supply = <&vcc_io>;
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&vcc_core>;
+};
+
+&pm_uart {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+	nor: nor@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+	};
+};
+
+&i2c0 {
+	status = "okay";
+	sc7a30e: sc7a30e@30 {
+		reg = <0x1d>;
+	};
+
+	ip6303: ip6303@30 {
+		compatible = "injoinic,ip6303-regulator";
+		reg = <0x30>;
+		regulators {
+			vcc_core: dc1 {
+				regulator-name = "vcc-core";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <1200000>;
+				regulator-always-on;
+			};
+
+			vcc_ddr: dc2 {
+				regulator-name = "vcc-ddr";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+				regulator-always-on;
+			};
+
+			vcc_io: dc3 {
+				regulator-name = "vcc-io";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+			};
+		};
+	};
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+&sar {
+	// front buttons are on here
+	status = "okay";
+};
+
+&sd {
+	vmmc-supply = <&vcc_io>;
+	vqmmc-supply = <&vcc_io>;
+	cd-gpios = <&gpio_pm SSC8336_PM_SD_SDZ GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+
+&miu {
+	ddr-supply = <&vcc_ddr>;
+};
+
+&usbphy0 {
+	mstar,utmi-dxswap;
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&usbphy1 {
+	mstar,utmi-dxswap;
+	status = "okay";
+};
+
+&uhc1 {
+	status = "okay";
+};
