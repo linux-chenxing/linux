@@ -7,7 +7,7 @@
 /dts-v1/;
 #include "mstar-mercury5-ssc8336n.dtsi"
 #include <dt-bindings/gpio/gpio.h>
-#include <dt-bindings/gpio/mstar.h>
+#include <dt-bindings/gpio/msc313-gpio-pm.h>
 
 / {
 	model = "70mai Midrive D06";
