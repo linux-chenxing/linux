@@ -12,3 +12,8 @@
 &pinctrl {
 	compatible = "mstar,ssc8336n-pinctrl";
 };
+
+&gpio {
+	compatible = "mstar,ssc8336-gpio";
+	status = "okay";
+};
