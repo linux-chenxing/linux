@@ -11,3 +11,13 @@ maintainers:
 
 description: |
   Injoinic IP6XXX series PMICs.
+
+properties:
+  compatible:
+    anyOf:
+      - items:
+          - enum:
+              - injoinic,ip6303
+
+  reg:
+    maxItems: 1
