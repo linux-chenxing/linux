@@ -9,11 +9,15 @@
 
 #include "mstar-mercury5.dtsi"
 
+/ {
+};
+
 &pinctrl {
 	compatible = "mstar,ssc8336n-pinctrl";
 };
 
 &gpio {
 	compatible = "mstar,ssc8336-gpio";
+	gpio-ranges = <&pinctrl SSC8336_SPI0_CK PIN_SSC8336N_SPI0_CK 1>;
 	status = "okay";
 };
