@@ -48,5 +48,8 @@
 
 &gpio {
 	compatible = "mstar,msc313-gpio";
+	gpio-ranges = <&pinctrl 0 36 22>,
+		      <&pinctrl 22 63 4>,
+		      <&pinctrl 26 68 6>;
 	status = "okay";
 };
