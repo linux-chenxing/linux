@@ -9,6 +9,7 @@
 #include "mstar-mercury5-ssc8336n.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/gpio/msc313-gpio.h>
+#include <dt-bindings/gpio/msc313-gpio-pm.h>
 
 / {
 	model = "70mai Midrive D08";
@@ -138,7 +139,7 @@
 		regulator-name = "camera_en";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
-		gpio = <&gpio SSC8336_SPI0_CK GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio SSC8336_GPIO_SPI0_CK GPIO_ACTIVE_HIGH>;
 	};
 
 };
