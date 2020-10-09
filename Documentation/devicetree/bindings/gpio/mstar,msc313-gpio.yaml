@@ -17,6 +17,7 @@ properties:
     enum:
       - mstar,msc313-gpio
       - sstar,ssd20xd-gpio
+      - mstar,ssc8336-gpio
 
   reg:
     maxItems: 1
