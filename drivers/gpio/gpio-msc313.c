@@ -490,6 +490,49 @@ static int ssd20xd_gpio_child_to_parent_hwirq(struct gpio_chip *, unsigned int,
 MSC313_GPIO_CHIPDATA(ssd20xd, gpiochip_populate_parent_fwspec_twocell, ssd20xd_gpio_child_to_parent_hwirq);
 #endif
 
+#ifdef CONFIG_MACH_MERCURY
+
+#define SR1_GPIO_NAMES			\
+	SSC8336_PINNAME_SR1_GPIO0,	\
+	SSC8336_PINNAME_SR1_GPIO1,	\
+	SSC8336_PINNAME_SR1_GPIO2,	\
+	SSC8336_PINNAME_SR1_GPIO3,	\
+	SSC8336_PINNAME_SR1_GPIO4
+
+#define OFF_SR1_GPIO0	0xb0
+#define OFF_SR1_GPIO1	0xb4
+#define OFF_SR1_GPIO2	0xb8
+#define OFF_SR1_GPIO3	0xbc
+#define OFF_SR1_GPIO4	0xc0
+
+#define SR1_GPIO_OFFSETS	\
+	OFF_SR1_GPIO0,		\
+	OFF_SR1_GPIO1,		\
+	OFF_SR1_GPIO2,		\
+	OFF_SR1_GPIO3,		\
+	OFF_SR1_GPIO4
+
+static const char *ssc8336_names[] = {
+	"unknown0",
+	FUART_NAMES,
+	SR1_GPIO_NAMES,
+	"lcd_de",
+	SPI0_NAMES,
+	SD_NAMES,
+};
+
+static unsigned ssc8336_offsets[] = {
+	0x130, // 70mai lcd rst
+	FUART_OFFSETS,
+	SR1_GPIO_OFFSETS,
+	0x16c, // LCD_DE - mirrorcam stndby?
+	SPI0_OFFSETS,
+	SD_OFFSETS,
+};
+
+MSC313_GPIO_CHIPDATA(ssc8336);
+#endif
+
 struct msc313_gpio {
 	void __iomem *base;
 	const struct msc313_gpio_data *gpio_data;
@@ -724,6 +767,12 @@ static const struct of_device_id msc313_gpio_of_match[] = {
 	{
 		.compatible = "sstar,ssd20xd-gpio",
 		.data = &ssd20xd_data,
+	},
+#endif
+#ifdef CONFIG_MACH_MERCURY
+	{
+		.compatible = "mstar,ssc8336-gpio",
+		.data = &ssc8336_data,
 	},
 #endif
 	{ }
