@@ -2438,6 +2438,7 @@ F:	Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.yaml
 F:	Documentation/devicetree/bindings/watchdog/mstar,msc313e-wdt.yaml
 F:	arch/arm/mach-mstar/
 F:	drivers/clk/mstar/
+F:	drivers/char/hw_random/msc313-rng.c
 F:	drivers/clocksource/timer-msc313e.c
 F:	drivers/gpio/gpio-msc313-pm.c
 F:	drivers/gpio/gpio-msc313.c

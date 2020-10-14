@@ -573,6 +573,13 @@ config HW_RANDOM_JH7110
 	  To compile this driver as a module, choose M here.
 	  The module will be called jh7110-trng.
 
+config HW_RANDOM_MSC313
+	tristate "MStar MSC313 RNG"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	help
+	  This driver provides support for the RNG found on
+	  the MStar MSC313 and later MStar and SigmaStar SoCs.
+
 endif # HW_RANDOM
 
 config UML_RANDOM
