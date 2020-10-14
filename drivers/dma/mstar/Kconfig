@@ -5,3 +5,8 @@ config MSTAR_MSC313_BDMA
 	depends on ARCH_MSTARV7 || COMPILE_TEST
 	select DMA_ENGINE
 
+config MSTAR_MSC313_CMDQ
+	tristate "MStar MSC313 CMDQ support"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	select DMA_ENGINE
+

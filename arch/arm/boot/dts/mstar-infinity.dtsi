@@ -81,6 +81,13 @@
 		reg = <0x1f006200 0x600>;
 	};
 
+	cmdq: cmdq@1f224000 {
+		reg = <0x1f224000 0x200>;
+		compatible = "mstar,msc313-cmdq";
+		interrupts-extended = <&intc_irq GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MIU 0>;
+	};
+
 	/* jpe - jpeg encoder */
 	jpe: jpe@0x1f264000 {
 		reg = <0x1f264000 0x100>;
