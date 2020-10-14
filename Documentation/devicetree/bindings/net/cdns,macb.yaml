@@ -58,6 +58,8 @@ properties:
           - cdns,emac                 # Generic
           - cdns,gem                  # Generic
           - cdns,macb                 # Generic
+          - mstar,msc313              # MStar infinity
+          - mstar,msc313e             # MStar infinity3 and other SoCs that have XIU register access.
 
   reg:
     minItems: 1
