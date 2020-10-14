@@ -16,6 +16,26 @@
 	};
 };
 
+&soc {
+	/*
+	cmdq: cmdq@1 {
+		reg = <0 0x200>;
+		compatible = "mstar,msc313-cmdq";
+		interrupt-parent = <&intc_spi>;
+		interrupts = <52 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clkgen_mux_mui 0>;
+	};*/
+
+	/*
+	cmdq: cmdq@2 {
+		reg = <0 0x200>;
+		compatible = "mstar,msc313-cmdq";
+		interrupt-parent = <&intc_spi>;
+		interrupts = <53 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clkgen_mux_mui 0>;
+	};*/
+};
+
 &gpio_pm {
 	compatible = "mstar,msc313-gpio-pm";
 	gpio-ranges = <&pinctrl_pm MSC313_PM_GPIO4 PIN_MSC313_PM_GPIO4 1>,
