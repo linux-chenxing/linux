@@ -1096,6 +1096,13 @@ config MMC_OWL
 	  This selects support for the SD/MMC Host Controller on
 	  Actions Semi Owl SoCs.
 
+config MMC_MSTAR_FCIE
+	tristate "MStar FCIE SD/MMC Host Controller support"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	help
+	  This selects support for the SD/MMC Host Controller on
+	  MStar SoCs.
+
 config MMC_SDHCI_EXTERNAL_DMA
 	bool
 
