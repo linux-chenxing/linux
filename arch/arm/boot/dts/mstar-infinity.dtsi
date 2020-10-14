@@ -75,6 +75,32 @@
 		compatible = "syscon";
 		reg = <0x1f006200 0x600>;
 	};
+
+	/* jpe - jpeg encoder */
+	jpe: jpe@0x1f264000 {
+		reg = <0x1f264000 0x100>;
+		interrupts = <&intc_irq GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_JPE 0>;
+	};
+
+	/* mfe - video encoder*/
+	mfe: mfe@1f264800 {
+		reg = <0x1f264800 0x200>;
+		interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	/* vhe - hevc encoder? English in comments is very good
+	 * so likely this is an IP block
+	 */
+	vhe: vhe@1f265000 {
+		reg = <0x1F265200 0x200>,
+		      <0x1F265000 0x100>;
+		interrupts = <21 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	emmc: emmc@1f280400 {
+		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
+	};
 };
 
 &cpu0 {
