@@ -633,7 +633,7 @@
 			};
 
 			l3bridge: l3bridge@204400 {
-				compatible = "mstar,l3bridge";
+				compatible = "mstar,l3bridge", "syscon";
 				reg = <0x204400 0x200>;
 				status = "disabled";
 			};
