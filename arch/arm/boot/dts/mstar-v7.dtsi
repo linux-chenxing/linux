@@ -516,6 +516,13 @@
 				clocks = <&clkgen_pll MSTAR_MPLL_GATE_MPLL_432>;
 			};
 
+			lpll: lpll@206700 {
+				compatible = "mstar,msc313-lpll";
+				reg = <0x206700 0x100>;
+				#clock-cells = <1>;
+				clocks = <&mpll MSTAR_MSC313_MPLL_DIV2>;
+			};
+
 			gpio: gpio@207800 {
 				#gpio-cells = <2>;
 				reg = <0x207800 0x200>;
