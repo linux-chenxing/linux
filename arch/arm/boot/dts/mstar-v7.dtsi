@@ -611,6 +611,22 @@
 				status = "disabled";
 			};
 
+			fuart: serial@220400 {
+				compatible = "mstar,msc313-uart";
+				reg = <0x220400 0x100>;
+				/*
+				 * DMA registers
+				 * <0x1f220600 0x100>
+				 */
+				interrupt-parent = <&intc_irq>;
+				interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
+				reg-shift = <3>;
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_FUART 0>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&fuart_pins>;
+				status = "disabled";
+			};
+
 			pm_uart: serial@221000 {
 				compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
 				reg = <0x221000 0x100>;
