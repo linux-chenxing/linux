@@ -542,6 +542,13 @@
 				interrupts-extended = <&intc_irq GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
 				status = "disabled";
 			};
+
+			upll: upll@284000 {
+				#clock-cells = <1>;
+				compatible = "mstar,msc313-upll";
+				reg = <0x284000 0x20>;
+				clocks = <&xtal>;
+			};
 		};
 
 		imi: sram@a0000000 {
