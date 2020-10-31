@@ -50,8 +50,12 @@ static int msc313e_clkgen_mux_probe(struct platform_device *pdev)
 
 	if(numparents <= 0){
 		dev_info(&pdev->dev, "failed to get clock parents\n");
-		ret = numparents;
-		goto out;
+		return numparents;
+	}
+
+	if(numparents != of_clk_get_parent_count(pdev->dev.of_node)){
+		dev_info(&pdev->dev, "waiting for parents\n");
+		return -EPROBE_DEFER;
 	}
 
 	base = of_iomap(pdev->dev.of_node, 0);
@@ -139,12 +143,10 @@ static int msc313e_clkgen_mux_probe(struct platform_device *pdev)
 		gates->clk_data->clks[gateindex] = clk;
 	}
 
-	ret = of_clk_add_provider(pdev->dev.of_node,
-			of_clk_src_onecell_get, gates->clk_data);
-	if(ret)
-		goto out;
-
 	platform_set_drvdata(pdev, gates);
+
+	return of_clk_add_provider(pdev->dev.of_node,
+			of_clk_src_onecell_get, gates->clk_data);
 out:
 	return ret;
 }
