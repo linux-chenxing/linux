@@ -888,7 +888,7 @@
 			compatible = "mstar,gop";
 			reg = <0x1f246200 0x400>;
 			interrupt-names = "gop";
-			interrupts-extended = <&intc_irq 50 IRQ_TYPE_LEVEL_HIGH>;
+			interrupts-extended = <&intc_irq GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&clkgen_mux_gop 0>;
 			ports {
 				#address-cells = <1>;
