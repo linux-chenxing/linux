@@ -14,3 +14,10 @@ config MSTAR_MSC313_CPUPLL
 	default ARCH_MSTARV7
 	help
 	  Support for the CPU PLL present on MStar/Sigmastar SoCs.
+
+config MSTAR_MSC313_UPLL
+	bool "MStar UPLL driver"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	default ARCH_MSTARV7
+	help
+	  Support for the USB PLL present on MStar/Sigmastar SoCs.
