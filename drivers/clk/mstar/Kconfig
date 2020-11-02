@@ -21,3 +21,10 @@ config MSTAR_MSC313_UPLL
 	default ARCH_MSTARV7
 	help
 	  Support for the USB PLL present on MStar/Sigmastar SoCs.
+
+config MSTAR_MSC313_LPLL
+	bool "MStar LPLL driver"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	default ARCH_MSTARV7
+	help
+	  Support for the Line PLL present on MStar/Sigmastar SoCs.
