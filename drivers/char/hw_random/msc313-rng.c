@@ -16,8 +16,8 @@
 #define REG_VALUE	0x8
 #define REG_STATUS	0xc
 
-static struct reg_field ctrl_enable = REG_FIELD(REG_CTRL, 7, 7);
-static struct reg_field status_ready = REG_FIELD(REG_STATUS, 0, 0);
+static const struct reg_field ctrl_enable = REG_FIELD(REG_CTRL, 7, 7);
+static const struct reg_field status_ready = REG_FIELD(REG_STATUS, 0, 0);
 
 struct msc313_rng {
 	struct hwrng hwrng;
