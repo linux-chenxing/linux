@@ -208,6 +208,7 @@
 			reg = <0>;
 			mstar,pmsleep = <&pmsleep>;
 			mstar,phyana = <&phyana>;
+			interrupts-extended = <&intc_fiq GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
 		};
 	};
 };
