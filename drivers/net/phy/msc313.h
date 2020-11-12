@@ -18,6 +18,7 @@
 #define REG_SADC	(BANK2 + 0x140)
 #define REG_100GAT	(BANK2 + 0x188)
 #define REG_TX2		(BANK2 + 0x1e0)
+#define REG_INTR	(BANK2 + 0xe8)
 
 static const struct reg_field anarst = REG_FIELD(REG_ANARST, 5, 5);
 static const struct reg_field sadcpd = REG_FIELD(REG_SADC, 12, 13);
