@@ -176,6 +176,8 @@ static struct phy_driver msc313_driver[] = {
 		.suspend	= msc313_phy_suspend,
 		.resume		= msc313_phy_resume,
 		.driver_data	= &msc313_data,
+		/*.config_intr	= &genphy_no_config_intr,
+		.ack_interrupt	= &genphy_no_ack_interrupt,*/
 	},
 	{
 		.phy_id         = MSC313E_PHY_ID,
@@ -185,6 +187,8 @@ static struct phy_driver msc313_driver[] = {
 		.suspend	= msc313_phy_suspend,
 		.resume		= msc313_phy_resume,
 		.driver_data	= &msc313e_data,
+		/*.config_intr	= &genphy_no_config_intr,
+		.ack_interrupt	= &genphy_no_ack_interrupt,*/
 	},
 };
 
