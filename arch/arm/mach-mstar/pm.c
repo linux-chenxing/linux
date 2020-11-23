@@ -60,9 +60,6 @@ static int msc313_suspend_enter(suspend_state_t state)
 			// Now prepare our wake up source
 			regmap_update_bits(pmsleep, MSTAR_PMSLEEP_REG24,
 					MSTAR_PMSLEEP_REG24_POWEROFF, MSTAR_PMSLEEP_REG24_POWEROFF);
-			//setbank	0x0
-			//clearbits 0x10 0x16 //[1]:SAR, [2]:WOL, [4]:RTC
-			regmap_write(pmsleep, MSTAR_PMSLEEP_WAKEUPSOURCE, 0xe9);
 			cpu_suspend(0, msc313_suspend_ready);
             	break;
         	default:
