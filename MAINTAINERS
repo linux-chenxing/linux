@@ -2486,6 +2486,7 @@ F:	drivers/clk/mstar/
 F:	drivers/clocksource/timer-msc313e.c
 F:	drivers/gpio/gpio-msc313.c
 F:	drivers/irqchip/irq-msc313-pm-intc.c
+F:	drivers/irqchip/irq-msc313-pm-wakeup.c
 F:	drivers/irqchip/irq-ssd20xd-gpi.c
 F:	drivers/pinctrl/mstar/
 F:	drivers/rtc/rtc-msc313.c

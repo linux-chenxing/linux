@@ -122,4 +122,4 @@ obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
 obj-$(CONFIG_MCHP_EIC)			+= irq-mchp-eic.o
 obj-$(CONFIG_SUNPLUS_SP7021_INTC)	+= irq-sp7021-intc.o
 obj-$(CONFIG_SSD20XD_GPI)		+= irq-ssd20xd-gpi.o
-obj-$(CONFIG_MSC313_PM_INTC)		+= irq-msc313-pm-intc.o
+obj-$(CONFIG_MSC313_PM_INTC)		+= irq-msc313-pm-intc.o irq-msc313-pm-wakeup.o
