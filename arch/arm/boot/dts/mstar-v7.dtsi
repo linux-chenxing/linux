@@ -127,6 +127,15 @@
 					interrupt-controller;
 					#interrupt-cells = <1>;
 				};
+
+				wakeintc: interrupt-controller@1c20 {
+					compatible = "mstar,msc313-pm-wakeup-intc";
+					interrupt-parent = <&intc_irq>;
+					interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+					interrupt-controller;
+					#interrupt-cells = <2>;
+					mstar,pmsleep = <&pmsleep>;
+				};
 			};
 
 			reboot {
