@@ -20,6 +20,12 @@
 #define COMPAT_PMSLEEP	"mstar,msc313-pmsleep"
 #define COMPAT_MIU	"mstar,msc313-miu"
 
+#define MSTARV7_PM_SIZE			SZ_16K
+#define MSTARV7_PM_INFO_OFFSET		0
+#define MSTARV7_PM_INFO_SIZE		SZ_4K
+#define MSTARV7_PM_SUSPEND_OFFSET	(MSTARV7_PM_INFO_OFFSET + MSTARV7_PM_INFO_SIZE)
+#define MSTARV7_PM_SUSPEND_SIZE		SZ_4K
+
 struct mstar_pm_info {
 	u32 pmsleep;	// 0x0
 	u32 pmgpio;	// 0x4
@@ -29,20 +35,14 @@ struct mstar_pm_info {
 	u32 pmuart;	// 0x14
 };
 
-#define MSTARV7_PM_SIZE			SZ_16K
-#define MSTARV7_PM_INFO_OFFSET		0
-#define MSTARV7_PM_INFO_SIZE		SZ_4K
-#define MSTARV7_PM_SUSPEND_OFFSET	(MSTARV7_PM_INFO_OFFSET + MSTARV7_PM_INFO_SIZE)
-#define MSTARV7_PM_SUSPEND_SIZE		SZ_4K
-
 static struct mstar_pm_info __iomem *pm_info;
 static void __iomem *pm_suspend_code;
 
 static struct regmap *pmsleep;
 
 extern void msc313_suspend_imi(struct mstar_pm_info *pm_info);
-void (*msc313_suspend_imi_fn)(struct mstar_pm_info *pm_info);
 extern void msc313_resume_imi(void);
+static void (*msc313_suspend_imi_fn)(struct mstar_pm_info *pm_info);
 
 static int msc313_suspend_ready(unsigned long ret)
 {
@@ -54,18 +54,17 @@ static int msc313_suspend_ready(unsigned long ret)
 
 static int msc313_suspend_enter(suspend_state_t state)
 {
-	switch (state)
-	{
-		case PM_SUSPEND_MEM:
-			// Now prepare our wake up source
-			regmap_update_bits(pmsleep, MSTAR_PMSLEEP_REG24,
-					MSTAR_PMSLEEP_REG24_POWEROFF, MSTAR_PMSLEEP_REG24_POWEROFF);
-			cpu_suspend(0, msc313_suspend_ready);
-            	break;
-        	default:
-			return -EINVAL;
+	switch (state){
+	case PM_SUSPEND_MEM:
+		regmap_update_bits(pmsleep, MSTAR_PMSLEEP_REG24,
+			MSTAR_PMSLEEP_REG24_POWEROFF, MSTAR_PMSLEEP_REG24_POWEROFF);
+		cpu_suspend(0, msc313_suspend_ready);
+	break;
+	default:
+		return -EINVAL;
 	}
-    return 0;
+
+	return 0;
 }
 
 static void msc313_suspend_finish(void)
@@ -73,7 +72,7 @@ static void msc313_suspend_finish(void)
 }
 
 /* sequence: begin, prepare, prepare_late, enter, wake, finish, end */
-struct platform_suspend_ops msc313_suspend_ops = {
+static const struct platform_suspend_ops msc313_suspend_ops = {
 	.enter    = msc313_suspend_enter,
 	.valid    = suspend_valid_only_mem,
 	.finish   = msc313_suspend_finish,
@@ -100,7 +99,7 @@ int __init msc313_pm_init(void)
 		return -ENODEV;
 	}
 
-	/*pdev = of_find_device_by_node(node);
+	pdev = of_find_device_by_node(node);
 	if (!pdev) {
 		pr_warn("%s: failed to find imi device\n", __func__);
 		ret = -ENODEV;
@@ -119,10 +118,9 @@ int __init msc313_pm_init(void)
 		pr_warn("%s: unable to alloc pm memory in imi!\n", __func__);
 		ret = -ENOMEM;
 		goto put_node;
-	}*/
+	}
 
-	phys = 0xa0000000;
-	//phys = gen_pool_virt_to_phys(imi_pool, imi_base);
+	phys = gen_pool_virt_to_phys(imi_pool, imi_base);
 	virt = __arm_ioremap_exec(phys, MSTARV7_PM_SIZE, false);
 	pm_info = (struct mstar_pm_info*) (virt + MSTARV7_PM_INFO_OFFSET);
 	pm_suspend_code = virt + MSTARV7_PM_SUSPEND_OFFSET;
