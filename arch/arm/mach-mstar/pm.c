@@ -78,6 +78,13 @@ static const struct platform_suspend_ops msc313_suspend_ops = {
 	.finish   = msc313_suspend_finish,
 };
 
+static void mstar_poweroff(void)
+{
+	regmap_update_bits(pmsleep, MSTAR_PMSLEEP_REG24,
+			MSTAR_PMSLEEP_REG24_POWEROFF, ~0);
+	msc313_suspend_imi_fn(pm_info);
+}
+
 int __init msc313_pm_init(void)
 {
 	int ret = 0;
@@ -144,6 +151,8 @@ int __init msc313_pm_init(void)
 	regmap_write(pmsleep, MSTARV7_PM_RESUMEADDR + 4, (resume_pbase >> 16) & 0xffff);
 
 	suspend_set_ops(&msc313_suspend_ops);
+
+	pm_power_off = mstar_poweroff;
 
 	printk("pm code is at %px, pm info is at %px, pmsleep is at %x, pmgpio is at %x\n",
 			pm_suspend_code, pm_info, pm_info->pmsleep, pm_info->pmgpio);
