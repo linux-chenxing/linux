@@ -195,3 +195,7 @@
 	compatible = "sstar,ssd20xd-timer";
 	clocks = <&clk_timer>;
 };
+
+&uhc0 {
+	interrupts-extended = <&intc_irq GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
+};
