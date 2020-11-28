@@ -384,6 +384,7 @@
 				compatible = "mstar,msc313e-wdt";
 				reg = <0x6000 0x1f>;
 				clocks = <&xtal_div2>;
+				interrupts-extended = <&intc_fiq GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
 			};
 
 			timer0: timer@6040 {
@@ -399,7 +400,7 @@
 				clocks = <&xtal_div2>;
 				interrupts-extended = <&intc_fiq GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
 			};
-
+	
 			timer2: timer@60c0 {
 				compatible = "mstar,msc313e-timer";
 				reg = <0x60c0 0x40>;
