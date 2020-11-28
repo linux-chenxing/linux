@@ -66,22 +66,20 @@
 	};
 };
 
-// In the same place, but causes lock up on boot..
 &usbphy0 {
-	//status = "okay";
+	status = "okay";
 };
 
 &uhc0 {
-	//status = "okay";
+	status = "okay";
 };
 
-// In a different place AFAIT
-&usbphy1 {
-	//status = "okay";
+&usbphy2 {
+	status = "okay";
 };
 
-&uhc1 {
-	//status = "okay";
+&uhc2 {
+	status = "okay";
 };
 
 &sdio {
