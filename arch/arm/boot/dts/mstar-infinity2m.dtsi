@@ -149,7 +149,7 @@
 		clocks = <&xtal_div2>;
 		mstar,utmi = <&utmi2>;
 		mstar,usbc = <&usbc2>;
-		//status = "disabled";
+		status = "disabled";
 	};
 
 	uhc2: uhc@285000 {
@@ -159,7 +159,7 @@
 		phys = <&usbphy2 0>;
 		phy-names = "usb";
 		mstar,usbc = <&usbc2>;
-		//status = "disabled";
+		status = "disabled";
 	};
 };
 
