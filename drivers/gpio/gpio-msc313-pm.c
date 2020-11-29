@@ -89,6 +89,22 @@ static const unsigned int msc313_offsets[] = {
 };
 
 CHIP_DATA(msc313);
+
+static const char * const ssd20xd_names[] = {
+	NAME_IRIN,
+	NAME_SD_SDZ,
+	NAME_LED0,
+	NAME_LED1,
+};
+
+static const unsigned int ssd20xd_offsets[] = {
+	OFF_IRIN,
+	OFF_SD_CZ,
+	OFF_LED0,
+	OFF_LED1,
+};
+
+CHIP_DATA(ssd20xd);
 #endif /* infinity */
 
 #ifdef CONFIG_MACH_MERCURY
@@ -328,6 +344,11 @@ static const struct of_device_id msc313_pm_gpio_of_match[] = {
 		/* MSC313, MSC313e */
 		.compatible	= "mstar,msc313-gpio-pm",
 		.data		= &info_msc313,
+	},
+	{
+		/* SSD201, SSD202 */
+		.compatible	= "sstar,ssd20xd-gpio-pm",
+		.data		= &info_ssd20xd,
 	},
 #endif
 #ifdef CONFIG_MACH_MERCURY
