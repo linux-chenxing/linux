@@ -3,6 +3,7 @@
  * Copyright (C) 2019 Daniel Palmer
  */
 //TODO test interrupts still work!
+// SD interrupt is broken.
 
 #include <linux/bitops.h>
 #include <linux/err.h>
