@@ -19,6 +19,14 @@
 		stdout-path = "serial0:115200n8";
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
 	};
+
+	sd_vdd: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "sd_vdd";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio SSD20XD_GPIO_GPIO0 0>;
+	};
 };
 
 &pm_uart {
@@ -83,5 +91,6 @@
 };
 
 &sdio {
+	vmmc-supply = <&sd_vdd>;
 	status = "okay";
 };
