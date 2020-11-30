@@ -8,3 +8,7 @@
 #include <dt-bindings/pinctrl/mstar.h>
 
 #include "mstar-mercury5.dtsi"
+
+&pinctrl {
+	compatible = "mstar,ssc8336n-pinctrl";
+};
