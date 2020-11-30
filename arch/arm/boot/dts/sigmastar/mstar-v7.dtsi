@@ -160,6 +160,163 @@
 				mstar,intc-no-eoi;
 			};
 
+			pinctrl: pinctrl@203c00 {
+				reg = <0x203c00 0x200>;
+				emac_mode1_pins: eth {
+					function = "eth";
+					groups = "eth_mode1";
+				};
+				eth1_mode4_pins: eth1_mode4 {
+					function = "eth1";
+					groups = "eth1_mode4";
+				};
+				fuart_pins: fuart {
+					function = "fuart";
+					groups = "fuart";
+				};
+				fuart_mode1_pins: fuart_mode1 {
+					function = "fuart";
+					groups = "fuart_mode1";
+				};
+				fuart_mode2_pins: fuart_mode2 {
+					function = "fuart";
+					groups = "fuart_mode2";
+				};
+				fuart_mode3_pins: fuart_mode3 {
+					function = "fuart";
+					groups = "fuart_mode3";
+				};
+				fuart_mode4_pins: fuart_mode4 {
+					function = "fuart";
+					groups = "fuart_mode4";
+				};
+				fuart_mode5_pins: fuart_mode5 {
+					function = "fuart";
+					groups = "fuart_mode5";
+				};
+				fuart_mode6_pins: fuart_mode6 {
+					function = "fuart";
+					groups = "fuart_mode6";
+				};
+				fuart_mode7_pins: fuart_mode7 {
+					function = "fuart";
+					groups = "fuart_mode7";
+				};
+				fuart_rx_tx_rts_pins: fuart_rx_tx_rts {
+					function = "fuart";
+					groups = "fuart_rx_tx_rts";
+				};
+				uart1_mode1_pins: uart1_mode1 {
+					function = "uart1";
+					groups = "uart1_mode1";
+				};
+				uart1_pins: uart1 {
+					function = "uart1";
+					groups = "fuart_cts_rts";
+				};
+				uart1_cts_pins: uart1_cts {
+					function = "uart1";
+					groups = "fuart_cts";
+				};
+				i2c0_pins: i2c0 {
+					function = "i2c0";
+					groups = "i2c0";
+				};
+				i2c0_mode4_pins: i2c0_mode4 {
+					function = "i2c0";
+					groups = "i2c0_mode4";
+				};
+				i2c1_pins: i2c1 {
+					function = "i2c1";
+					groups = "i2c1";
+				};
+				i2c1_mode1_pins: i2c1_mode1 {
+					function = "i2c1";
+					groups = "i2c1_mode1";
+				};
+				i2c1_mode3_pins: i2c1_mode3 {
+					function = "i2c1";
+					groups = "i2c1_mode3";
+				};
+				i2c1_mode4_pins: i2c1_mode4 {
+					function = "i2c1";
+					groups = "i2c1_mode4";
+				};
+				i2c1_mode5_pins: i2c1_mode5 {
+					function = "i2c1";
+					groups = "i2c1_mode5";
+				};
+				spi0_spi0_pins: spi0_spi0 {
+					function = "spi0";
+					groups = "spi0";
+				};
+				spi0_fuart_pins: spi0_fuart {
+					function = "spi0";
+					groups = "fuart";
+				};
+				spi1_sd_d0_d1_d2_d3_pins: spi1_sd_d0_d1_d2_d3 {
+					function = "spi1";
+					groups = "sd_d0_d1_d2_d3";
+				};
+				sdio_pins: sdio {
+					function = "sdio";
+					groups = "sdio_mode1";
+					bias-pull-up;
+				};
+				usb_pins: usb {
+					function = "usb";
+					groups = "usb";
+				};
+				usb1_pins: usb1 {
+					function = "usb1";
+					groups = "usb1";
+				};
+				pwm0_mode1_pins: pwm0_mode1 {
+					function = "pwm0";
+					groups = "pwm0_mode1";
+				};
+				pwm0_mode2_pins: pwm0_mode2 {
+					function = "pwm0";
+					groups = "pwm0_mode2";
+				};
+				pwm0_mode3_pins: pwm0_mode3 {
+					function = "pwm0";
+					groups = "pwm0_mode3";
+				};
+				pwm0_mode4_pins: pwm0_mode4 {
+					function = "pwm0";
+					groups = "pwm0_mode4";
+				};
+				pwm1_fuart_tx_pins: pwm1_fuart_tx {
+					function = "pwm1";
+					groups = "fuart_tx";
+				};
+				pwm2_fuart_cts_pins: pwm2_fuart_cts {
+					function = "pwm2";
+					groups = "fuart_cts";
+				};
+				pwm3_fuart_rts_pins: pwm3_fuart_rts {
+					function = "pwm3";
+					groups = "fuart_rts";
+				};
+				pwm4_spi0_cz_pins: pwm4_spi0_cz {
+					function = "pwm4";
+					groups = "spi0_cz";
+				};
+				pwm5_spi0_ck_pins: pwm5_spi0_ck {
+					function = "pwm5";
+					groups = "spi0_ck";
+				};
+				pwm6_spi0_di_pins: pwm6_spi_di {
+					function = "pwm6";
+					groups = "spi0_di";
+				};
+				pwm7_spi0_do_pins: pwm7_spi_do {
+					function = "pwm7";
+					groups = "spi0_do";
+				};
+			};
+
 			l3bridge: l3bridge@204400 {
 				compatible = "mstar,l3bridge";
 				reg = <0x204400 0x200>;
