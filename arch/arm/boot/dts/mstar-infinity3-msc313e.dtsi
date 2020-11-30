@@ -13,6 +13,10 @@
 	};
 };
 
+&pinctrl {
+	compatible = "mstar,msc313e-pinctrl";
+};
+
 &pinctrl_pm {
 	compatible = "mstar,msc313e-pm-pinctrl";
 };
