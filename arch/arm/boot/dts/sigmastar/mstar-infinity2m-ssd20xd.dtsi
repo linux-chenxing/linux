@@ -4,10 +4,23 @@
  * Author: Daniel Palmer <daniel@thingy.jp>
  */
 
+#include <dt-bindings/gpio/msc313-gpio-pm.h>
+#include <dt-bindings/pinctrl/mstar.h>
+
 #include "mstar-infinity2m.dtsi"
 
 &gpio {
 	compatible = "sstar,ssd20xd-gpio";
+	status = "okay";
+};
+
+&gpio_pm {
+	compatible = "sstar,ssd20xd-gpio-pm";
+	gpio-ranges = <&pinctrl_pm SSD20XD_PM_IRIN PIN_SSD20XD_PM_IRIN 1>,
+		      <&pinctrl_pm SSD20XD_PM_SD_CDZ PIN_SSD20XD_PM_SD_CDZ 1>,
+		      <&pinctrl_pm SSD20XD_PM_LED0 PIN_SSD20XD_PM_LED0 1>,
+		      <&pinctrl_pm SSD20XD_PM_LED0 PIN_SSD20XD_PM_LED1 1>;
+	/*interrupts-extended = <&intc_fiq GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;*/
 	status = "okay";
 };
 
