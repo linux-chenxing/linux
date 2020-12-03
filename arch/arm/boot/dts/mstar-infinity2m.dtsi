@@ -108,6 +108,9 @@
 };
 
 &riu {
+	mmu: mmu@2600 {
+	};
+
 	pwm: pwm@3400 {
 		compatible = "mstar,ssd20xd-pwm";
 		reg = <0x3400 0x400>;
