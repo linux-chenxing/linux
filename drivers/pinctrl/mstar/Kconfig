@@ -14,3 +14,10 @@ config PINCTRL_MSC313_PM
 	  This adds support for the PM area pin controller on
 	  the MStar MSC313 and later MStar and SigmaStar ARMv7
 	  SoCs.
+
+config PINCTRL_MSC313
+	bool "Pinctrl driver for the Mstar MSC313"
+	depends on OF && (ARCH_MSTARV7 || COMPILE_TEST)
+	select REGMAP_MMIO
+	select PINCTRL_MSTAR
+	default ARCH_MSTARV7
