@@ -7,6 +7,16 @@
 #include <dt-bindings/gpio/gpio.h>
 
 / {
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 root=/dev/mtdblock3 clk_ignore_unused quiet";
+	};
+
+	aliases {
+		console = &pm_uart;
+		ethernet0 = &emac;
+	};
+
 	vcc_core: fixedregulator@0 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_core";
