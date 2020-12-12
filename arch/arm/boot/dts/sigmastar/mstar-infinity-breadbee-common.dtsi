@@ -120,3 +120,7 @@
 	vmmc-supply = <&vcc_io>;
 	vqmmc-supply = <&vcc_io>;
 };
+
+&usbphy0 {
+	status = "okay";
+};
