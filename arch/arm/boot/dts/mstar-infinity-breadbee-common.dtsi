@@ -115,3 +115,8 @@
 &sar {
 	status = "okay";
 };
+
+&sdio {
+	vmmc-supply = <&vcc_io>;
+	vqmmc-supply = <&vcc_io>;
+};
