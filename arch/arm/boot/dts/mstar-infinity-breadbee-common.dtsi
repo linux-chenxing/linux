@@ -69,3 +69,45 @@
 &emac {
 	status = "okay";
 };
+
+&isp {
+	status = "okay";
+	nor: nor@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+		spi-rx-bus-width = <2>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			env@2000 {
+				label = "env";
+				reg = <0x2000 0x2000>;
+			};
+
+			kernel@80000{
+				label = "kernel";
+				reg = <0x80000 0x300000>;
+			};
+
+			rootfs@380000 {
+				label = "rootfs";
+				reg = <0x380000 0x980000>;
+			};
+
+			rescue@d00000 {
+				label = "rescue";
+				reg = <0xd00000 0x2c0000>;
+			};
+
+			rw@fc0000 {
+				label = "rw";
+				reg = <0xfc0000 0x40000>;
+			};
+		};
+	};
+};
