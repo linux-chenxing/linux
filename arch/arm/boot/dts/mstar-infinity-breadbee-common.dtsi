@@ -61,3 +61,7 @@
 &miu {
 	ddr-supply = <&vcc_dram>;
 };
+
+&pm_uart {
+	status = "okay";
+};
