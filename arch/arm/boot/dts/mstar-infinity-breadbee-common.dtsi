@@ -57,3 +57,7 @@
 &cpu0 {
 	cpu-supply = <&vcc_core>;
 };
+
+&miu {
+	ddr-supply = <&vcc_dram>;
+};
