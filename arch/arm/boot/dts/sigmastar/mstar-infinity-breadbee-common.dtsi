@@ -9,7 +9,7 @@
 / {
 	chosen {
 		stdout-path = "serial0:115200n8";
-		bootargs = "console=ttyS0,115200 root=/dev/mtdblock3 rootfstype=squashfs clk_ignore_unused quiet";
+		bootargs = "console=ttyS0,115200 root=/dev/mtdblock3 rootfstype=squashfs clk_ignore_unused quiet firmware_class.path=/tmp/";
 	};
 
 	aliases {
