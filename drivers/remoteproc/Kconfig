@@ -352,6 +352,12 @@ config TI_K3_R5_REMOTEPROC
 	  It's safe to say N here if you're not interested in utilizing
 	  a slave processor.
 
+config MSTAR_PM51_REMOTEPROC
+	tristate "MStar PM51 remoteproc support"
+	depends on ARCH_MSTARV7
+	help
+	  Support for the PM domain 8051 processor
+
 endif # REMOTEPROC
 
 endmenu
