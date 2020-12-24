@@ -365,6 +365,12 @@ config XLNX_R5_REMOTEPROC
 
 	  It's safe to say N if not interested in using RPU r5f cores.
 
+config MSTAR_PM51_REMOTEPROC
+	tristate "MStar PM51 remoteproc support"
+	depends on ARCH_MSTARV7
+	help
+	  Support for the PM domain 8051 processor
+
 endif # REMOTEPROC
 
 endmenu
