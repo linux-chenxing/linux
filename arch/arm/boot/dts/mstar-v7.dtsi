@@ -882,6 +882,8 @@
 		pnl: pnl@1f243400 {
 			compatible = "mstar,pnl";
 			reg = <0x1f243400 0x200>;
+			clock-names = "lpll";
+			clocks = <&lpll 0>;
 			ports {
 				#address-cells = <1>;
 				#size-cells = <0>;
