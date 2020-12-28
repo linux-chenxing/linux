@@ -671,7 +671,7 @@
 				compatible = "mstar,msc313-cpupll";
 				reg = <0x206400 0x200>;
 				#clock-cells = <0>;
-				clocks = <&clkgen_pll MSTAR_MPLL_GATE_MPLL_432>;
+				clocks = <&cpuclksrc>;
 			};
 
 			lpll: lpll@206700 {
