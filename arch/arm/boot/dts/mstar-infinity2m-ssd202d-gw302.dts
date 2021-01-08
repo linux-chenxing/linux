@@ -17,7 +17,7 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
-		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk ubi.mtd=1 ubi.block=0,rootfs root=/dev/ubiblock0_2";
 	};
 
 	vcc_dram: fixedregulator@1 {
@@ -72,7 +72,16 @@
 		#size-cells = <1>;
 		compatible = "spi-nand";
 		reg = <0>;
-		spi-max-frequency = <40000000>;
+		spi-max-frequency = <50000000>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ubi@2c0000-0x000008000000 {
+				label = "ubi";
+				reg = <0x2c0000 0x7d40000>;
+			};
+		};
 	};
 };
 
