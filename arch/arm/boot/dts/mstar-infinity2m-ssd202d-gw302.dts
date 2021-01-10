@@ -86,6 +86,8 @@
 };
 
 &emac {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pm_led_mode1_pins>;
 	status = "okay";
 };
 
