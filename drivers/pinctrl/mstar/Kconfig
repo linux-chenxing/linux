@@ -3,3 +3,14 @@ config PINCTRL_MSTAR
 	select GENERIC_PINMUX_FUNCTIONS
 	select GENERIC_PINCTRL_GROUPS
 	select GENERIC_PINCONF
+
+config PINCTRL_MSC313_PM
+	bool "Pinctrl driver for the Mstar MSC313 PM pinctrl"
+	depends on OF && (ARCH_MSTARV7 || COMPILE_TEST)
+	select REGMAP_MMIO
+	select PINCTRL_MSTAR
+	default ARCH_MSTARV7
+	help
+	  This adds support for the PM area pin controller on
+	  the MStar MSC313 and later MStar and SigmaStar ARMv7
+	  SoCs.
