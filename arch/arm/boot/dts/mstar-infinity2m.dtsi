@@ -202,3 +202,13 @@
 &uhc0 {
 	interrupts-extended = <&intc_irq GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
 };
+
+&phy {
+	compatible = "ethernet-phy-idDEAD.B33F";
+};
+
+&emac {
+	compatible = "mstar,msc313e-emac";
+	reg = <0x2a2000 0x4000>,
+	      <0x343c00 0x4000>;
+};
