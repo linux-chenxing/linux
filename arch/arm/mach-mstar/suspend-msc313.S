@@ -4,11 +4,14 @@
 #include <asm/assembler.h>
 #include <asm/asm-offsets.h>
 #include <soc/mstar/miu.h>
+#include <soc/mstar/pmsleep.h>
 
 #define BIT(nr)			(1 << (nr))
+#define PMINFO_PMSLEEP		0x0
+#define PMINFO_PMGPIO		0x4
 #define PMINFO_BANK_MIU_ANA	0x8
-#define PMINFO_BANK_MIU_DIG1	0xc
-#define PMINFO_BANK_MIU_DIG	0x10
+#define PMINFO_BANK_MIU_DIG	0xc
+#define PMINFO_BANK_MIU_DIG1	0x10
 #define PMINFO_BANK_UART	0x14
 
 .align 3
@@ -108,8 +111,7 @@
 	sendr6
 .endm
 
-.macro printword offset
-	ldr	r9, [r4, #\offset << 1]
+.macro printr9
 	ldr	r7,=16
 5:
 	subs	r7, #4
@@ -121,11 +123,14 @@
 	newline
 .endm
 
-//This must run in SRAM
-ENTRY(msc313_suspend_imi)
-	// setup r1 to point to the pm_uart
-	ldr r1, [r0, PMINFO_BANK_UART]
+.macro printword offset
+	ldr	r9, [r4, #\offset]
+	printr9
+.endm
 
+
+
+.macro enter_selfrefresh
 	// First block all access except one in group 0, cpu?
 	// miu-2
 	setbank		PMINFO_BANK_MIU_DIG
@@ -135,8 +140,8 @@ ENTRY(msc313_suspend_imi)
 	setword_defuq	MIU_DIG_GROUP3_REQ_MASK, 0xffff
 	// miu-1
 	setbank		PMINFO_BANK_MIU_DIG1
-	setword		0x06, 0xffff
-	setword		0x26, 0xffff
+	setword_defuq	0xc, 0xffff
+	setword_defuq	0x4c, 0xffff
 	// wait for everything to finish
 	delay
 
@@ -179,32 +184,62 @@ ENTRY(msc313_suspend_imi)
 	// Now that the DDR is doing it's own thing disable
 	// power everything down to save energy
 
-    	// miu-2
-    	setbank		0x10
-    	setbits		0x04, 0xf000 // mclk delay etc
+	// miu-2
+	//setbank		0x10
+	//setbits		0x04, 0xf000 // mclk delay etc
 	// miu-0
-	setbank		PMINFO_BANK_MIU_ANA
-	setbits		0x00, 0x0018 // set gpio mode, output highz
-	setword		0x54, 0xc070 // unknown
-	setword		0x08, 0x0000 // clear rx en
+	//setbank		PMINFO_BANK_MIU_ANA
+	//setbits		0x00, 0x0018 // set gpio mode, output highz
+	//setword		0x54, 0xc070 // unknown
+	//setword		0x08, 0x0000 // clear rx en
 
 	// not sure what this does. causes the cpu to lock up though
 	//wriu    0x3c24 0x30    //reg_pwoff_rst0_en, reg_pwoff_rst1_en
 	//ldr r4, =0x1f007800
 	//setbyte 0x24 0x30
+.endm
 
+.macro unlock
 	// Unlock the power down stuff
-	setbank		0x0
-	setbyte		0x38, 0x0c
+	setbank		PMINFO_PMSLEEP
+	setbyte		0x38,	MSTAR_PMSLEEP_REG70_ISOEN2GPIO4 | \
+				MSTAR_PMSLEEP_REG70_LINKWKINT2GPIO4
 	setword		0x24, 0xbabe
-	setbyte		0x6e, 0xa5 //commented out in new sdk
+	//setbyte	0x6e, 0xa5 //commented out in new sdk
+.endm
 
+.macro loadtlb bank
+	setbank	\bank
+	ldr	r5, [r4]
+.endm
+
+//This must run in SRAM
+ENTRY(msc313_suspend_imi)
+	// save the registers
+	stmfd	sp!, {r0 - r12, lr}
+	// setup r1 to point to the pm_uart
+	ldr r1, [r0, PMINFO_BANK_UART]
+
+	// make sure all of the areas we'll access are in the TLB
+	loadtlb	PMINFO_PMSLEEP
+	loadtlb	PMINFO_PMGPIO
+	loadtlb PMINFO_BANK_MIU_ANA
+	loadtlb	PMINFO_BANK_MIU_DIG
+	loadtlb	PMINFO_BANK_MIU_DIG1
+	loadtlb	PMINFO_BANK_UART
+
+	enter_selfrefresh
+	unlock
 	// Finally set pm_gpio4 to turn the lights off
-	setbank		0x4
+	setbank		PMINFO_PMGPIO
 	setbyte		0x08, 0x10
 
-	putch '!'
-	newline
+	mov	r5, #0x1000
+waittodie:
+	subs	r5, r5, #0x1
+	bne	waittodie
+
+	ldmfd	sp!, {r0 - r12, pc}
 
 ENDPROC(msc313_suspend_imi)
 .ltorg
@@ -214,10 +249,43 @@ ENTRY(msc313_resume_imi)
 	// setup r1 to point to the pm_uart
 	ldr r1, pm_uart
 	putch 'r'
+	ldr r4, miu_dig
+	printword MIU_DIG_CNTRL0
+
+	ldr r9, test
+	printr9
+	ldr r9, test + 0x4
+	printr9
+	ldr r9, test + 0x8
+	printr9
+	ldr r9, test + 0xc
+	printr9
+	ldr r9, test + 0x10
+	printr9
+	ldr r9, test + 0x14
+	printr9
+	ldr r9, test + 0x18
+	printr9
+	ldr r9, test + 0x1c
+	printr9
+	ldr r9, test + 0x20
+	printr9
+	ldr r9, test + 0x24
+	printr9
 
 	b cpu_resume
 
 pm_uart: .long 0x1f221000
-
+miu_dig: .long 0x1f202400
+test:	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
+	 .long 0xffffffff
 ENDPROC(msc313_resume_imi)
 .ltorg
