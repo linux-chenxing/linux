@@ -15,3 +15,11 @@
 	compatible = "sstar,ssd201-smpctrl", "mstar,smpctrl";
 	status = "okay";
 };
+
+&pinctrl_pm {
+	compatible = "sstar,ssd20xd-pm-pinctrl";
+	pm_led_mode1_pins: pm_led_mode1 {
+		function = "pm_led";
+		groups = "pm_led_mode1";
+	};
+};
