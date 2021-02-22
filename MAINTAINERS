@@ -2475,6 +2475,7 @@ F:	Documentation/devicetree/bindings/arm/mstar/*
 F:	Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml
 F:	Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
 F:	Documentation/devicetree/bindings/interrupt-controller/sstar,ssd20xd-gpi.yaml
+F:	Documentation/devicetree/bindings/pinctrl/mstar,*
 F:	arch/arm/boot/dts/mstar-*
 F:	arch/arm/mach-mstar/
 F:	drivers/clk/mstar/
