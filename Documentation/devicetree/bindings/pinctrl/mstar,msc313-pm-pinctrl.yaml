@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/pinctrl/mstar,msc313-pm-pinctrl.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: MStar/SigmaStar ARMv7 PM pinctrl
+
+maintainers:
+  - Daniel Palmer <daniel@thingy.co.jp>
+
+description: |
+  The Mstar/SigmaStar ARMv7 SoCs have a special pin controller
+  for the pins that belong to the always on PM domain.
+  As the "pmsleep" registers are accessed via it's syscon
+  instances of this must be a child node of the pmsleep syscon.
+
+properties:
+  compatible:
+    enum:
+      - mstar,msc313-pm-pinctrl
+      - mstar,msc313e-pm-pinctrl
+      - mstar,ssc8336-pm-pinctrl
+      - mstar,ssc8336n-pm-pinctrl
+      - sstar,ssd20xd-pm-pinctrl
+      - sstar,ssd210-pm-pinctrl
+      - sstar,ssd212-pm-pinctrl
+
+required:
+  - compatible
+
+patternProperties:
+  '-pins$':
+    type: object
+    $ref: "pinmux-node.yaml"
+
+    properties:
+      function:
+        description:
+          Function to mux.
+        $ref: "/schemas/types.yaml#/definitions/string"
+        enum: [pm_uart, pm_spi, pm_irin, pm_led]
+
+      groups:
+        description:
+          Name of the pin group to use for the functions.
+        $ref: "/schemas/types.yaml#/definitions/string"
+        enum: [pm_uart, pm_spi, pm_irin, pm_led_mode1]
+
+additionalProperties: false
+
+examples:
+  - |
+    syscon@1c00 {
+        compatible = "mstar,msc313-pmsleep", "syscon", "simple-mfd";
+        reg = <0x1c00 0x100>;
+
+        pinctrl {
+            compatible = "mstar,msc313-pm-pinctrl";
+            pm_uart {
+                function = "pm_uart";
+                groups = "pm_uart";
+            };
+            pm_spi {
+                function = "pm_spi";
+                groups = "pm_spi";
+            };
+            pm_irin {
+                function = "pm_irin";
+                groups = "pm_irin";
+            };
+        };
+    };
