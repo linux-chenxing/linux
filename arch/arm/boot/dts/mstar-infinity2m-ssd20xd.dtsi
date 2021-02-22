@@ -16,6 +16,14 @@
 	status = "okay";
 };
 
+&pinctrl {
+	compatible = "sstar,ssd20xd-pinctrl";
+	ttl_mode1_pins: ttl_mode1 {
+		function = "ttl";
+		groups = "ttl_mode1";
+	};
+};
+
 &pinctrl_pm {
 	compatible = "sstar,ssd20xd-pm-pinctrl";
 	pm_led_mode1_pins: pm_led_mode1 {
