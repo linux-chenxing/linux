@@ -15,19 +15,19 @@
 #include <linux/regmap.h>
 #include <linux/mfd/syscon.h>
 
-#define COMPAT_PMSLEEP "mstar,msc313-pmsleep"
+#include <soc/mstar/pmsleep.h>
+
+#define COMPAT_PMSLEEP	"mstar,msc313-pmsleep"
+#define COMPAT_MIU	"mstar,msc313-miu"
 
 struct mstar_pm_info {
 	u32 pmsleep;	// 0x0
 	u32 pmgpio;	// 0x4
-	u32 miu0;	// 0x8
-	u32 miu1;	// 0xc
-	u32 miu2;	// 0x10
+	u32 miu_ana;	// 0x8
+	u32 miu_dig;	// 0xc
+	u32 miu_dig1;	// 0x10
 	u32 pmuart;	// 0x14
 };
-
-#define MSTARV7_PM_WAKESRC		0x20
-#define MSTARV7_PM_RESUMEADDR		0xec
 
 #define MSTARV7_PM_SIZE			SZ_16K
 #define MSTARV7_PM_INFO_OFFSET		0
@@ -58,9 +58,11 @@ static int msc313_suspend_enter(suspend_state_t state)
 	{
 		case PM_SUSPEND_MEM:
 			// Now prepare our wake up source
+			regmap_update_bits(pmsleep, MSTAR_PMSLEEP_REG24,
+					MSTAR_PMSLEEP_REG24_POWEROFF, MSTAR_PMSLEEP_REG24_POWEROFF);
 			//setbank	0x0
 			//clearbits 0x10 0x16 //[1]:SAR, [2]:WOL, [4]:RTC
-			regmap_write(pmsleep, MSTARV7_PM_WAKESRC, 0xe9);
+			regmap_write(pmsleep, MSTAR_PMSLEEP_WAKEUPSOURCE, 0xe9);
 			cpu_suspend(0, msc313_suspend_ready);
             	break;
         	default:
@@ -131,10 +133,12 @@ int __init msc313_pm_init(void)
 	node = of_find_compatible_node(NULL, NULL, COMPAT_PMSLEEP);
 	pm_info->pmsleep = (u32) of_iomap(node, 0);
 	pm_info->pmgpio	= (u32) ioremap(0x1f001e00, 0x200);
-	pm_info->miu0	= (u32) ioremap(0x1f202000, 0x200);
-	pm_info->miu1	= (u32) ioremap(0x1f202200, 0x200);
-	pm_info->miu2	= (u32) ioremap(0x1f202400, 0x200);
-	pm_info->pmuart	= (u32) ioremap(0x1f221000, 0x200);
+
+	node = of_find_compatible_node(NULL, NULL, COMPAT_MIU);
+	pm_info->miu_ana  = (u32) of_iomap(node, 0);
+	pm_info->miu_dig  = (u32) of_iomap(node, 1);
+	pm_info->miu_dig1 = (u32) of_iomap(node, 2);
+	pm_info->pmuart	  = (u32) ioremap(0x1f221000, 0x200);
 
 	msc313_suspend_imi_fn = fncpy(pm_suspend_code,
 			(void*)&msc313_suspend_imi, MSTARV7_PM_SUSPEND_SIZE);
