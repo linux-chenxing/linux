@@ -714,6 +714,14 @@
 				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MIU 0>;
 			};
 
+			sha@224420 {
+				reg = <0x224420 0x60>;
+				compatible = "mstar,msc313-sha";
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_AESDMA 0>;
+				interconnects = <&miu 0>;
+				interconnect-names = "dma-mem";
+			};
+
 			aesdma: aesdma@224540 {
 				reg = <0x224540 0xc0>;
 				compatible = "mstar,msc313-aesdma";
