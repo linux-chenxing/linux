@@ -721,6 +721,14 @@
 				interconnect-names = "dma-mem";
 			};
 
+			rsa@224480 {
+				reg = <0x224480 0xc0>;
+				compatible = "mstar,msc313-rsa";
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_AESDMA 0>;
+				interconnects = <&miu 0>;
+				interconnect-names = "dma-mem";
+			};
+
 			aesdma: aesdma@224540 {
 				reg = <0x224540 0xc0>;
 				compatible = "mstar,msc313-aesdma";
