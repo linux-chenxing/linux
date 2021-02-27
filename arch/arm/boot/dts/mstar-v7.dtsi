@@ -506,7 +506,7 @@
 				compatible = "mstar,miupll";
 				reg = <0x206200 0x200>;
 				#clock-cells = <0>;
-				clocks = <&xtal24>;
+				clocks = <&xtal>;
 			};
 
 			cpupll: cpupll@206400 {
