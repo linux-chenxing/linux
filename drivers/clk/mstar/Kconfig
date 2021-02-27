@@ -28,3 +28,10 @@ config MSTAR_MSC313_LPLL
 	default ARCH_MSTARV7
 	help
 	  Support for the Line PLL present on MStar/Sigmastar SoCs.
+
+config MSTAR_MSC313_MIUPLL
+	bool "MStar MIUPLL driver"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	default ARCH_MSTARV7
+	help
+	  Support for the MIU PLL present on MStar/Sigmastar SoCs.
