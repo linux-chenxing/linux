@@ -17,7 +17,7 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
-		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk ubi.mtd=1 ubi.block=0,rootfs root=/dev/ubiblock0_2";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk ubi.mtd=1 ubi.block=0,rootfs root=/dev/ubiblock0_4 squashfs";
 	};
 
 	vcc_dram: fixedregulator@1 {
