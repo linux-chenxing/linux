@@ -5,3 +5,9 @@ config MSTAR_MSC313_BDMA
 	depends on ARCH_MSTARV7 || COMPILE_TEST
 	default ARCH_MSTARV7
 	select DMA_ENGINE
+
+config MSTAR_MSC313_URDMA
+	tristate "MStar MSC313 URDMA support"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	default ARCH_MSTARV7
+	select DMA_ENGINE
