@@ -55,4 +55,5 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-infinity6b0-ssc337de-mcf50.dtb \
 	mstar-mercury5-ssc8336-mirrorcam.dtb \
 	mstar-mercury5-ssc8336n-midrived06.dtb \
-	mstar-mercury5-ssc8336n-midrived08.dtb
+	mstar-mercury5-ssc8336n-midrived08.dtb \
+	mstar-pioneer3-ssd210-kiipii.dtb
