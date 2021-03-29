@@ -28,14 +28,6 @@
 };
 
 /*
-&usbphy0 {
-	status = "okay";
-};
-
-&uhc0 {
-	status = "okay";
-};
-
 &usbphy2 {
 	status = "okay";
 };
