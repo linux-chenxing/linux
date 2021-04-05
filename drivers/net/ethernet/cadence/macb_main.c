@@ -4417,48 +4417,107 @@ static int at91ether_close(struct net_device *dev)
 	return pm_runtime_put(&lp->pdev->dev);
 }
 
+static unsigned int at91ether_txqfree(u32 tsr)
+{
+	/* we have three possibilities here:
+	 *   - all pending packets transmitted (TGO, implies BNQ)
+	 *   - only first packet transmitted (!TGO && BNQ)
+	 *   - two frames pending (!TGO && !BNQ)
+	 * Note that TGO ("transmit go") is called "IDLE" on RM9200.
+	 */
+	return (tsr & MACB_BIT(TGO)) ? 2 :
+		(tsr & MACB_BIT(RM9200_BNQ)) ? 1 : 0;
+}
+
+static unsigned int msc313_txqfree(u32 tsr)
+{
+	unsigned qlen;
+
+	//printk("%08x tmp\n", tmp);
+
+	qlen = hweight32(((tsr >> 3) & 0x3) | (((tsr >> 7) & 0x3f) << 2));
+	if (qlen > 4)
+		qlen -= 4;
+	else
+		qlen = 0;
+	//printk("tsr - %08x, %d, %d\n", (unsigned) tsr, qlen, desc);
+
+	return qlen;
+}
+
 /* Transmit packet */
 static netdev_tx_t at91ether_start_xmit(struct sk_buff *skb,
 					struct net_device *dev)
 {
 	struct macb *lp = netdev_priv(dev);
+	int ret = NETDEV_TX_OK, desc;
 	unsigned long flags;
+	u32 tsr, tsr_pre;
 
-	if (lp->rm9200_tx_len < 2) {
-		int desc = lp->rm9200_tx_tail;
+	spin_lock_irqsave(&lp->lock, flags);
 
-		/* Store packet information (to free when Tx completed) */
-		lp->rm9200_txq[desc].skb = skb;
-		lp->rm9200_txq[desc].size = skb->len;
-		lp->rm9200_txq[desc].mapping = dma_map_single(&lp->pdev->dev, skb->data,
-							      skb->len, DMA_TO_DEVICE);
-		if (dma_mapping_error(&lp->pdev->dev, lp->rm9200_txq[desc].mapping)) {
-			dev_kfree_skb_any(skb);
-			dev->stats.tx_dropped++;
-			netdev_err(dev, "%s: DMA mapping error\n", __func__);
-			return NETDEV_TX_OK;
-		}
+	/* txq is full but xmit got called somehow */
+	if (lp->rm9200_tx_len == lp->rm9200_txq_len)
+		goto busy;
 
-		spin_lock_irqsave(&lp->lock, flags);
+	/* check TSR just in case we lost track */
+	tsr = macb_readl(lp, TSR);
+	if (lp->caps & MACB_CAPS_MSTAR_TXQ) {
+		if (msc313_txqfree(tsr) == 0)
+			goto busy_quiet;
+	}
+	else if (at91ether_txqfree(tsr) == 0)
+		goto busy;
 
-		lp->rm9200_tx_tail = (desc + 1) & 1;
-		lp->rm9200_tx_len++;
-		if (lp->rm9200_tx_len > 1)
-			netif_stop_queue(dev);
-
-		spin_unlock_irqrestore(&lp->lock, flags);
-
-		/* Set address of the data in the Transmit Address register */
-		macb_writel(lp, TAR, lp->rm9200_txq[desc].mapping);
-		/* Set length of the packet in the Transmit Control register */
-		macb_writel(lp, TCR, skb->len);
-
-	} else {
-		netdev_err(dev, "%s called, but device is busy!\n", __func__);
-		return NETDEV_TX_BUSY;
+	/* Store packet information (to free when Tx completed) */
+	desc = lp->rm9200_tx_tail;
+	lp->rm9200_txq[desc].skb = skb;
+	lp->rm9200_txq[desc].size = skb->len;
+	lp->rm9200_txq[desc].mapping = dma_map_single(&lp->pdev->dev, skb->data,
+						      skb->len, DMA_TO_DEVICE);
+	if (dma_mapping_error(&lp->pdev->dev, lp->rm9200_txq[desc].mapping)) {
+		dev_kfree_skb_any(skb);
+		dev->stats.tx_dropped++;
+		netdev_err(dev, "%s: DMA mapping error\n", __func__);
+		goto out;
 	}
 
-	return NETDEV_TX_OK;
+	tsr_pre = macb_readl(lp, TSR);
+
+	/* Set address of the data in the Transmit Address register */
+	macb_writel(lp, TAR, lp->rm9200_txq[desc].mapping);
+	/* Set length of the packet in the Transmit Control register */
+	macb_writel(lp, TCR, skb->len);
+
+	/* Check that the frame was actually accepted */
+	tsr = macb_readl(lp, TSR);
+	/* Seems not, unmap it and return an error */
+	if (tsr & MACB_BIT(RM9200_OVR)){
+		macb_writel(lp, TSR, MACB_BIT(RM9200_OVR));
+		dma_unmap_single(&lp->pdev->dev, lp->rm9200_txq[desc].mapping,
+				 lp->rm9200_txq[desc].size, DMA_TO_DEVICE);
+		netdev_err(dev, "%s: tx overrun, tsr: %08x -> %08x (\n",  __func__, tsr_pre, tsr);
+		goto busy_quiet;
+	}
+
+	/* Pretty sure the frame is actually going to be transmitted now */
+	lp->rm9200_tx_tail = (desc + 1) % lp->rm9200_txq_len;
+	lp->rm9200_tx_len++;
+
+	/* Stop the queue if we are full up */
+	if (lp->rm9200_tx_len == lp->rm9200_txq_len)
+		netif_stop_queue(dev);
+
+	goto out;
+
+busy:
+	netdev_err(dev, "%s called, but device is busy, tsr: %08x\n", __func__, tsr);
+busy_quiet:
+	dev->stats.tx_errors++;
+	ret = NETDEV_TX_BUSY;
+out:
+	spin_unlock_irqrestore(&lp->lock, flags);
+	return ret;
 }
 
 /* Extract received frame from buffer descriptors and sent to upper layers.
@@ -4516,6 +4575,8 @@ static irqreturn_t at91ether_interrupt(int irq, void *dev_id)
 	unsigned int qlen;
 	u32 tsr;
 
+	spin_lock(&lp->lock);
+
 	/* MAC Interrupt Status register indicates what interrupts are pending.
 	 * It is automatically cleared once read.
 	 */
@@ -4531,34 +4592,30 @@ static irqreturn_t at91ether_interrupt(int irq, void *dev_id)
 		if (intstatus & (MACB_BIT(ISR_TUND) | MACB_BIT(ISR_RLE)))
 			dev->stats.tx_errors++;
 
-		spin_lock(&lp->lock);
-
 		tsr = macb_readl(lp, TSR);
 
-		/* we have three possibilities here:
-		 *   - all pending packets transmitted (TGO, implies BNQ)
-		 *   - only first packet transmitted (!TGO && BNQ)
-		 *   - two frames pending (!TGO && !BNQ)
-		 * Note that TGO ("transmit go") is called "IDLE" on RM9200.
-		 */
-		qlen = (tsr & MACB_BIT(TGO)) ? 0 :
-			(tsr & MACB_BIT(RM9200_BNQ)) ? 1 : 2;
+		if (lp->caps & MACB_CAPS_MSTAR_TXQ)
+			qlen = msc313_txqfree(tsr);
+		else
+			qlen = at91ether_txqfree(tsr);
 
-		while (lp->rm9200_tx_len > qlen) {
-			desc = (lp->rm9200_tx_tail - lp->rm9200_tx_len) & 1;
+
+		while (lp->rm9200_tx_len > 0 && qlen > 0) {
+			desc = (lp->rm9200_tx_tail - lp->rm9200_tx_len) % lp->rm9200_txq_len;
 			dev_consume_skb_irq(lp->rm9200_txq[desc].skb);
 			lp->rm9200_txq[desc].skb = NULL;
 			dma_unmap_single(&lp->pdev->dev, lp->rm9200_txq[desc].mapping,
 					 lp->rm9200_txq[desc].size, DMA_TO_DEVICE);
 			dev->stats.tx_packets++;
 			dev->stats.tx_bytes += lp->rm9200_txq[desc].size;
+
 			lp->rm9200_tx_len--;
+			qlen--;
 		}
 
-		if (lp->rm9200_tx_len < 2 && netif_queue_stopped(dev))
+		if (lp->rm9200_tx_len < lp->rm9200_txq_len && netif_queue_stopped(dev))
 			netif_wake_queue(dev);
 
-		spin_unlock(&lp->lock);
 	}
 
 	/* Work-around for EMAC Errata section 41.3.1 */
@@ -4569,8 +4626,12 @@ static irqreturn_t at91ether_interrupt(int irq, void *dev_id)
 		macb_writel(lp, NCR, ctl | MACB_BIT(RE));
 	}
 
-	if (intstatus & MACB_BIT(ISR_ROVR))
+	if (intstatus & MACB_BIT(ISR_ROVR)) {
 		netdev_err(dev, "ROVR error\n");
+		lp->hw_stats.macb.rx_overruns++;
+	}
+
+	spin_unlock(&lp->lock);
 
 	return IRQ_HANDLED;
 }
@@ -4890,6 +4951,7 @@ static const struct macb_config emac_config = {
 	.clk_init = at91ether_clk_init,
 	.init = at91ether_init,
 	.usrio = &macb_default_usrio,
+	.rm9200_txq_len = 2,
 };
 
 static const struct macb_config np4_config = {
@@ -4962,15 +5024,21 @@ static const struct macb_config versal_config = {
 
 #ifdef CONFIG_ARCH_MSTARV7
 static const struct macb_config msc313_config = {
-	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC | MACB_CAPS_MSTAR_RIU,
+	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
+		MACB_CAPS_MSTAR_RIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = macb_clk_init,
 	.init = at91ether_init,
+	.usrio = &macb_default_usrio,
+	.rm9200_txq_len = 4,
 };
 
 static const struct macb_config msc313e_config = {
-	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC | MACB_CAPS_MSTAR_XIU,
+	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
+		MACB_CAPS_MSTAR_XIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = macb_clk_init,
 	.init = at91ether_init,
+	.usrio = &macb_default_usrio,
+	.rm9200_txq_len = 4,
 };
 #endif
 
@@ -5107,6 +5175,14 @@ static int macb_probe(struct platform_device *pdev)
 		bp->macb_reg_writel = hw_writel_xiu;
 	}
 #endif
+
+	if (macb_config->rm9200_txq_len) {
+		bp->rm9200_txq_len = macb_config->rm9200_txq_len;
+		bp->rm9200_txq = devm_kcalloc(&pdev->dev,
+				macb_config->rm9200_txq_len,
+				sizeof(*bp->rm9200_txq),
+				GFP_KERNEL);
+	}
 
 	bp->num_queues = num_queues;
 	bp->queue_mask = queue_mask;
