@@ -47,3 +47,7 @@
 &uhc0 {
 	status = "okay";
 };
+
+&emac {
+	status = "okay";
+};
