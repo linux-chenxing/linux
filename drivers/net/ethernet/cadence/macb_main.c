@@ -4948,6 +4948,8 @@ static const struct macb_config msc313e_config = {
 #endif
 
 static const struct of_device_id macb_dt_ids[] = {
+//todo use the right arch defs..
+#ifndef CONFIG_ARCH_MSTARV7
 	{ .compatible = "cdns,at91sam9260-macb", .data = &at91sam9260_config },
 	{ .compatible = "cdns,macb" },
 	{ .compatible = "cdns,np4-macb", .data = &np4_config },
@@ -4970,6 +4972,7 @@ static const struct of_device_id macb_dt_ids[] = {
 	{ .compatible = "xlnx,zynqmp-gem", .data = &zynqmp_config},
 	{ .compatible = "xlnx,zynq-gem", .data = &zynq_config },
 	{ .compatible = "xlnx,versal-gem", .data = &versal_config},
+#endif
 #ifdef CONFIG_ARCH_MSTARV7
 	{ .compatible = "mstar,msc313-emac", .data = &msc313_config },
 	{ .compatible = "mstar,msc313e-emac", .data = &msc313e_config },
