@@ -14,6 +14,22 @@
 		regulator-boot-on;
 	};
 };
+	vcc_core: gpio-regulator {
+		compatible = "regulator-gpio";
+		regulator-name = "vcc_core";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <950000>;
+		regulator-max-microvolt = <1000000>;
+		regulator-boot-on;
+		gpios = <&sar 1 0>;
+		states = <1000000 0x1
+			  950000  0x0>;
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&vcc_core>;
+};
 
 &pm_uart {
 	status = "okay";
