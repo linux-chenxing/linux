@@ -11,3 +11,13 @@
 	model = "SBC2D86 (SSD202D)";
 	compatible = "ido,sbc2d86", "mstar,infinity2m";
 };
+
+&i2c0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_mode4_pins>;
+	status = "okay";
+	hym8563: rtc@51 {
+		compatible = "haoyu,hym8563";
+		reg = <0x51>;
+	};
+};
