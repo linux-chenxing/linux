@@ -21,3 +21,16 @@
 		reg = <0x51>;
 	};
 };
+
+&i2c1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_mode4_pins>;
+	status = "okay";
+	ts@5d {
+		compatible = "goodix,gt911";
+		reg = <0x5d>;
+		interrupts-extended = <&gpio SSD20XD_GPIO_TTL20 IRQ_TYPE_EDGE_FALLING>;
+		reset-gpios = <&gpio SSD20XD_GPIO_TTL21 GPIO_ACTIVE_HIGH>;
+		interrupt-gpios = <&gpio SSD20XD_GPIO_TTL20 GPIO_ACTIVE_HIGH>;
+	};
+};
