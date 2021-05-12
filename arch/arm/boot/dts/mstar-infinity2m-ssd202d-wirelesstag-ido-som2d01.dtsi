@@ -35,8 +35,4 @@
 &uhc2 {
 	status = "okay";
 };
-
-&miu {
-	ddr-supply = <&vcc_dram>;
-};
 */
