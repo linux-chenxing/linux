@@ -13,7 +13,7 @@
 		regulator-max-microvolt = <1800000>;
 		regulator-boot-on;
 	};
-};
+
 	vcc_core: gpio-regulator {
 		compatible = "regulator-gpio";
 		regulator-name = "vcc_core";
@@ -66,4 +66,8 @@
 
 &emac {
 	status = "okay";
+};
+
+&miu {
+	ddr-supply = <&reg_vcc_dram>;
 };
