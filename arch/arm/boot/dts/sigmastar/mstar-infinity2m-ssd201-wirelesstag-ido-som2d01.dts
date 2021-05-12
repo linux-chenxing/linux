@@ -19,14 +19,6 @@
 		stdout-path = "serial0:115200n8";
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
 	};
-
-	vcc_dram: fixedregulator@1 {
-		compatible = "regulator-fixed";
-		regulator-name = "vcc_dram";
-		regulator-min-microvolt = <1800000>;
-		regulator-max-microvolt = <1800000>;
-		regulator-boot-on;
-	};
 };
 
 /*
@@ -44,9 +36,5 @@
 
 &uhc2 {
 	status = "okay";
-};
-
-&miu {
-	ddr-supply = <&vcc_dram>;
 };
 */
