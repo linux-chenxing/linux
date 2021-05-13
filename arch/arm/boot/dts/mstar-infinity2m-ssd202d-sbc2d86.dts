@@ -20,6 +20,13 @@
 		gpios = <&gpio SSD20XD_GPIO_GPIO11 0>;
 		enable-active-high;
 	};
+
+	backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm 0 50000>;
+		brightness-levels = <0 4 8 16 32 64 128 255>;
+		default-brightness-level = <6>;
+	};
 };
 
 &i2c0 {
