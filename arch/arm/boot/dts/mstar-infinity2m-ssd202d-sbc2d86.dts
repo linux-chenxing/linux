@@ -10,6 +10,16 @@
 / {
 	model = "SBC2D86 (SSD202D)";
 	compatible = "ido,sbc2d86", "mstar,infinity2m";
+
+	vcc_ext_vbus: gpio-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_ext_vbus";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_GPIO11 0>;
+		enable-active-high;
+	};
 };
 
 &i2c0 {
