@@ -11,7 +11,7 @@
 	model = "SBC2D86 (SSD202D)";
 	compatible = "ido,sbc2d86", "mstar,infinity2m";
 
-	vcc_ext_vbus: gpio-regulator {
+	vcc_ext_vbus: regulator@2 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_ext_vbus";
 		regulator-type = "voltage";

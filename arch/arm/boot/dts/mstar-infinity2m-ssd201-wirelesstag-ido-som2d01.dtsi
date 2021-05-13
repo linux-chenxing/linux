@@ -14,7 +14,7 @@
 		regulator-boot-on;
 	};
 
-	vcc_core: gpio-regulator {
+	vcc_core: regulator@0 {
 		compatible = "regulator-gpio";
 		regulator-name = "vcc_core";
 		regulator-type = "voltage";
