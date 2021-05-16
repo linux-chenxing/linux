@@ -34,3 +34,8 @@
 		interrupt-gpios = <&gpio SSD20XD_GPIO_TTL20 GPIO_ACTIVE_HIGH>;
 	};
 };
+
+&pwm {
+	pinctrl-names = "default";
+        pinctrl-0 = <&pwm0_mode3_pins>;
+};
