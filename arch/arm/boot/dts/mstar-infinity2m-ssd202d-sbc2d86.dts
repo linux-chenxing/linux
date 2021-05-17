@@ -56,3 +56,29 @@
 	pinctrl-names = "default";
         pinctrl-0 = <&pwm0_mode3_pins>;
 };
+
+&dsi {
+	status = "okay";
+	panel@0 {
+		compatible = "frida,frd720x720bk";
+		reg = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tx_mipi_mode1_pins>;
+		backlight = <&backlight>;
+		dsi-lanes = <4>;
+		port {
+			panel_in: endpoint {
+				remote-endpoint = <&dsi_out>;
+			};
+		};
+	};
+
+	ports {
+		port@0 {
+			reg = <0>;
+			dsi_out: endpoint {
+				remote-endpoint = <&panel_in>;
+			};
+                };
+        };
+};
