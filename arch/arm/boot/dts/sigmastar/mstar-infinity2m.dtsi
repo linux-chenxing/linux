@@ -102,6 +102,13 @@
 };
 
 &riu {
+	pwm: pwm@3400 {
+		compatible = "mstar,ssd20xd-pwm";
+		reg = <0x3400 0x400>;
+		#pwm-cells = <2>;
+		clocks = <&xtal_div2>;
+	};
+
 	smpctrl: smpctrl@204000 {
 		reg = <0x204000 0x200>;
 		status = "disabled";
