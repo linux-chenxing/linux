@@ -67,3 +67,12 @@
 &imi {
 	reg = <0xa0000000 0x20000>;
 };
+
+&riu {
+	pwm: pwm@3400 {
+		compatible = "mstar,msc313e-pwm";
+		reg = <0x3400 0x400>;
+		#pwm-cells = <2>;
+		clocks = <&xtal_div2>;
+	};
+};
