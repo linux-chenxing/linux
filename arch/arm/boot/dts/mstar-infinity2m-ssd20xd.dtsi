@@ -22,6 +22,14 @@
 		function = "ttl";
 		groups = "ttl_mode1";
 	};
+	tx_mipi_mode1_pins: tx_mipi_mode1 {
+		function = "tx_mipi";
+		groups = "tx_mipi_mode1";
+	};
+	tx_mipi_mode2_pins: tx_mipi_mode2 {
+		function = "tx_mipi";
+		groups = "tx_mipi_mode2";
+	};
 };
 
 &pinctrl_pm {
