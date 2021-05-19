@@ -810,6 +810,17 @@
 				interconnect-names = "dma-mem";
 			};
 
+			sc_gp_ctrl: syscon@226600 {
+				compatible = "syscon", "simple-mfd";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x226600 0x200>;
+
+				sc_gp_ctrl_muxes: sc_gp_ctrl_muxes@0 {
+					#clock-cells = <1>;
+				};
+			};
+
 			upll: upll@284000 {
 				#clock-cells = <1>;
 				compatible = "mstar,msc313-upll";
