@@ -225,3 +225,7 @@
 &imi {
 	reg = <0xa0000000 0x10000>;
 };
+
+&sc_gp_ctrl_muxes {
+	compatible = "sstar,ssd20xd-sc-gp-ctrl-muxes";
+};
