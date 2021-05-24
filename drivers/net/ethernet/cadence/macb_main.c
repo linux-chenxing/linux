@@ -4705,6 +4705,47 @@ static int at91ether_init(struct platform_device *pdev)
 	return 0;
 }
 
+static int msc313_init(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+	struct macb *bp = netdev_priv(dev);
+	struct device_node *phy_node = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
+
+	/** Note to self: Check if the julian registers are visible over XIU on msc313 */
+
+	/*
+	 * This switches to "software rx descriptors".
+	 * Without this rx doesn't work like this driver
+	 * thinks it should work and the controller
+	 * corrupts the memory. So a must have.
+	 */
+	macb_writel(bp, MSC313_13A, 0x100);
+	macb_writel(bp, MSC313_JULIAN_104, 1);
+
+	/*
+	 * We need a few magic numbers to get the PHY to work.
+	 * Most versions of these chips have an integrated PHY,
+	 * some have one interface with an integrated PHY and RMII
+	 * external, some only have RMII. There are various magic
+	 * numbers in the vendor code for this.
+	 */
+	if (!phy_node)
+		goto no_phy;
+
+	if (of_property_read_bool(phy_node, "phy-is-integrated")) {
+		/* noop for now */
+	}
+	else {
+		/* valid for the ssd20xd */
+		macb_writel(bp, MSC313_JULIAN_100, 0xf017);
+	}
+
+	of_node_put(phy_node);
+
+no_phy:
+	return at91ether_init(pdev);
+}
+
 static unsigned long fu540_macb_tx_recalc_rate(struct clk_hw *hw,
 					       unsigned long parent_rate)
 {
@@ -5024,7 +5065,7 @@ static const struct macb_config msc313_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
 		MACB_CAPS_MSTAR_RIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = macb_clk_init,
-	.init = at91ether_init,
+	.init = msc313_init,
 	.usrio = &macb_default_usrio,
 	.rm9200_txq_len = 4,
 };
@@ -5033,7 +5074,7 @@ static const struct macb_config msc313e_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
 		MACB_CAPS_MSTAR_XIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = macb_clk_init,
-	.init = at91ether_init,
+	.init = msc313_init,
 	.usrio = &macb_default_usrio,
 	.rm9200_txq_len = 4,
 };
