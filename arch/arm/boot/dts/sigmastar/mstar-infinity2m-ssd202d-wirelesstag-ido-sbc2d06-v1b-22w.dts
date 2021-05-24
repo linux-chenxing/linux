@@ -13,6 +13,12 @@
 	model = "Wireless Tag IDO-SBC2D06-1VB-22W";
 	compatible = "wirelesstag,ido-sbc2d06-v1b-22w", "mstar,infinity2m";
 
+	aliases {
+		console = &pm_uart;
+		ethernet0 = &emac;
+		ethernet1 = &emac1;
+	};
+
 	leds {
 		compatible = "gpio-leds";
 		sys_led {
