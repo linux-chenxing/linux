@@ -81,6 +81,8 @@
 #define MACB_MSC313_JULIAN_100 0x100
 #define MACB_MSC313_JULIAN_104 0x104
 #define MACB_MSC313_JULIAN_108 0x108
+#define MACB_MSC313_JULIAN_10C 0x10C
+#define MACB_MSC313_13A		0x13A
 
 /* GEM register offsets. */
 #define GEM_NCR			0x0000 /* Network Control */

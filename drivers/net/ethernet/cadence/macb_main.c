@@ -4708,6 +4708,23 @@ static int at91ether_init(struct platform_device *pdev)
 	return 0;
 }
 
+static int msc313_init(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+	struct macb *bp = netdev_priv(dev);
+
+	/*
+	 * This switches to "software rx descriptors".
+	 * Without this rx doesn't work like this driver
+	 * thinks it should work and the controller
+	 * corrupts the memory. So a must have.
+	 */
+	macb_writel(bp, MSC313_13A, 0x100);
+	macb_writel(bp, MSC313_JULIAN_104, 1);
+
+	return at91ether_init(pdev);
+}
+
 static unsigned long fu540_macb_tx_recalc_rate(struct clk_hw *hw,
 					       unsigned long parent_rate)
 {
@@ -5027,7 +5044,7 @@ static const struct macb_config msc313_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
 		MACB_CAPS_MSTAR_RIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = macb_clk_init,
-	.init = at91ether_init,
+	.init = msc313_init,
 	.usrio = &macb_default_usrio,
 	.rm9200_txq_len = 4,
 };
@@ -5036,7 +5053,7 @@ static const struct macb_config msc313e_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
 		MACB_CAPS_MSTAR_XIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = macb_clk_init,
-	.init = at91ether_init,
+	.init = msc313_init,
 	.usrio = &macb_default_usrio,
 	.rm9200_txq_len = 4,
 };
