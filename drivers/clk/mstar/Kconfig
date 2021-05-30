@@ -35,3 +35,10 @@ config MSTAR_MSC313_MIUPLL
 	default ARCH_MSTARV7
 	help
 	  Support for the MIU PLL present on MStar/Sigmastar SoCs.
+
+config MSTAR_MSC313_SC_GP_CTRL_MUXES
+	bool "MStar SC GP CTRL muxes driver"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	default ARCH_MSTARV7
+	help
+	  Support for the muxes embedded in the sc-gp-ctrl registers.
