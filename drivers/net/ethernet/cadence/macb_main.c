@@ -4077,6 +4077,28 @@ err_disable_pclk:
 	return err;
 }
 
+static int msc313_clk_init(struct platform_device *pdev, struct clk **pclk,
+			 struct clk **hclk, struct clk **tx_clk,
+			 struct clk **rx_clk, struct clk **tsu_clk)
+{
+	struct clk *rx_ref = devm_clk_get_optional(&pdev->dev, "rx_ref");
+	struct clk *tx_ref = devm_clk_get_optional(&pdev->dev, "tx_ref");
+
+	if (IS_ERR(rx_ref))
+		return PTR_ERR(rx_ref);
+
+	if (IS_ERR(tx_ref))
+		return PTR_ERR(tx_ref);
+
+	if (rx_ref)
+		clk_prepare_enable(rx_ref);
+
+	if (tx_ref)
+		clk_prepare_enable(tx_ref);
+
+	return macb_clk_init(pdev, pclk, hclk, tx_clk, rx_clk, tsu_clk);
+}
+
 static int macb_init(struct platform_device *pdev)
 {
 	struct net_device *dev = platform_get_drvdata(pdev);
@@ -5043,7 +5065,7 @@ static const struct macb_config versal_config = {
 static const struct macb_config msc313_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
 		MACB_CAPS_MSTAR_RIU | MACB_CAPS_MSTAR_TXQ,
-	.clk_init = macb_clk_init,
+	.clk_init = msc313_clk_init,
 	.init = msc313_init,
 	.usrio = &macb_default_usrio,
 	.rm9200_txq_len = 4,
@@ -5052,7 +5074,7 @@ static const struct macb_config msc313_config = {
 static const struct macb_config msc313e_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
 		MACB_CAPS_MSTAR_XIU | MACB_CAPS_MSTAR_TXQ,
-	.clk_init = macb_clk_init,
+	.clk_init = msc313_clk_init,
 	.init = msc313_init,
 	.usrio = &macb_default_usrio,
 	.rm9200_txq_len = 4,
