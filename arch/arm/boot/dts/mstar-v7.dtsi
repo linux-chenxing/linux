@@ -7,6 +7,7 @@
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/clock/mstar-msc313-mpll.h>
+#include <dt-bindings/clock/mstar-msc313-clkgen.h>
 
 / {
 	#address-cells = <1>;
@@ -423,6 +424,52 @@
 				reg = <0x60c0 0x40>;
 				clocks = <&xtal_div2>;
 				interrupts-extended = <&intc_fiq GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+			};
+			
+			clkgen: clkgen@207000 {
+				compatible = "mstar,msc313-clkgen";
+				reg = <0x207000 0x200>;
+				#clock-cells = <3>;
+				clock-names = "deglitch",
+					      "xtal_div2",
+					      "gate0",
+					      "gate1",
+					      "gate2",
+					      "gate3",
+					      "gate4",
+					      "gate5",
+					      "gate6",
+					      "gate7",
+					      "gate8",
+					      "gate9",
+					      "gate10",
+					      "gate11",
+					      "gate12",
+					      "gate13",
+					      "gate14",
+					      "gate15",
+					      "miupll";
+
+				clocks = <&xtal_div2>,
+					 <&xtal_div2>,
+					 /* gates */
+					 <&upll 0>,
+					 <&upll 1>,
+					 <&unknownclk_160>,
+					 <&unknownclk_192>,
+					 <&unknownclk_240>,
+					 <&unknownclk_480>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV2>,
+					 <&unknownclk>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV3>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV4>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV5>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV6>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV7>,
+					 <&unknownclk>,
+					 <&mpll MSTAR_MSC313_MPLL_DIV10>,
+					 <&unknownclk>,
+					 <&miupll>;
 			};
 
 			did: did@7000 {
