@@ -313,6 +313,11 @@
 					#interrupt-cells = <2>;
 					mstar,pmsleep = <&pmsleep>;
 				};
+
+				pm_muxes: pm_muxes@0 {
+					compatible = "mstar,msc313-pm-muxes";
+					#clock-cells = <1>;
+				};
 			};
 
 			reboot {
