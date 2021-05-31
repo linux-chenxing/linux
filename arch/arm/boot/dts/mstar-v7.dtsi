@@ -317,13 +317,12 @@
 					compatible = "mstar,msc313-pm-muxes";
 					#clock-cells = <1>;
 				};
-			};
 
-			reboot {
-				compatible = "syscon-reboot";
-				regmap = <&pmsleep>;
-				offset = <0xb8>;
-				mask = <0x79>;
+				reboot {
+					compatible = "syscon-reboot";
+					offset = <0xb8>;
+					mask = <0x79>;
+				};
 			};
 
 			gpio_pm: gpio_pm@1e00 {
