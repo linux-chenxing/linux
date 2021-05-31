@@ -6,6 +6,7 @@
 
 #include <dt-bindings/gpio/msc313-gpio-pm.h>
 #include <dt-bindings/pinctrl/mstar.h>
+#include <dt-bindings/clock/mstar-msc313-sc-gp.h>
 
 #include "mstar-infinity2m.dtsi"
 
@@ -71,6 +72,9 @@
 			 <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC1_RX_REF>;
 		local-mac-address = [00 00 00 00 00 00];
 		status = "disabled";
+		assigned-clocks = <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC1_RX_MUX>,
+				  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC1_TX_MUX>;
+		assigned-clock-parents = <&rmii_buf>, <&rmii_buf>;
 	};
 };
 
