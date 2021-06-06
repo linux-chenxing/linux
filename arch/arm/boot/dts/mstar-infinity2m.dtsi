@@ -229,3 +229,7 @@
 &sc_gp_ctrl_muxes {
 	compatible = "sstar,ssd20xd-sc-gp-ctrl-muxes";
 };
+
+&clkgen {
+	compatible = "sstar,ssd20xd-clkgen";
+};
