@@ -340,6 +340,20 @@
 				pm_muxes: pm_muxes@0 {
 					compatible = "mstar,msc313-pm-muxes";
 					#clock-cells = <1>;
+					clock-names =	"rtc_xtal",
+							"rtc_xtal_div4",
+							"xtal_div2",
+							"xtal_div2_div8",
+							"xtal_div2_div12",
+							"xtal_div2_div16",
+							"mpll_div_4";
+					clocks = <&rtc_xtal>, 
+						 <&rtc_xtal_div4>,
+						 <&xtal_div2>,
+						 <&xtal_div2_div8>,
+						 <&xtal_div2_div12>,
+						 <&xtal_div2_div16>,
+						 <&mpll 3>;
 				};
 
 				reboot {
