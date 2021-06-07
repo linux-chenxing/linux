@@ -284,7 +284,7 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 			ranges = <0x0 0x1f000000 0x00400000>;
-			clocks = <&clkgen_mux_mcu_riubrdg 1>;
+			//clocks = <&clkgen_mux_mcu_riubrdg 1>;
 			interrupts-extended = <&intc_irq GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
 
 			pmsleep: syscon@1c00 {
