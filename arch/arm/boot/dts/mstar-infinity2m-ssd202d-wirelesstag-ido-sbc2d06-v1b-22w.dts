@@ -75,3 +75,9 @@
 	vmmc-supply = <&vcc_sd>;
 	status = "okay";
 };
+
+&i2c0 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&i2c0_mode4_pins>;
+	status = "okay";
+};
