@@ -377,7 +377,7 @@
 				compatible = "mstar,msc313-pm51";
 				reg = <0x2000 0x200>;
 				mstar,pmsleep = <&pmsleep>;
-				clocks = <&clkgen_mux_spi_mcu_pm 0>;
+				//clocks = <&clkgen_mux_spi_mcu_pm 0>;
 				dma-names = "bdma0", "bdma1";
 				dmas = <&bdma 0>, <&bdma 1>;
 				interconnects = <&miu 0>;
