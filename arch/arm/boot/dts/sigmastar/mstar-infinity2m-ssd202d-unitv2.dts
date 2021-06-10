@@ -38,6 +38,17 @@
 		};
 	};
 
+	gpio-keys {
+		compatible = "gpio-keys-polled";
+		poll-interval = <100>;
+
+		button {
+			label = "button";
+			gpios = <&gpio SSD20XD_GPIO_GPIO2 GPIO_ACTIVE_LOW>;
+			linux,code = <0x100>; /* BTN_0 */
+		};
+	};
+
 	reg_vcc_core: regulator-vcc-core {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_core";
