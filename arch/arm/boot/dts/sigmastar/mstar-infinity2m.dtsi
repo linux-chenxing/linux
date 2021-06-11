@@ -212,6 +212,10 @@
 	interrupts-extended = <&intc_irq GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
 };
 
+&uhc1 {
+	interrupts-extended = <&intc_irq GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+};
+
 &phy {
 	compatible = "ethernet-phy-idDEAD.B33F";
 };
