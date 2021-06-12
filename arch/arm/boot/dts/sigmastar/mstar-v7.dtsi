@@ -470,6 +470,7 @@
 				#clock-cells = <3>;
 				clock-names = "deglitch",
 					      "xtal_div2",
+					      "xtal_div2_div40",
 					      "gate0",
 					      "gate1",
 					      "gate2",
@@ -490,6 +491,7 @@
 
 				clocks = <&xtal_div2>,
 					 <&xtal_div2>,
+					 <&xtal_div2_div40>,
 					 /* gates */
 					 <&upll 0>,
 					 <&upll 1>,
