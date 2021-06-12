@@ -63,6 +63,8 @@ struct msc313_mux_data {
 		.mux_shift = _mux_shift,		\
 		.mux_width = _mux_width,		\
 		.deglitch_shift = _deglitch_shift,	\
+		.flags = _flags,			\
+		.mux_flags = _mux_flags,		\
 	}
 
 #define MSC313_MUX_CLK_PARENT_DATA(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift) \

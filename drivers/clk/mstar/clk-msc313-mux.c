@@ -29,9 +29,17 @@ static u8 msc313_mux_mux_get_parent(struct clk_hw *hw)
 	return index;
 }
 
+static int msc313_mux_mux_determine_rate(struct clk_hw *hw, struct clk_rate_request *req)
+{
+	struct msc313_mux *mux = mux_to_mux(hw);
+
+	return clk_mux_determine_rate_flags(hw, req, clk_hw_get_flags(&mux->mux_hw));
+}
+
 static const struct clk_ops msc313_mux_mux_ops = {
 	.set_parent = msc313_mux_mux_set_parent,
 	.get_parent = msc313_mux_mux_get_parent,
+	.determine_rate = msc313_mux_mux_determine_rate,
 };
 
 static int msc313_mux_deglitch_enable(struct clk_hw *hw)
@@ -87,12 +95,21 @@ static u8 msc313_mux_deglitch_get_parent(struct clk_hw *hw)
 	return index;
 }
 
+static int msc313_mux_deglitch_determine_rate(struct clk_hw *hw,
+		struct clk_rate_request *req)
+{
+	struct msc313_mux *mux = deglitch_to_mux(hw);
+
+	return clk_mux_determine_rate_flags(hw, req, clk_hw_get_flags(&mux->deglitch_hw));
+}
+
 static const struct clk_ops msc313_mux_deglitch_ops = {
 	.enable = msc313_mux_deglitch_enable,
 	.disable = msc313_mux_deglitch_disable,
 	.is_enabled = msc313_mux_deglitch_is_enabled,
 	.set_parent = msc313_mux_deglitch_set_parent,
 	.get_parent = msc313_mux_deglitch_get_parent,
+	.determine_rate = msc313_mux_deglitch_determine_rate,
 };
 
 struct clk_hw *msc313_mux_xlate(struct of_phandle_args *clkspec, void *data)
@@ -202,7 +219,7 @@ struct msc313_muxes *msc313_mux_register_muxes(struct device *dev,
 		deglitch_init.name = mux_data->name;
 		deglitch_init.parent_data = mux->deglitch_parents;
 		deglitch_init.num_parents = mux->deglitch ? 2 : 1;
-		deglitch_init.flags = mux_data->flags;
+		deglitch_init.flags = mux_data->flags | CLK_SET_RATE_PARENT;
 		clk_hw = &mux->deglitch_hw;
 		clk_hw->init = &deglitch_init;
 
