@@ -109,6 +109,11 @@
 		clocks = <&xtal_div2>;
 	};
 
+	//start address for second cpu
+	//0x1F20404C
+	//0x1F204050
+	//0x1F204058 -- unlock
+
 	smpctrl: smpctrl@204000 {
 		reg = <0x204000 0x200>;
 		status = "disabled";
