@@ -43,7 +43,7 @@
 };
 
 &soc {
-	/*
+	/* 
 		m5 clkgens
 		1f207164 - mipi tx csi
 
@@ -116,6 +116,111 @@
 		pinctrl-0 = <&sdio_pins>;
 		status = "disabled";
 	};
+	
+	/*
+	clkgen_mux_dsi_tx: clkgen_mux@1f207154 {
+	https://github.com/longyanjun2020/SDK_pulbic/blob/c1436fa7446457e8d6547874d27ee4e34be150cf/Mercury5/proj/sc/driver/hal/mercury/mipi_dsi/inc/reg_mipi_dsi.h#L1080
+		compatible = "mstar,msc313e-clkgen-mux";
+		reg = <0x1f207154 0x4>;
+		#clock-cells = <1>;
+		clock-output-names = "dsi_tx";
+		shifts = <0>;
+		mux-shifts = <2>;
+		mux-widths = <4>;
+		clocks = <&lpll>,
+			 <&clkgen_pll MSTAR_MPLL_GATE_UTMI_160>,
+			 <&clkgen_pll MSTAR_MPLL_GATE_MPLL_144>,
+			 <&clk_mpll_216_div2>,
+			 <&clkgen_pll MSTAR_MPLL_GATE_MPLL_216>,
+			 <&clkgen_pll MSTAR_MPLL_GATE_UTMI_240>;
+	};
+	*/
+
+	dsi_dphy: dphy@1f2c2400 {
+		//https://github.com/fifteenhex/linux_mstar_3.18/blob/79be86cec45776303b36051bfc0caf5e871975ff/drivers/mstar/driver/hal/infinity2/mipi_dsi/src/halMIPIDsi.c#L201
+		compatible = "mstar,mipi_dphy";
+		status = "disabled";
+	};
+
+	csi_dphy0: dphy@1f240400 {
+
+	};
+
+	csi_dphy1: dphy@1f240a00 {
+
+	};
+
+	vif0: vif@01f262400 {
+		compatible = "mstar,vif";
+		reg = <0x1f262400 0x80>;
+		status = "disabled";
+	};
+
+	vif1: vif@1f262480 {
+		compatible = "mstar,vif";
+		reg = <0x1f262480 0x80>;
+		status = "disabled";
+	};
+
+	vif2: vif@1f262500 {
+		compatible = "mstar,vif";
+		reg = <0x1f262500 0x80>;
+		status = "disabled";
+	};
+
+	pnl@1f2c4400 {
+	};
+
+	/*
+	dec_misc: dec_misc@1f2c2a00
+	*/
+
+	/*
+	dsi: dsi@1f344200 {
+		
+	}
+	
+	dsi_cmdq: dsi_cmdq@1f344400 {
+	
+	}
+
+
+	*/
+
+	i2c2: i2c2@1f222a00 {
+		compatible = "mstar,msc313e-i2c";
+		reg = <0x1f222a00 0x200>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "disabled";
+	};
+
+	i2c3: i2c3@1f222c00 {
+		compatible = "mstar,msc313e-i2c";
+		reg = <0x1f222c00 0x200>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "disabled";
+	};
+
+	clkgen_special_snr0_pclk: clkgen_special@1f226708 {
+		compatible = "mstar,msc313e-clkgen-mux";
+		status = "disabled";
+	};
+
+	clkgen_special_snr1_pclk: clkgen_special@1f22670c {
+		compatible = "mstar,msc313e-clkgen-mux";
+		status = "disabled";
+	};
+
+	clkgen_special_snr2_pclk: clkgen_special@1f226710 {
+		compatible = "mstar,msc313e-clkgen-mux";
+		status = "disabled";
+	};
+};
+
+&cpu0 {
+	operating-points-v2 = <&cpu0_opp_table>;
 };
 
 &imi {
@@ -140,9 +245,34 @@
 };
 
 &gpio_pm {
-	interrupt-names = "pm_spi_do", "pm_sd_sdz";
-	interrupts-extended = <&gpio_pm 0 29 IRQ_TYPE_LEVEL_HIGH>;
-			      /*<&intc_fiq 23 IRQ_TYPE_LEVEL_HIGH>;*/
+
+};
+
+&pinctrl {
+	sr0_mipi_mode1_pins: sr0_mipi_mode1_pins {
+		function = "sr0_mipi";
+		groups = "sr0_mipi_mode1";
+	};
+	sr0_mipi_mode2_pins: sr0_mipi_mode2_pins {
+		function = "sr0_mipi";
+		groups = "sr0_mipi_mode2";
+	};
+	sr1_bt656_pins: sr1_bt656_pins {
+		function = "sr1_bt656";
+		groups = "sr1_bt656";
+	};
+	sr1_mipi_mode4_pins: sr1_mipi_mode4_pins {
+		function = "sr1_mipi";
+		groups = "sr1_mipi_mode4";
+	};
+	tx_mipi_mode1_pins: sr1_mipi_mode1_pins {
+		function = "tx_mipi";
+		groups = "tx_mipi_mode1";
+	};
+	tx_mipi_mode2_pins: sr1_mipi_mode2_pins {
+		function = "tx_mipi";
+		groups = "tx_mipi_mode2";
+	};
 };
 
 &miu {
