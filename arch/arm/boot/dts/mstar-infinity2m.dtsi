@@ -242,3 +242,7 @@
 &clkgen {
 	compatible = "sstar,ssd20xd-clkgen";
 };
+
+&sdio {
+	clocks = <&sc_gp_ctrl_muxes SSD20XD_SC_GP_SDIO_GATE>;
+};
