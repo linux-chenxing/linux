@@ -638,6 +638,18 @@
 					groups = "sdio_mode1";
 					bias-pull-up;
 				};
+				sdio_mode1_4ma_pins: sdio_mode1_4ma_pins {
+					function = "sdio";
+					groups = "sdio_mode1";
+					bias-pull-up;
+					drive-strength = <4>;
+				};
+				sdio_mode1_8ma_pins: sdio_mode1_8ma_pins {
+					function = "sdio";
+					groups = "sdio_mode1";
+					bias-pull-up;
+					drive-strength = <8>;
+				};
 				usb_pins: usb {
 					function = "usb";
 					groups = "usb";
