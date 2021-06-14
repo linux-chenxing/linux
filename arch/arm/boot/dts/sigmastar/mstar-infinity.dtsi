@@ -119,6 +119,23 @@
 		/* 0x1f284400 - Called "BC" which seems to be battery charger */
 		reg = <0x1f284400 0x200>;
 	};
+
+	fakephy0: fakephy@0 {
+		compatible = "usb-nop-xceiv";
+		#phy-cells = <0>;
+	};
+
+	otg0: otg@1f284a00 {
+		compatible = "mstar,msc313-musb";
+		reg = <0x1f284a00 0x200>;
+		interrupt-names = "mc";
+		interrupts-extended = <&intc_irq GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+		phys = <&fakephy0>;
+		mstar,usbc = <&usbc0>;
+		clock-names = "udc";
+		clocks = <&xtal12>;
+		status = "disabled";
+	};
 };
 
 &cpu0 {
