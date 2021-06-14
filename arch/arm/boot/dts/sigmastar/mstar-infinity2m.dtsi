@@ -232,6 +232,11 @@
 
 &sc_gp_ctrl_muxes {
 	compatible = "sstar,ssd20xd-sc-gp-ctrl-muxes";
+	clock-names = "eth_buf", "rmii_buf","xtal_div2", "sdio_clkgen";
+	clocks = <&eth_buf>,
+		 <&rmii_buf>,
+		 <&xtal_div2>,
+		 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SDIO 0>;
 };
 
 &clkgen {
