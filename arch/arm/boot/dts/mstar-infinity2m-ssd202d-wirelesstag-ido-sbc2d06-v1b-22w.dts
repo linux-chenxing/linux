@@ -72,6 +72,7 @@
 
 &sdio {
 	vmmc-supply = <&vcc_sd>;
+	pinctrl-0 = <&sdio_mode1_8ma_pins>;
 	status = "okay";
 };
 
