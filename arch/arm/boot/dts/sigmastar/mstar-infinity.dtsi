@@ -114,6 +114,11 @@
 	emmc: emmc@1f280400 {
 		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
 	};
+
+	bc: bc@1f284400 {
+		/* 0x1f284400 - Called "BC" which seems to be battery charger */
+		reg = <0x1f284400 0x200>;
+	};
 };
 
 &cpu0 {
