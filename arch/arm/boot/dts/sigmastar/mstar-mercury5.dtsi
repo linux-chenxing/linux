@@ -42,6 +42,21 @@
 	};
 };
 
+&soc {
+	sd: sd@1f282600 {
+		compatible = "mstar,msc313-sdio";
+		reg = <0x1f282600 0x200>;
+		no-1-8-v;
+		cap-sd-highspeed;
+		bus-width = <4>;
+		clocks = <&clkgen_mux_sdio 0>;
+		interrupts-extended = <&intc_irq 60 IRQ_TYPE_LEVEL_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sdio_pins>;
+		status = "disabled";
+	};
+};
+
 &imi {
 	reg = <0xa0000000 0x20000>;
 };
