@@ -6,6 +6,7 @@
 
 #include "mstar-v7.dtsi"
 
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/gpio/msc313-gpio.h>
 #include <dt-bindings/clock/mstar-msc313-clkgen.h>
 #include <dt-bindings/clock/mstar-msc313-sc-gp.h>
@@ -86,6 +87,22 @@
 };
 
 &riu {
+	sdio: sdio@282000 {
+		compatible = "mstar,msc313-sdio";
+		interrupts-extended = <&intc_irq GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SDIO 0>;
+		reg = <0x282000 0x200>;
+		no-1-8-v;
+		cap-sd-highspeed;
+		bus-width = <4>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sdio_pins>;
+		cd-gpios = <&gpio_pm 1 GPIO_ACTIVE_LOW>;
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+		status = "disabled";
+	};
+
 	emac: emac@2a2000 {
 		#address-cells = <1>;
 		#size-cells = <0>;
