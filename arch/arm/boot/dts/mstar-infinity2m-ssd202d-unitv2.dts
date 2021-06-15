@@ -135,3 +135,9 @@
 &miu {
 	ddr-supply = <&reg_vcc_dram>;
 };
+
+&sdio {
+	vmmc-supply = <&reg_vcc_io>;
+	vqmmc-supply = <&reg_vcc_io>;
+	status = "okay";
+};
