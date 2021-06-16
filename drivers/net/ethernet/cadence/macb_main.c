@@ -4734,6 +4734,9 @@ static int msc313_init(struct platform_device *pdev)
 {
 	struct net_device *dev = platform_get_drvdata(pdev);
 	struct macb *bp = netdev_priv(dev);
+	struct device_node *phy_node = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
+
+	/** Note to self: Check if the julian registers are visible over XIU on msc313 */
 
 	/*
 	 * This switches to "software rx descriptors".
@@ -4744,6 +4747,27 @@ static int msc313_init(struct platform_device *pdev)
 	macb_writel(bp, MSC313_13A, 0x100);
 	macb_writel(bp, MSC313_JULIAN_104, 1);
 
+	/*
+	 * We need a few magic numbers to get the PHY to work.
+	 * Most versions of these chips have an integrated PHY,
+	 * some have one interface with an integrated PHY and RMII
+	 * external, some only have RMII. There are various magic
+	 * numbers in the vendor code for this.
+	 */
+	if (!phy_node)
+		goto no_phy;
+
+	if (of_property_read_bool(phy_node, "phy-is-integrated")) {
+		/* noop for now */
+	}
+	else {
+		/* valid for the ssd20xd */
+		macb_writel(bp, MSC313_JULIAN_100, 0xf017);
+	}
+
+	of_node_put(phy_node);
+
+no_phy:
 	return at91ether_init(pdev);
 }
 
