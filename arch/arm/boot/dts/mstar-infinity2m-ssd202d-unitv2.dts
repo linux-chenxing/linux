@@ -103,7 +103,13 @@
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
 			#size-cells = <1>;
-			ubi@0x000000ec0000 {
+
+			uboot-spl@200000 {
+				label = "uboot-spl";
+				reg = <0x200000 0x60000>;
+			};
+
+			ubi@ec0000 {
 				label = "ubi";
 				reg = <0xec0000 0x1f140000>;
 			};
