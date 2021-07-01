@@ -80,3 +80,9 @@
 &phy {
 	compatible = "ethernet-phy-idDEAD.B33F";
 };
+
+&emac {
+	compatible = "mstar,msc313e-emac";
+	reg = <0x2a2000 0x4000>,
+	      <0x343c00 0x4000>;
+};
