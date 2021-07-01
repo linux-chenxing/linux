@@ -7,6 +7,8 @@
 #include "mstar-v7.dtsi"
 
 #include <dt-bindings/gpio/msc313-gpio.h>
+#include <dt-bindings/clock/mstar-msc313-clkgen.h>
+#include <dt-bindings/clock/mstar-msc313-sc-gp.h>
 
 / {
 	cpu0_opp_table: opp_table0 {
@@ -76,4 +78,37 @@
 
 &sar {
 	compatible = "mstar,msc313e-sar";
+};
+
+&riu {
+	emac: emac@2a2000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "mstar,msc313-emac";
+		interrupts-extended = <&intc_irq GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+		reg = <0x2a2000 0x800>;
+		phy-mode = "mii";
+		clock-names = "pclk", "hclk", "tx_clk", "rx_clk";
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_EMAC_AHB 0>,
+			 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_EMAC_AHB 0>,
+			 <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_TX>,
+			 <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX>;
+		assigned-clocks = <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX_MUX>,
+				  <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_TX_MUX>;
+		assigned-clock-parents = <&eth_buf>, <&eth_buf>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&emac_mode1_pins>;
+		local-mac-address = [00 00 00 00 00 00];
+		status = "disabled";
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+		phy-handle = <&phy>;
+		phy: phy@0 {
+			compatible = "ethernet-phy-idDEAD.BEEF";
+			phy-is-integrated;
+			reg = <0>;
+			mstar,pmsleep = <&pmsleep>;
+			mstar,phyana = <&phyana>;
+		};
+	};
 };
