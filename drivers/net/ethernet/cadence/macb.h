@@ -77,6 +77,11 @@
 #define MACB_TBQPH		0x04C8
 #define MACB_RBQPH		0x04D4
 
+// The MSC313 has some more registers here
+#define MACB_MSC313_JULIAN_100 0x100
+#define MACB_MSC313_JULIAN_104 0x104
+#define MACB_MSC313_JULIAN_108 0x108
+
 /* GEM register offsets. */
 #define GEM_NCR			0x0000 /* Network Control */
 #define GEM_NCFGR		0x0004 /* Network Config */
@@ -721,6 +726,8 @@
 #define MACB_CAPS_PCS				0x01000000
 #define MACB_CAPS_HIGH_SPEED			0x02000000
 #define MACB_CAPS_CLK_HW_CHG			0x04000000
+#define MACB_CAPS_MSTAR_RIU			0x00000200
+#define MACB_CAPS_MSTAR_XIU			0x00000400
 #define MACB_CAPS_MACB_IS_EMAC			0x08000000
 #define MACB_CAPS_FIFO_MODE			0x10000000
 #define MACB_CAPS_GIGABIT_MODE_AVAILABLE	0x20000000
