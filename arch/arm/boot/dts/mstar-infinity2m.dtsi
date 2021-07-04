@@ -136,6 +136,11 @@
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
+	mop: mop@280a00 {
+		compatible = "sstar,ssd20xd-mop";
+		reg = <0x280a00 0x600>;
+	};
+
 	upll1: upll@283e00 {
 		#clock-cells = <1>;
 		compatible = "mstar,msc313-upll";
