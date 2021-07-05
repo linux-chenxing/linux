@@ -12,3 +12,13 @@ config PHY_MSC313_USB
 	default ARCH_MSTARV7
 	help
 	  Enable this to support the USB PHY in MStar/SigmaStar SoCs
+
+config PHY_SSD20XD_DPHY
+	tristate "SSD20XD MIPI D-PHY driver"
+	select GENERIC_PHY
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	depends on OF
+	depends on HAS_IOMEM
+	default ARCH_MSTARV7
+	help
+	  Enable this to support the MIPI D-PHY in MStar/SigmaStar SoCs
