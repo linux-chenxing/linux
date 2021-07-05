@@ -99,6 +99,7 @@ static int msc313_lpll_probe(struct platform_device *pdev)
 			GFP_KERNEL);
 	if (!lpll->clk_data)
 		return -ENOMEM;
+	lpll->clk_data->num = 1;
 
 	base = devm_platform_ioremap_resource(pdev, 0);
 	if (IS_ERR(base))
@@ -121,6 +122,8 @@ static int msc313_lpll_probe(struct platform_device *pdev)
 	ret = devm_clk_hw_register(dev, &lpll->clk_hw);
 	if(ret)
 		return ret;
+
+	lpll->clk_data->hws[0] = &lpll->clk_hw;
 
 	return devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
 			lpll->clk_data);
