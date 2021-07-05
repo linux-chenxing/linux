@@ -25,6 +25,7 @@ obj-y					+= allwinner/	\
 					   microchip/	\
 					   motorola/	\
 					   mscc/	\
+					   mstar/	\
 					   qualcomm/	\
 					   ralink/	\
 					   renesas/	\
