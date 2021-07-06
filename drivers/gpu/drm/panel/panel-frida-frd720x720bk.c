@@ -395,6 +395,8 @@ static int frida_panel_probe(struct mipi_dsi_device *dsi)
 	int ret;
 	u32 video_mode;
 
+	printk("panel probe\n");
+
 	panel = devm_kzalloc(&dsi->dev, sizeof(*panel), GFP_KERNEL);
 	if (!panel)
 		return -ENOMEM;
