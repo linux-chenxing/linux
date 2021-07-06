@@ -61,16 +61,16 @@ struct rad_panel {
 
 static const struct drm_display_mode default_mode = {
 	.clock = 132000,
-	.hdisplay = 1080,
-	.hsync_start = 1080 + 20,
-	.hsync_end = 1080 + 20 + 2,
-	.htotal = 1080 + 20 + 2 + 34,
-	.vdisplay = 1920,
-	.vsync_start = 1920 + 10,
-	.vsync_end = 1920 + 10 + 2,
-	.vtotal = 1920 + 10 + 2 + 4,
-	.width_mm = 68,
-	.height_mm = 121,
+	.hdisplay = 720,
+	.hsync_start = 720 + 40,
+	.hsync_end = 720 + 40 + 20,
+	.htotal = 790,
+	.vdisplay = 720,
+	.vsync_start = 720 + 20,
+	.vsync_end = 720 + 20 + 10,
+	.vtotal = 755,
+	.width_mm = 102,
+	.height_mm = 102,
 	.flags = DRM_MODE_FLAG_NHSYNC |
 		 DRM_MODE_FLAG_NVSYNC,
 };
