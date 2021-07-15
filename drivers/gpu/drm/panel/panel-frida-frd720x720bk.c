@@ -113,12 +113,13 @@ static int color_format_from_dsi_format(enum mipi_dsi_pixel_format format)
 	}
 };
 
-static int rad_panel_prepare(struct drm_panel *panel)
+static int frida_panel_prepare(struct drm_panel *panel)
 {
 	struct rad_panel *rad = to_rad_panel(panel);
 	int ret;
 
-	if (rad->prepared)
+	printk("%s\n", __func__);
+	//if (rad->prepared)
 		return 0;
 
 	ret = regulator_bulk_enable(rad->num_supplies, rad->supplies);
@@ -137,12 +138,13 @@ static int rad_panel_prepare(struct drm_panel *panel)
 	return 0;
 }
 
-static int rad_panel_unprepare(struct drm_panel *panel)
+static int frida_panel_unprepare(struct drm_panel *panel)
 {
 	struct rad_panel *rad = to_rad_panel(panel);
 	int ret;
 
-	if (!rad->prepared)
+	printk("%s\n", __func__);
+	//if (!rad->prepared)
 		return 0;
 
 	/*
@@ -165,7 +167,7 @@ static int rad_panel_unprepare(struct drm_panel *panel)
 	return 0;
 }
 
-static int rad_panel_enable(struct drm_panel *panel)
+static int frida_panel_enable(struct drm_panel *panel)
 {
 	struct rad_panel *rad = to_rad_panel(panel);
 	struct mipi_dsi_device *dsi = rad->dsi;
@@ -173,7 +175,8 @@ static int rad_panel_enable(struct drm_panel *panel)
 	int color_format = color_format_from_dsi_format(dsi->format);
 	int ret;
 
-	if (rad->enabled)
+	printk("%s\n", __func__);
+	//if (rad->enabled)
 		return 0;
 
 	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
@@ -250,14 +253,15 @@ fail:
 	return ret;
 }
 
-static int rad_panel_disable(struct drm_panel *panel)
+static int frida_panel_disable(struct drm_panel *panel)
 {
 	struct rad_panel *rad = to_rad_panel(panel);
 	struct mipi_dsi_device *dsi = rad->dsi;
 	struct device *dev = &dsi->dev;
 	int ret;
 
-	if (!rad->enabled)
+	printk("%s\n", __func__);
+	//if (!rad->enabled)
 		return 0;
 
 	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
@@ -285,7 +289,7 @@ static int rad_panel_disable(struct drm_panel *panel)
 	return 0;
 }
 
-static int rad_panel_get_modes(struct drm_panel *panel,
+static int frida_panel_get_modes(struct drm_panel *panel,
 			       struct drm_connector *connector)
 {
 	struct drm_display_mode *mode;
@@ -357,11 +361,11 @@ static const struct backlight_ops rad_bl_ops = {
 };
 
 static const struct drm_panel_funcs rad_panel_funcs = {
-	.prepare = rad_panel_prepare,
-	.unprepare = rad_panel_unprepare,
-	.enable = rad_panel_enable,
-	.disable = rad_panel_disable,
-	.get_modes = rad_panel_get_modes,
+	.prepare = frida_panel_prepare,
+	.unprepare = frida_panel_unprepare,
+	.enable = frida_panel_enable,
+	.disable = frida_panel_disable,
+	.get_modes = frida_panel_get_modes,
 };
 
 static const char * const rad_supply_names[] = {
@@ -488,8 +492,8 @@ static void frida_panel_shutdown(struct mipi_dsi_device *dsi)
 {
 	struct rad_panel *rad = mipi_dsi_get_drvdata(dsi);
 
-	rad_panel_disable(&rad->panel);
-	rad_panel_unprepare(&rad->panel);
+	frida_panel_disable(&rad->panel);
+	frida_panel_unprepare(&rad->panel);
 }
 
 static const struct of_device_id frida_of_match[] = {
