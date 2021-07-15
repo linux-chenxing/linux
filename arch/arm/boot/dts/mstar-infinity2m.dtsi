@@ -160,12 +160,11 @@
 
 	// all zeros
 	scl_to_gop@243400 {
-
-	}
+	};
 
 	dip_to_gop@247400 {
 
-	}
+	};
 
 	gop1: gop@246800 {
 		compatible = "sstar,ssd20xd-gop1";
