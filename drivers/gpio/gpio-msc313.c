@@ -535,7 +535,7 @@ static unsigned ssc8336_offsets[] = {
 	SD_OFFSETS,
 };
 
-MSC313_GPIO_CHIPDATA(ssc8336);
+MSC313_GPIO_CHIPDATA(ssc8336, msc313_gpio_populate_parent_fwspec, msc313e_gpio_child_to_parent_hwirq);
 #endif
 
 struct msc313_gpio {
