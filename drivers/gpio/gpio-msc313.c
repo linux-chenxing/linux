@@ -485,7 +485,9 @@ static const unsigned int ssd20xd_offsets[] = {
 	SSD20XD_GPIO_OFFSETS,
 };
 
-MSC313_GPIO_CHIPDATA(ssd20xd);
+static int ssd20xd_gpio_child_to_parent_hwirq(struct gpio_chip *, unsigned int,
+					     unsigned int, unsigned int*, unsigned int*);
+MSC313_GPIO_CHIPDATA(ssd20xd, gpiochip_populate_parent_fwspec_twocell, ssd20xd_gpio_child_to_parent_hwirq);
 #endif
 
 struct msc313_gpio {
@@ -610,6 +612,37 @@ static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
 	if (offset >= OFF_SPI0_CZ && offset <= OFF_SPI0_DO) {
 		*parent_type = child_type;
 		*parent = ((offset - OFF_SPI0_CZ) >> 2) + 28;
+		return 0;
+	}
+
+	return -EINVAL;
+}
+
+static int ssd20xd_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
+					     unsigned int child,
+					     unsigned int child_type,
+					     unsigned int *parent,
+					     unsigned int *parent_type)
+{
+	struct msc313_gpio *priv = gpiochip_get_data(chip);
+	unsigned int offset = priv->gpio_data->offsets[child];
+
+	*parent_type = child_type;
+
+	/*
+	 * On the ssd20xd chips a lot more pins are interrupt enabled but it
+	 * still isn't a linear mapping and not all pins are wired up.
+	 */
+	if (offset >= SSD20XD_TTL_OFFSET_TTL0 && offset <= SSD20XD_TTL_OFFSET_TTL27){
+		*parent = ((offset - SSD20XD_TTL_OFFSET_TTL0) >> 2) + 4;
+		return 0;
+	}
+	else if (offset >= SSD20XD_GPIO_OFF_GPIO0 && offset <= SSD20XD_GPIO_OFF_GPIO14){
+		*parent = ((offset - SSD20XD_GPIO_OFF_GPIO0) >> 2) + 45;
+		return 0;
+	}
+	else if (offset >= OFF_FUART_RX && offset <= OFF_FUART_RTS){
+		*parent = ((offset - OFF_FUART_RX) >> 2) + 60;
 		return 0;
 	}
 
