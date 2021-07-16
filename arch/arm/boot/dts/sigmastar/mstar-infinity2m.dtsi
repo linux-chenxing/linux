@@ -121,3 +121,7 @@
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 	};
 };
+
+&gpio {
+	interrupt-parent = <&gpi>;
+};
