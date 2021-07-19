@@ -28,3 +28,9 @@
 		gpios = <&gpio SSD20XD_GPIO_GPIO0 0>;
 	};
 };
+
+&sdio {
+	vmmc-supply = <&vcc_sd>;
+	pinctrl-0 = <&sdio_mode1_8ma_pins>;
+	status = "okay";
+};
