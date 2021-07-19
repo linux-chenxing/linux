@@ -332,11 +332,25 @@
 				status = "disabled";
 			};
 
+			mcu: mcu@2000 {
+				compatible = "mstar,msc313-pm51";
+				reg = <0x2000 0x200>;
+				mstar,pmsleep = <&pmsleep>;
+				//clocks = <&clkgen_mux_spi_mcu_pm 0>;
+				dma-names = "bdma0", "bdma1";
+				dmas = <&bdma 0 MSC313_BDMA_SLAVE_PM51 1>, <&bdma 1 MSC313_BDMA_SLAVE_PM51 1>;
+				interconnects = <&miu 0>;
+				interconnect-names = "dma-mem";
+				interrupts-extended = <&intc_fiq GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+			};
+
 			rtc@2400 {
 				compatible = "mstar,msc313-rtc";
 				reg = <0x2400 0x40>;
-				clocks = <&xtal_div2>;
-				interrupts-extended = <&intc_irq GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&pm_muxes MSC313_PM_MUXES_RTC>;
+				interrupts-extended = <&intc_irq GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
+						      <&wakeintc 4 IRQ_TYPE_LEVEL_HIGH>;
+				wakeup-source;
 			};
 
 			sar: sar@2800 {
