@@ -10,4 +10,12 @@
 / {
 	model = "SBC2D70 (SSD202D)";
 	compatible = "ido,sbc2d70", "mstar,infinity2m";
+
+	leds {
+		compatible = "gpio-leds";
+		sys_led {
+			gpios = <&gpio SSD20XD_GPIO_GPIO10 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "activity";
+		};
+	};
 };
