@@ -142,3 +142,12 @@
 &op2_ttl {
 	remote-endpoint = <&panel_in>;
 };
+
+&usbphy2 {
+	//vbus-supply = <&vcc_vbus>;
+	status = "okay";
+};
+
+&uhc2 {
+	status = "okay";
+};
