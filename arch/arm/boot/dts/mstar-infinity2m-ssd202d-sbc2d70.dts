@@ -26,6 +26,18 @@
 		pwms = <&pwm 1 1000000>;
 	};
 
+/*
+	vcc_vbus: regulator@2 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_vbus";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_GPIO47 0>;
+		enable-active-high;
+	};
+*/
+
 	vcc_sd: regulator@3 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_sd";
