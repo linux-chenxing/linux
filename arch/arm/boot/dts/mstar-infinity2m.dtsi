@@ -136,9 +136,9 @@
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
-	display@0 {
+	display: display@0 {
 		compatible = "sstar,ssd20xd-drm";
-		ports = <&mopg>,<&mops>,<&gop0>,<&gop1>,<&op2>,<&displaytop>, <&dsi>;
+		ports = <&mopg>,<&mops>,<&gop0>,<&gop1>,<&op2>,<&displaytop>,<&dsi>;
 	};
 
 	displaytop: top@225000 {
