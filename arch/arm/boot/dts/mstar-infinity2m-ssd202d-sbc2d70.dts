@@ -19,6 +19,13 @@
 		};
 	};
 
+	beeper {
+		compatible = "pwm-beeper";
+		pinctrl-names = "default";
+	        pinctrl-0 = <&pwm1_mode4_pins>;
+		pwms = <&pwm 1 1000000>;
+	};
+
 	vcc_sd: regulator@3 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_sd";
