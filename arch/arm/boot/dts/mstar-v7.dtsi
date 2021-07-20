@@ -674,6 +674,10 @@
 					function = "pwm0";
 					groups = "pwm0_mode4";
 				};
+				pwm1_mode4_pins: pwm1_mode4 {
+					function = "pwm1";
+					groups = "pwm1_mode4";
+				};
 				pwm1_fuart_tx_pins: pwm1_fuart_tx {
 					function = "pwm1";
 					groups = "fuart_tx";
