@@ -27,6 +27,16 @@
 		regulator-max-microvolt = <3300000>;
 		gpios = <&gpio SSD20XD_GPIO_GPIO0 0>;
 	};
+
+	vcc_4g: regulator@4 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_4g";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_GPIO90 0>;
+		enable-active-high;
+	};
 };
 
 &i2c1 {
