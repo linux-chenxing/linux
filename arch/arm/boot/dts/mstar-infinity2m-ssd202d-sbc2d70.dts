@@ -29,6 +29,26 @@
 	};
 };
 
+&i2c1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_mode1_pins>;
+	status = "okay";
+
+	ts@48 {
+		compatible = "ti,tsc2007";
+		reg = <0x48>;
+		status = "disabled";
+	};
+
+	ts@5d {
+		compatible = "goodix,gt911";
+		reg = <0x5d>;
+		interrupts-extended = <&gpio SSD20XD_GPIO_GPIO13 IRQ_TYPE_EDGE_FALLING>;
+		reset-gpios = <&gpio SSD20XD_GPIO_GPIO1 GPIO_ACTIVE_HIGH>;
+		interrupt-gpios = <&gpio SSD20XD_GPIO_GPIO13 GPIO_ACTIVE_HIGH>;
+	};
+};
+
 &sdio {
 	vmmc-supply = <&vcc_sd>;
 	pinctrl-0 = <&sdio_mode1_8ma_pins>;
