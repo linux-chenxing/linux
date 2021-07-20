@@ -1367,6 +1367,28 @@ static const struct panel_desc chefree_ch101olhlwh_002 = {
 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
 };
 
+static const struct drm_display_mode chenchen_cc0702i50r_mode = {
+	.clock = 51200,
+	.hdisplay = 1024,
+	.hsync_start = 1024 + 160,
+	.hsync_end = 1024 + 160 + 70,
+	.htotal = 1024 + 160 + 70 + 90,
+	.vdisplay = 600,
+	.vsync_start = 600 + 23,
+	.vsync_end = 600 + 23 + 10,
+	.vtotal = 600 + 23 + 10 + 2,
+};
+
+static const struct panel_desc chenchen_cc0702i50r = {
+	.modes = &chenchen_cc0702i50r_mode,
+	.num_modes = 1,
+	.bpc = 8,
+	.size = {
+		.width = 154,
+		.height = 85,
+	},
+};
+
 static const struct drm_display_mode chunghwa_claa070wp03xg_mode = {
 	.clock = 66770,
 	.hdisplay = 800,
@@ -4002,6 +4024,9 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "chefree,ch101olhlwh-002",
 		.data = &chefree_ch101olhlwh_002,
+	}, {
+		.compatible = "chenchen,cc0702i50r",
+		.data = &chenchen_cc0702i50r,
 	}, {
 		.compatible = "chunghwa,claa070wp03xg",
 		.data = &chunghwa_claa070wp03xg,
