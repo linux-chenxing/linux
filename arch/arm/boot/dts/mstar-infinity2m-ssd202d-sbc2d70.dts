@@ -87,6 +87,12 @@
 			};
 		};
 	};
+
+	speaker_amp: audio-amplifier {
+		compatible = "simple-audio-amplifier";
+		enable-gpios = <&gpio SSD20XD_GPIO_GPIO14 GPIO_ACTIVE_HIGH>;
+		sound-name-prefix = "Speaker Amp";
+        };
 };
 
 &emac {
