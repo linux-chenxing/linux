@@ -141,6 +141,19 @@
 		ports = <&mopg>,<&mops>,<&gop0>,<&gop1>,<&op2>,<&displaytop>,<&dsi>;
 	};
 
+	ge: ge@281200 {
+		compatible = "sstar,ssd20xd-ge";
+		// TBC, address from DTS
+		//reg = <0x224000 0x200>; seems wrong
+		// TBC, address from hal
+		reg = <0x281200 0x200>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_GE 0>;
+		clock-names = "ge";
+		interrupts-extended = <&intc_irq GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+	};
+
 	displaytop: top@225000 {
 		compatible = "sstar,ssd20xd-display-top";
 		reg = <0x225000 0x200>;
