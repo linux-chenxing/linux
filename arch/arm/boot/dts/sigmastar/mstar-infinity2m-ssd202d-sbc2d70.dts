@@ -64,6 +64,17 @@
 		enable-active-high;
 	};
 
+	vcc_5v: regulator@5 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_5v";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_UART0_TX 0>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
 	vcc_lcd_sw: regulator-lcd-sw {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_5v";
@@ -92,6 +103,7 @@
 		compatible = "simple-audio-amplifier";
 		enable-gpios = <&gpio SSD20XD_GPIO_GPIO14 GPIO_ACTIVE_HIGH>;
 		sound-name-prefix = "Speaker Amp";
+		VCC-supply = <&vcc_5v>;
         };
 };
 
@@ -156,4 +168,8 @@
 
 &uhc2 {
 	status = "okay";
+};
+
+&bach {
+	audio-aux-devs = <&speaker_amp>;
 };
