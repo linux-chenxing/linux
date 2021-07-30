@@ -118,6 +118,12 @@
 		clocks = <&xtal_div2>;
 	};
 
+	rtcpwc: rtcpwc@6800 {
+		compatible = "sstar,ssd20xd-rtcpwc";
+		reg = <0x6800 0x200>;
+		wakeup-source;
+	};
+
 	//start address for second cpu
 	//0x1F20404C
 	//0x1F204050
