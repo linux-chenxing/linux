@@ -2002,4 +2002,15 @@ config RTC_DRV_POLARFIRE_SOC
 	  This driver can also be built as a module, if so, the module
 	  will be called "rtc-mpfs".
 
+config RTC_DRV_SSD20XD_RTCPWC
+	tristate "SigmaStar SSD20XD RTCPWC"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	default ARCH_MSTARV7
+	help
+	  If you say yes here you get support for the SigmaStar SSD20XD On-Chip
+	  Real Time Clock.
+
+	  This driver can also be built as a module, if so, the module
+	  will be called "rtc-ssd20xd-rtcpwc".
+
 endif # RTC_CLASS
