@@ -17,6 +17,7 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
 	};
 };
 

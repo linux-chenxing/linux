@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (c) 2019 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+#include "mstar-pioneer3-ssd210.dtsi"
+
+/ {
+	model = "QFN68 DEMO";
+	compatible = "sstar,qfn68demo", "sstar,pioneer3";
+
+	aliases {
+		serial0 = &pm_uart;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk ubi.mtd=1 ubi.block=0,rootfs root=/dev/ubiblock0_0 rootwait";
+	};
+	
+	vcc_dram: fixedregulator@1 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_dram";
+		regulator-min-microvolt = <1500000>;
+		regulator-max-microvolt = <1500000>;
+		regulator-boot-on;
+	};
+};
+
+&pm_uart {
+	status = "okay";
+};
+
+&miu {
+	ddr-supply = <&vcc_dram>;
+};
+
+&isp {
+	status = "okay";
+	nand@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "spi-nand";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+		spi-rx-bus-width = <4>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			rescue@1000000 {
+				label = "ubi";
+				reg = <0x1000000 0x7000000>;
+			};
+		};
+	};
+};
+
+&pinctrl_pm {
+	compatible = "sstar,ssd20xd-pm-pinctrl";
+};
