@@ -1586,7 +1586,8 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-mercury5-ssc8336-mirrorcam.dtb \
 	mstar-mercury5-ssc8336n-midrived06.dtb \
 	mstar-mercury5-ssc8336n-midrived08.dtb \
-	mstar-pioneer3-ssd210-kiipii.dtb
+	mstar-pioneer3-ssd210-kiipii.dtb \
+	mstar-pioneer3-ssd210-qfn68demo.dtb
 dtb-$(CONFIG_ARCH_ASPEED) += \
 	aspeed-ast2500-evb.dtb \
 	aspeed-ast2600-evb-a1.dtb \
