@@ -8,3 +8,10 @@
 
 / {
 };
+
+&bdma {
+	interrupts = <40 IRQ_TYPE_LEVEL_HIGH>,
+		     <41 IRQ_TYPE_LEVEL_HIGH>,
+		     <9 IRQ_TYPE_LEVEL_HIGH>,
+		     <10 IRQ_TYPE_LEVEL_HIGH>;
+};
