@@ -568,6 +568,18 @@
 				};
 			};
 
+			bdma: bdma@200400 {
+				compatible = "mstar,msc313-bdma";
+				reg = <0x200400 0x80>;
+				interrupt-parent = <&intc_irq>;
+				interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+					     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_BDMA 0>;
+				dma-channels = <2>;
+				status = "okay";
+				#dma-cells = <1>;
+			};
+
 			l3bridge: l3bridge@204400 {
 				compatible = "mstar,l3bridge";
 				reg = <0x204400 0x200>;
