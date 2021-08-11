@@ -7,6 +7,7 @@
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/clock/mstar-msc313-mpll.h>
+#include <dt-bindings/dma/msc313-bdma.h>
 
 / {
 	#address-cells = <1>;
@@ -566,6 +567,18 @@
 					function = "pwm7";
 					groups = "spi0_do";
 				};
+			};
+
+			bdma: bdma@200400 {
+				compatible = "mstar,msc313-bdma";
+				reg = <0x200400 0x80>;
+				interrupt-parent = <&intc_irq>;
+				interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+					     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_BDMA 0>;
+				dma-channels = <2>;
+				status = "okay";
+				#dma-cells = <3>;
 			};
 
 			l3bridge: l3bridge@204400 {
