@@ -112,6 +112,12 @@
 	};
 };
 
+&bdma {
+	compatible = "sstar,ssd210-bdma";
+	reg = <0x200400 0x200>;
+	interrupts-extended = <&intc_irq GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+};
+
 &cpu0 {
 	operating-points-v2 = <&cpu0_opp_table>;
 };
