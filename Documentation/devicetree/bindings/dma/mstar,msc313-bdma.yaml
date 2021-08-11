@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/dma/mstar,msc313-bdma.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: MStar/SigmaStar BDMA
+
+description: |
+  MStar/SigmaStar ARMv7 SoCs contain a DMA controller called
+  BDMA. This seems to be the generic DMA controller for the
+  system and seems to be capable of doing mem to/from device
+  for most of the other IP blocks and mem to mem transfers.
+
+maintainers:
+  - Daniel Palmer <daniel@thingy.jp>
+
+allOf:
+  - $ref: "dma-controller.yaml#"
+
+properties:
+  "#dma-cells":
+    const: 1
+
+  compatible:
+    enum:
+      - mstar,msc313-bdma
+      - sstar,ssd20xd-bdma
+      - sstar,ssd210-bdma
+
+  reg:
+    maxItems: 1
+
+  clocks:
+    maxItems: 1
+
+  interrupts:
+    description: |
+      For most BDMA versions there is one IRQ per DMA
+      channel, so for 2 channel versions (msc313-bdma) you
+      need 2 IRQs and for 4 channel versions (ssd20xd-bdma)
+      you need 4. Some versions (ssd210-bdma) combine all
+      channel interrupts into a single IRQ. For these single
+      IRQ versions you should supply 1 IRQ. 
+    maxItems: 4
+
+required:
+  - compatible
+  - reg
+  - clocks
+  - interrupts
+
+examples:
+  - |
+    #include <dt-bindings/interrupt-controller/irq.h>
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+    #include <dt-bindings/clock/mstar-msc313-clkgen.h>
+    dma-controller@200400 {
+      compatible = "mstar,msc313-bdma";
+      reg = <0x200400 0x80>;
+      interrupt-parent = <&intc_irq>;
+      interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+                   <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+      clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_BDMA 0>;
+      #dma-cells = <1>;
+    };
+
+...
