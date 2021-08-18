@@ -144,15 +144,29 @@
 };
 
 &pmu {
-		interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
-			     <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-		interrupt-affinity = <&cpu0>, <&cpu1>;
+	interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+		     <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+	interrupt-affinity = <&cpu0>, <&cpu1>;
 };
 
 &riu {
 	smpctrl: smpctrl@204000 {
 		compatible = "sstar,ssd201-smpctrl", "mstar,smpctrl";
 		reg = <0x204000 0x200>;
+	};
+
+	gpi: interrupt-controller@207a00 {
+		compatible = "sstar,ssd20xd-gpi";
+		reg = <0x207a00 0x200>;
+		#interrupt-cells = <2>;
+		interrupt-controller;
+		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	pspi0: spi@222400 {
+	};
+
+	pspi1: spi@222600 {
 	};
 };
 
