@@ -17,14 +17,14 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
-		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk root=/dev/mmcblk0p2 rootwait";
 	};
 
 	vcc_core: regulator-vcc-core {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_core";
-		regulator-min-microvolt = <950000>;
-		regulator-max-microvolt = <950000>;
+		regulator-min-microvolt = <1000000>;
+		regulator-max-microvolt = <1000000>;
 		regulator-boot-on;
 	};
 
