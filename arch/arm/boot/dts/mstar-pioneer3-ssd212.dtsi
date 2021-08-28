@@ -15,3 +15,9 @@
 		reg = <0x20000000 0x4000000>;
 	};
 };
+
+&gpio_pm {
+	compatible = "sstar,ssd212-gpio-pm";
+	interrupts-extended = <&intc_fiq GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+	status = "okay";
+};
