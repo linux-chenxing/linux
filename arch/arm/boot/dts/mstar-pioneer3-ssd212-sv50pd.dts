@@ -88,3 +88,7 @@
 &pinctrl_pm {
 	compatible = "sstar,ssd20xd-pm-pinctrl";
 };
+
+&sdio {
+	status = "okay";
+};
