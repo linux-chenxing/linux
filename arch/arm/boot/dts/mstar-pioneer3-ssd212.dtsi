@@ -21,3 +21,7 @@
 	interrupts-extended = <&intc_fiq GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
 	status = "okay";
 };
+
+&pinctrl_pm {
+	compatible = "sstar,ssd212-pm-pinctrl";
+};
