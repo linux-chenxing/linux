@@ -2,6 +2,8 @@
 #include <linux/kbuild.h>
 #include <linux/mod_devicetable.h>
 
+#include "../../include/generated/autoconf.h"
+
 #define DEVID(devid) DEFINE(SIZE_##devid, sizeof(struct devid))
 #define DEVID_FIELD(devid, field) \
 	DEFINE(OFF_##devid##_##field, offsetof(struct devid, field))
@@ -84,8 +86,10 @@ int main(void)
 	DEVID_FIELD(pcmcia_device_id, prod_id_hash);
 
 	DEVID(of_device_id);
+#ifdef CONFIG_OF_NAME_TYPE
 	DEVID_FIELD(of_device_id, name);
 	DEVID_FIELD(of_device_id, type);
+#endif
 	DEVID_FIELD(of_device_id, compatible);
 
 	DEVID(vio_device_id);
