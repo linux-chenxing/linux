@@ -94,4 +94,15 @@ config OF_DMA_DEFAULT_COHERENT
 	# arches should select this if DMA is coherent by default for OF devices
 	bool
 
+config OF_COMPATIBLE_MAX_LEN
+	int "compatible string max length" if EXPERT
+	default 128
+	help
+	  The maximum length for a device tree compatible string in bytes.
+	  Currently 64 bytes is probably safe but the default is 128.
+	  This means you are potentially losing ~64 bytes for each of_device_id
+	  defined by enabled drivers.
+	  On memory constrained systems adjusting this option might help
+	  you eek out a few more kilobytes of free memory.
+
 endif # OF
