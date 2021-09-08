@@ -105,4 +105,14 @@ config OF_COMPATIBLE_MAX_LEN
 	  On memory constrained systems adjusting this option might help
 	  you eek out a few more kilobytes of free memory.
 
+config OF_NAME_TYPE
+	bool "name and type in of_device_id" if EXPERT
+	default y
+	help
+	  Whether or not of_device_id should have a name and type field.
+	  These fields use 64 bytes combined but nothing actually sets
+	  them so they are dead space. By disabling this option you can
+	  remove these fields and regain 64 bytes for each of_device_id
+	  defined by enabled drivers.
+
 endif # OF
