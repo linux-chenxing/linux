@@ -945,14 +945,20 @@ const struct of_device_id *__of_match_node(const struct of_device_id *matches,
 					   const struct device_node *node)
 {
 	const struct of_device_id *best_match = NULL;
+	const char *name = "\0", *type = "\0";
 	int score, best_score = 0;
 
 	if (!matches)
 		return NULL;
 
-	for (; matches->name[0] || matches->type[0] || matches->compatible[0]; matches++) {
+#ifdef CONFIG_OF_NAME_TYPE
+	name = matches->name;
+	type = matches->type;
+#endif
+	for (; name[0] || type[0] || matches->compatible[0]; matches++) {
 		score = __of_device_is_compatible(node, matches->compatible,
-						  matches->type, matches->name);
+						  type, name);
+
 		if (score > best_score) {
 			best_match = matches;
 			best_score = score;
