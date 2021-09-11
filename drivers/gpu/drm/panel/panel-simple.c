@@ -3946,6 +3946,7 @@ static const struct panel_desc arm_rtsm = {
 };
 
 static const struct of_device_id platform_of_match[] = {
+#if 0
 	{
 		.compatible = "ampire,am-1280800n3tzqw-t00h",
 		.data = &ampire_am_1280800n3tzqw_t00h,
@@ -4024,10 +4025,14 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "chefree,ch101olhlwh-002",
 		.data = &chefree_ch101olhlwh_002,
-	}, {
+	},
+#endif
+	{
 		.compatible = "chenchen,cc0702i50r",
 		.data = &chenchen_cc0702i50r,
-	}, {
+	},
+#if 0
+	{
 		.compatible = "chunghwa,claa070wp03xg",
 		.data = &chunghwa_claa070wp03xg,
 	}, {
@@ -4093,10 +4098,14 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "foxlink,fl500wvr00-a0t",
 		.data = &foxlink_fl500wvr00_a0t,
-	}, {
+	},
+#endif
+	{
 		.compatible = "frida,frd350h54004",
 		.data = &frida_frd350h54004,
-	}, {
+	},
+#if 0
+	{
 		.compatible = "friendlyarm,hd702e",
 		.data = &friendlyarm_hd702e,
 	}, {
@@ -4339,13 +4348,16 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "yes-optoelectronics,ytc700tlag-05-201c",
 		.data = &yes_optoelectronics_ytc700tlag_05_201c,
-	}, {
+	},
+#endif
+	{
 		/* Must be the last entry */
 		.compatible = "panel-dpi",
 		.data = &panel_dpi,
 	}, {
 		/* sentinel */
 	}
+
 };
 MODULE_DEVICE_TABLE(of, platform_of_match);
 
