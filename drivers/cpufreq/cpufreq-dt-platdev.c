@@ -16,6 +16,7 @@
  * platforms using "operating-points" (V1) property.
  */
 static const struct of_device_id allowlist[] __initconst = {
+#ifdef CONFIG_ARCH_SUNXI
 	{ .compatible = "allwinner,sun4i-a10", },
 	{ .compatible = "allwinner,sun5i-a10s", },
 	{ .compatible = "allwinner,sun5i-a13", },
@@ -26,29 +27,30 @@ static const struct of_device_id allowlist[] __initconst = {
 	{ .compatible = "allwinner,sun8i-a23", },
 	{ .compatible = "allwinner,sun8i-a83t", },
 	{ .compatible = "allwinner,sun8i-h3", },
-
+#endif
 	{ .compatible = "apm,xgene-shadowcat", },
 
 	{ .compatible = "arm,integrator-ap", },
 	{ .compatible = "arm,integrator-cp", },
 
 	{ .compatible = "hisilicon,hi3660", },
-
+#ifdef CONFIG_ARCH_MXC
 	{ .compatible = "fsl,imx27", },
 	{ .compatible = "fsl,imx51", },
 	{ .compatible = "fsl,imx53", },
-
+#endif
 	{ .compatible = "marvell,berlin", },
 	{ .compatible = "marvell,pxa250", },
 	{ .compatible = "marvell,pxa270", },
-
+#ifdef CONFIG_ARCH_EXYNOS
 	{ .compatible = "samsung,exynos3250", },
 	{ .compatible = "samsung,exynos4210", },
 	{ .compatible = "samsung,exynos5250", },
 #ifndef CONFIG_BL_SWITCHER
 	{ .compatible = "samsung,exynos5800", },
 #endif
-
+#endif
+#ifdef CONFIG_ARCH_RENESAS
 	{ .compatible = "renesas,emev2", },
 	{ .compatible = "renesas,r7s72100", },
 	{ .compatible = "renesas,r8a73a4", },
@@ -65,7 +67,8 @@ static const struct of_device_id allowlist[] __initconst = {
 	{ .compatible = "renesas,r8a7793", },
 	{ .compatible = "renesas,r8a7794", },
 	{ .compatible = "renesas,sh73a0", },
-
+#endif
+#ifdef CONFIG_ARCH_ROCKCHIP
 	{ .compatible = "rockchip,rk2928", },
 	{ .compatible = "rockchip,rk3036", },
 	{ .compatible = "rockchip,rk3066a", },
@@ -80,19 +83,22 @@ static const struct of_device_id allowlist[] __initconst = {
 	  .data = &(struct cpufreq_dt_platform_data)
 		{ .have_governor_per_policy = true, },
 	},
-
+#endif
+#ifdef CONFIG_ARCH_U8500
 	{ .compatible = "st-ericsson,u8500", },
 	{ .compatible = "st-ericsson,u8540", },
 	{ .compatible = "st-ericsson,u9500", },
 	{ .compatible = "st-ericsson,u9540", },
-
+#endif
+#ifdef CONFIG_ARCH_OMAP
 	{ .compatible = "ti,omap2", },
 	{ .compatible = "ti,omap4", },
 	{ .compatible = "ti,omap5", },
-
+#endif
+#ifdef CONFIG_ARCH_ZYNQ
 	{ .compatible = "xlnx,zynq-7000", },
 	{ .compatible = "xlnx,zynqmp", },
-
+#endif
 	{ }
 };
 
@@ -101,13 +107,15 @@ static const struct of_device_id allowlist[] __initconst = {
  * platforms using "operating-points-v2" property.
  */
 static const struct of_device_id blocklist[] __initconst = {
+#ifdef CONFIG_ARCH_SUNXI
 	{ .compatible = "allwinner,sun50i-h6", },
-
+#endif
 	{ .compatible = "arm,vexpress", },
-
+#ifdef CONFIG_ARCH_HIGHBANK
 	{ .compatible = "calxeda,highbank", },
 	{ .compatible = "calxeda,ecx-2000", },
-
+#endif
+#ifdef CONFIG_ARCH_MXC
 	{ .compatible = "fsl,imx7ulp", },
 	{ .compatible = "fsl,imx7d", },
 	{ .compatible = "fsl,imx7s", },
@@ -115,9 +123,11 @@ static const struct of_device_id blocklist[] __initconst = {
 	{ .compatible = "fsl,imx8mm", },
 	{ .compatible = "fsl,imx8mn", },
 	{ .compatible = "fsl,imx8mp", },
-
+#endif
+#ifdef CONFIG_ARCH_MVEBU
 	{ .compatible = "marvell,armadaxp", },
-
+#endif
+#ifdef CONFIG_ARCH_MEDIATEK
 	{ .compatible = "mediatek,mt2701", },
 	{ .compatible = "mediatek,mt2712", },
 	{ .compatible = "mediatek,mt7622", },
@@ -130,12 +140,14 @@ static const struct of_device_id blocklist[] __initconst = {
 	{ .compatible = "mediatek,mt8186", },
 	{ .compatible = "mediatek,mt8365", },
 	{ .compatible = "mediatek,mt8516", },
-
+#endif
+#ifdef CONFIG_ARCH_TEGRA
 	{ .compatible = "nvidia,tegra20", },
 	{ .compatible = "nvidia,tegra30", },
 	{ .compatible = "nvidia,tegra124", },
 	{ .compatible = "nvidia,tegra210", },
-
+#endif
+#ifdef CONFIG_ARCH_QCOM
 	{ .compatible = "qcom,apq8096", },
 	{ .compatible = "qcom,msm8996", },
 	{ .compatible = "qcom,qcs404", },
@@ -151,21 +163,24 @@ static const struct of_device_id blocklist[] __initconst = {
 	{ .compatible = "qcom,sm8150", },
 	{ .compatible = "qcom,sm8250", },
 	{ .compatible = "qcom,sm8350", },
-
+#endif
+#ifdef CONFIG_ARCH_STI
 	{ .compatible = "st,stih407", },
 	{ .compatible = "st,stih410", },
 	{ .compatible = "st,stih418", },
-
+#endif
+#ifdef CONFIG_ARCH_OMAP
 	{ .compatible = "ti,am33xx", },
 	{ .compatible = "ti,am43", },
 	{ .compatible = "ti,dra7", },
 	{ .compatible = "ti,omap3", },
-
+#endif
+#ifdef CONFIG_ARCH_QCOM
 	{ .compatible = "qcom,ipq8064", },
 	{ .compatible = "qcom,apq8064", },
 	{ .compatible = "qcom,msm8974", },
 	{ .compatible = "qcom,msm8960", },
-
+#endif
 	{ }
 };
 
