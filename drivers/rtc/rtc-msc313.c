@@ -45,6 +45,7 @@
 struct msc313_rtc {
 	struct rtc_device *rtc_dev;
 	void __iomem *rtc_base;
+	int wakeirq;
 };
 
 static int msc313_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
@@ -212,6 +213,14 @@ static int msc313_rtc_probe(struct platform_device *pdev)
 		return ret;
 	}
 
+	priv->wakeirq = platform_get_irq(pdev, 1);
+	if (priv->wakeirq == 0)
+		return -ENODEV;
+	ret = devm_request_irq(&pdev->dev, priv->wakeirq, msc313_rtc_interrupt,
+			       IRQF_SHARED, dev_name(&pdev->dev), &pdev->dev);
+	if (ret)
+		return ret;
+
 	clk = devm_clk_get_enabled(dev, NULL);
 	if (IS_ERR(clk)) {
 		dev_err(dev, "No input reference clock\n");
@@ -227,6 +236,33 @@ static int msc313_rtc_probe(struct platform_device *pdev)
 	return devm_rtc_register_device(priv->rtc_dev);
 }
 
+static int __maybe_unused msc313_rtc_suspend(struct device *dev)
+{
+	struct msc313_rtc *rtc = dev_get_drvdata(dev);
+
+	if (rtc->wakeirq >= 0) {
+		if (device_may_wakeup(dev))
+			enable_irq_wake(rtc->wakeirq);
+		else
+			disable_irq_wake(rtc->wakeirq);
+	}
+
+	return 0;
+}
+
+static int __maybe_unused msc313_rtc_resume(struct device *dev)
+{
+	struct msc313_rtc *rtc = dev_get_drvdata(dev);
+
+	if (rtc->wakeirq >= 0 && device_may_wakeup(dev))
+		disable_irq_wake(rtc->wakeirq);
+
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(msc313_rtc_pm_ops, msc313_rtc_suspend,
+			 msc313_rtc_resume);
+
 static const struct of_device_id msc313_rtc_of_match_table[] = {
 	{ .compatible = "mstar,msc313-rtc" },
 	{ }
@@ -238,6 +274,7 @@ static struct platform_driver msc313_rtc_driver = {
 	.driver = {
 		.name = "msc313-rtc",
 		.of_match_table = msc313_rtc_of_match_table,
+		.pm = &msc313_rtc_pm_ops,
 	},
 };
 
