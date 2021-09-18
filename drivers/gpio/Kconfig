@@ -831,6 +831,15 @@ config GPIO_MSC313_PM
 	help
 	  Say Y here to support PM GPIO on MStar MSC313 and later SoCs.
 
+config GPIO_SSD210
+	bool "SigmaStar SSD210 GPIO support"
+	default y if ARCH_MSTARV7
+	depends on (ARCH_MSTARV7 && MACH_PIONEER3) || COMPILE_TEST
+	select GPIOLIB_IRQCHIP
+	help
+	  Say Y here to support GPIO on the SigmaStar SSD210 and related
+	  SoCs.
+
 endmenu
 
 menu "Port-mapped I/O GPIO drivers"
