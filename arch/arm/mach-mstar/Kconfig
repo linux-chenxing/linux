@@ -20,4 +20,17 @@ config MACH_INFINITY
 	help
 	  Support for MStar/Sigmastar infinity IP camera SoCs.
 
+config MACH_PIONEER3
+	bool "Sigmastar pioneer3 SoC support"
+	default ARCH_MSTARV7
+	help
+	  Support for Sigmastar pioneer3 SoCs.
+
+config MACH_MERCURY
+	bool "MStar/Sigmastar mercury SoC support"
+	default ARCH_MSTARV7
+	help
+	  Support for MStar/Sigmastar mercury dash camera SoCs.
+	  Note that older Mercury2 SoCs are ARM9 based and not supported.
+
 endif
