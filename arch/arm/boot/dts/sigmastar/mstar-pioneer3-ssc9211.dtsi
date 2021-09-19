@@ -15,7 +15,11 @@
 		reg = <0x20000000 0x4000000>;
 	};
 };
- 
+
+&pinctrl_pm {
+	compatible = "sstar,ssd210-pm-pinctrl";
+};
+
 &sar {
 	compatible = "sstar,ssd210-sar";
 	status = "okay";
