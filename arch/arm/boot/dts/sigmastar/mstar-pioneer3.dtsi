@@ -140,12 +140,6 @@
 	compatible = "sstar,ssd20xd-pinctrl";
 };
 
-&gpio {
-	compatible = "sstar,ssd20xd-gpio";
-	/delete-property/ gpio-ranges;
-	status = "okay";
-};
-
 &pmu {
 	interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
 		     <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
@@ -153,6 +147,8 @@
 };
 
 &riu {
+	/delete-node/ gpio@207800;
+
 	smpctrl: smpctrl@204000 {
 		compatible = "sstar,ssd201-smpctrl", "mstar,smpctrl";
 		reg = <0x204000 0x200>;
@@ -164,6 +160,13 @@
 		#interrupt-cells = <2>;
 		interrupt-controller;
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	gpio: gpio@207c00 {
+		compatible = "sstar,ssd210-gpio";
+		reg = <0x207c00 0x200>;
+		#gpio-cells = <2>;
+		gpio-controller;
 	};
 
 	pspi0: spi@222400 {
