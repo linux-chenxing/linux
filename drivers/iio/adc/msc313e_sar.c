@@ -187,6 +187,77 @@ static const struct mstar_sar_info ssd20x_info = {
 };
 #endif /* infinity */
 
+#ifdef CONFIG_MACH_PIONEER3
+/* ssd210 */
+#define PIN_SSD210_SAR_GPIO0	62
+#define PIN_SSD210_SAR_GPIO1	61
+#define PIN_SSD210_SAR_GPIO2	60
+
+#define SSD210_PIN(n) PINCTRL_PIN(PIN_SSD210_SAR_GPIO##n, PINNAME_SAR_GPIO##n)
+
+static struct pinctrl_pin_desc ssd210_sar_pins[] = {
+	SSD210_PIN(0),
+	SSD210_PIN(1),
+	SSD210_PIN(2),
+};
+
+#define SSD210_SAR_PINCTRL_GROUP(n) SAR_PINCTRL_GROUP(PINNAME_SAR_GPIO##n, PIN_SSD210_SAR_GPIO##n)
+
+static const struct sar_pinctrl_group ssd210_sar_pinctrl_groups[] = {
+	SSD210_SAR_PINCTRL_GROUP(0),
+	SSD210_SAR_PINCTRL_GROUP(1),
+	SSD210_SAR_PINCTRL_GROUP(2),
+};
+
+static const unsigned ssd210_rangepins[] = {
+	PIN_SSD210_SAR_GPIO0,
+	PIN_SSD210_SAR_GPIO1,
+	PIN_SSD210_SAR_GPIO2,
+};
+
+static const struct mstar_sar_info ssd210_info = {
+	.pins = ssd210_sar_pins,
+	.npins = ARRAY_SIZE(ssd210_sar_pins),
+	.groups = ssd210_sar_pinctrl_groups,
+	.ngroups = ARRAY_SIZE(ssd210_sar_pinctrl_groups),
+	.rangepins = ssd210_rangepins,
+	.nrangepins = ARRAY_SIZE(ssd210_rangepins),
+};
+
+/* ssd212 */
+#define PIN_SSD212_SAR_GPIO0	125
+#define PIN_SSD212_SAR_GPIO1	124
+
+#define SSD212_PIN(n) PINCTRL_PIN(PIN_SSD212_SAR_GPIO##n, PINNAME_SAR_GPIO##n)
+
+static struct pinctrl_pin_desc ssd212_sar_pins[] = {
+	SSD212_PIN(0),
+	SSD212_PIN(1),
+};
+
+#define SSD212_SAR_PINCTRL_GROUP(n) SAR_PINCTRL_GROUP(PINNAME_SAR_GPIO##n, PIN_SSD212_SAR_GPIO##n)
+
+static const struct sar_pinctrl_group ssd212_sar_pinctrl_groups[] = {
+	SSD212_SAR_PINCTRL_GROUP(0),
+	SSD212_SAR_PINCTRL_GROUP(1),
+};
+
+static const unsigned ssd212_rangepins[] = {
+	PIN_SSD212_SAR_GPIO0,
+	PIN_SSD212_SAR_GPIO1,
+};
+
+static const struct mstar_sar_info ssd212_info = {
+	.pins = ssd212_sar_pins,
+	.npins = ARRAY_SIZE(ssd212_sar_pins),
+	.groups = ssd212_sar_pinctrl_groups,
+	.ngroups = ARRAY_SIZE(ssd212_sar_pinctrl_groups),
+	.rangepins = ssd212_rangepins,
+	.nrangepins = ARRAY_SIZE(ssd212_rangepins),
+};
+
+#endif /* pioneer3 */
+
 #ifdef CONFIG_MACH_MERCURY
 /* ssc8336 */
 #define PIN_SSC8336_SAR_GPIO0	24
@@ -703,6 +774,16 @@ static const struct of_device_id msc313e_sar_dt_ids[] = {
 	{
 		.compatible = "sstar,ssd20x-sar",
 		.data = &ssd20x_info,
+	},
+#endif
+#ifdef CONFIG_MACH_PIONEER3
+	{
+		.compatible = "sstar,ssd210-sar",
+		.data = &ssd210_info,
+	},
+	{
+		.compatible = "sstar,ssd212-sar",
+		.data = &ssd212_info,
 	},
 #endif
 #ifdef CONFIG_MACH_MERCURY
