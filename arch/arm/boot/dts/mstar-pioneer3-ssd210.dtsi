@@ -16,6 +16,10 @@
 	};
 };
 
+&pinctrl_pm {
+	compatible = "sstar,ssd210-pm-pinctrl";
+};
+
 &sar {
 	compatible = "sstar,ssd210-sar";
 	status = "okay";
