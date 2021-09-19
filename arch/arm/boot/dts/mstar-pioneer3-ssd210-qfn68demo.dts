@@ -85,7 +85,3 @@
 		};
 	};
 };
-
-&pinctrl_pm {
-	compatible = "sstar,ssd20xd-pm-pinctrl";
-};
