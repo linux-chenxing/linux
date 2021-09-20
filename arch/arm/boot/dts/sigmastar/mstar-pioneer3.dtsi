@@ -162,6 +162,9 @@
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
+	padtop: padtop@207800 {
+	};
+
 	gpio: gpio@207c00 {
 		compatible = "sstar,ssd210-gpio";
 		reg = <0x207c00 0x200>;
