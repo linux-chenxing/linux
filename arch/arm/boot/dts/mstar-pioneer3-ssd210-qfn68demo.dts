@@ -42,6 +42,16 @@
 		regulator-boot-on;
 	};
 
+/* not present on all versions?
+	3v3_ext: regulator-3v3-ext {
+		compatible = "regulator-fixed";
+		regulator-name = "3v3_ext";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpios = <&gpio SSD210_GPIO_SR_IO10 0>;
+	};
+*/
+
 	vcc_sd: regulator-vcc-sd {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_sd";
