@@ -167,6 +167,9 @@
 		reg = <0x207c00 0x200>;
 		#gpio-cells = <2>;
 		gpio-controller;
+		#interrupt-cells = <2>;
+		interrupt-controller;
+		interrupt-parent = <&gpi>;
 	};
 
 	pspi0: spi@222400 {
