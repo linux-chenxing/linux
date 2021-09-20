@@ -97,5 +97,8 @@
 };
 
 &sdio {
-	status = "okay";
+	vmmc-supply = <&vcc_sd>;
+	vqmmc-supply = <&vcc_sd>;
+	cd-gpios = <&gpio SSD210_GPIO_TTL0 GPIO_ACTIVE_LOW>;
+	status = "disabled";
 };
