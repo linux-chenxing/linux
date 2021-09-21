@@ -554,6 +554,7 @@ static void msc313_gpio_irq_unmask(struct irq_data *d)
 static const struct irq_chip msc313_gpio_irqchip = {
 	.name = "GPIO",
 	.irq_eoi = irq_chip_eoi_parent,
+	.irq_ack = irq_chip_ack_parent,
 	.irq_mask = msc313_gpio_irq_mask,
 	.irq_unmask = msc313_gpio_irq_unmask,
 	.irq_set_type = irq_chip_set_type_parent,
