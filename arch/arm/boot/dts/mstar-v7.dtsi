@@ -103,6 +103,7 @@
 			pmsleep: syscon@1c00 {
 				compatible = "mstar,msc313-pmsleep", "syscon", "simple-mfd";
 				reg = <0x1c00 0x100>;
+				use-raw-spinlock;
 
 				pinctrl_pm: pinctrl {
 					pm_uart_pins: pm_uart {
