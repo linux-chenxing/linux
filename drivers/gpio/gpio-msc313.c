@@ -539,6 +539,7 @@ static int msc313_gpio_direction_output(struct gpio_chip *chip, unsigned int off
 static struct irq_chip msc313_gpio_irqchip = {
 	.name = "GPIO",
 	.irq_eoi = irq_chip_eoi_parent,
+	.irq_ack = irq_chip_ack_parent,
 	.irq_mask = irq_chip_mask_parent,
 	.irq_unmask = irq_chip_unmask_parent,
 	.irq_set_type = irq_chip_set_type_parent,
