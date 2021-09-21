@@ -108,6 +108,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 	syscon_config.reg_stride = reg_io_width;
 	syscon_config.val_bits = reg_io_width * 8;
 	syscon_config.max_register = resource_size(&res) - reg_io_width;
+	syscon_config.use_raw_spinlock = of_property_read_bool(np, "use-raw-spinlock");
 
 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
 	kfree(syscon_config.name);
