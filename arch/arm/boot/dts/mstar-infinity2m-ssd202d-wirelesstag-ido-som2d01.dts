@@ -17,5 +17,24 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
 	};
 };
+
+/*
+&usbphy0 {
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&usbphy2 {
+	status = "okay";
+};
+
+&uhc2 {
+	status = "okay";
+};
+*/
