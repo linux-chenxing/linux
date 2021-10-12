@@ -5,6 +5,7 @@
  */
 
 /dts-v1/;
+#include "mstar-infinity2m-ssd201.dtsi"
 #include "mstar-infinity2m-ssd201-wirelesstag-ido-som2d01.dtsi"
 
 / {
