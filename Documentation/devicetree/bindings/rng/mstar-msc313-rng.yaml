@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/rng/mstar-msc313-rng.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: MStar MSC313 HWRNG
+
+maintainers:
+  - Daniel Palmer <daniel@thingy.jp>
+
+description: |+
+  MStar MSC313 and later MStar and SigmaStar HWRNG 
+
+properties:
+  compatible:
+    const: mstar,msc313-rng
+
+  reg:
+    maxItems: 1
+
+  clocks:
+    maxItems: 1
+
+required:
+  - compatible
+  - reg
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/clock/mstar-msc313-clkgen.h>
+    rng@224400 {
+        compatible = "mstar,msc313-rng";
+        reg = <0x224400 0x10>;
+        clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MIU 0>;
+    };
+
+...
