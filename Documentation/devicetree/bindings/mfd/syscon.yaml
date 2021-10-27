@@ -91,6 +91,8 @@ properties:
     description:
       Reference to a phandle of a hardware spinlock provider node.
 
+  use-raw-spinlock: true
+
 required:
   - compatible
   - reg
