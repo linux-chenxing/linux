@@ -19,6 +19,13 @@
 		};
 	};
 
+	backlight: backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm 0 50000>;
+		brightness-levels = <0 4 8 16 32 64 128 255>;
+		default-brightness-level = <6>;
+	};
+
 	beeper {
 		compatible = "pwm-beeper";
 		pinctrl-names = "default";
@@ -88,4 +95,9 @@
 	vmmc-supply = <&vcc_sd>;
 	pinctrl-0 = <&sdio_mode1_8ma_pins>;
 	status = "okay";
+};
+
+&pwm {
+	pinctrl-names = "default";
+        pinctrl-0 = <&pwm0_mode3_pins>;
 };
