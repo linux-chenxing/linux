@@ -64,6 +64,17 @@
 		enable-active-high;
 	};
 
+	vcc_lcd_sw: regulator-lcd-sw {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_5v";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_FUART_RTS 0>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
 	panel@0 {
 		compatible = "chenchen,cc0702i50r";
 		reg = <0>;
