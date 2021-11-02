@@ -118,9 +118,9 @@
 	pinctrl-0 = <&i2c1_mode1_pins>;
 	status = "okay";
 
-	ts@48 {
+	ts@4b {
 		compatible = "ti,tsc2007";
-		reg = <0x48>;
+		reg = <0x4b>;
 		status = "disabled";
 	};
 
