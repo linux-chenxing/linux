@@ -123,6 +123,10 @@
 	};
 };
 
+&aesdma {
+	compatible = "sstar,ssd20xd-aesdma";
+};
+
 &bdma {
 	compatible = "sstar,ssd20xd-bdma";
 	reg = <0x200400 0x100>;
