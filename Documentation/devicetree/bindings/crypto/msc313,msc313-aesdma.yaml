@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/crypto/msc313,msc313-aesdma.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: MStar/SigmaStar AESDMA bindings
+
+maintainers:
+  - Daniel Palmer <daniel@thingy.jp>
+
+properties:
+  compatible:
+    enum:
+      - msc313,msc313-aesdma
+      - sstar,ssd20xd-aesdma
+
+  reg:
+    maxItems: 1
+
+  clocks:
+    maxItems: 1
+
+required:
+  - compatible
+  - reg
+  - clocks
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/clock/mstar-msc313-clkgen.h>
+    aesdma@224540 {
+      reg = <0x224540 0xc0>;
+      compatible = "mstar,msc313-aesdma";
+      clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_AESDMA 0>;
+    };
+...
