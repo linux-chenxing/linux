@@ -2432,6 +2432,8 @@ F:	arch/arm/boot/dts/sigmastar/
 F:	Documentation/devicetree/bindings/interrupt-controller/mstar,msc313-pm-intc.yaml
 F:	Documentation/devicetree/bindings/interrupt-controller/sstar,ssd20xd-gpi.yaml
 F:	Documentation/devicetree/bindings/pinctrl/mstar,*
+F:	Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.yaml
+F:	Documentation/devicetree/bindings/watchdog/mstar,msc313e-wdt.yaml
 F:	arch/arm/mach-mstar/
 F:	drivers/clk/mstar/
 F:	drivers/clocksource/timer-msc313e.c
