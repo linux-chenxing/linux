@@ -124,6 +124,14 @@
 		wakeup-source;
 	};
 
+	movedma: movedma@201600 {
+		compatible = "sstar,ssd20xd-movedma";
+		#dma-cells = <1>;
+		reg = <0x201600 0x200>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_MSPI_MOVEDMA 0>;
+		interrupts-extended = <&intc_irq GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
 	//start address for second cpu
 	//0x1F20404C
 	//0x1F204050
