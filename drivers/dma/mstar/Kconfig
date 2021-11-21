@@ -14,3 +14,8 @@ config MSTAR_MSC313_URDMA
 	tristate "MStar MSC313 URDMA support"
 	depends on ARCH_MSTARV7 || COMPILE_TEST
 	select DMA_ENGINE
+
+config SSTAR_SSD20XD_MOVEDMA
+	tristate "SigmaStar SSD20xD MOVEDMA support"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	select DMA_ENGINE
