@@ -274,7 +274,7 @@
 		compatible = "generic-ahci";
 		reg = <0x345000 0x1000>;
 		interrupts-extended = <&intc_irq GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SATA 0>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SATA 0>;
 		status = "disabled";
 	};
 
