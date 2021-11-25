@@ -6,18 +6,12 @@
 
 #include "mstar-infinity.dtsi"
 
-&cpu0_opp_table {
-		opp-1000000000 {
-			opp-hz = /bits/ 64 <1000000000>;
-			opp-microvolt = <1000000>;
-			clock-latency-ns = <300000>;
-		};
-
-		opp-1200000000 {
-			opp-hz = /bits/ 64 <1200000000>;
-			opp-microvolt = <1000000>;
-			clock-latency-ns = <300000>;
-		};
+/ {
+	clk_timer: timer_clk {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <432000000>;
+	};
 };
 
 &cpus {
@@ -124,4 +118,14 @@
 
 &gpio {
 	interrupt-parent = <&gpi>;
+};
+
+&timer1 {
+	compatible = "sstar,ssd20xd-timer";
+	clocks = <&clk_timer>;
+};
+
+&timer2 {
+	compatible = "sstar,ssd20xd-timer";
+	clocks = <&clk_timer>;
 };
