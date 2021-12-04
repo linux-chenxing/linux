@@ -76,12 +76,15 @@ int wave5_vdi_release(struct device *dev)
 
 void wave5_vdi_write_register(struct vpu_device *vpu_dev, unsigned int addr, unsigned int data)
 {
+	printk("write --> 0x%08x:0x08%x\n", addr, data);
 	writel(data, vpu_dev->vdb_register + addr);
 }
 
 unsigned int wave5_vdi_read_register(struct vpu_device *vpu_dev, unsigned int addr)
 {
-	return readl(vpu_dev->vdb_register + addr);
+	unsigned int val = readl(vpu_dev->vdb_register + addr);
+	printk("read  <-- 0x%08x:0x%08x\n", addr, val);
+	return val;
 }
 
 int wave5_vdi_clear_memory(struct vpu_device *vpu_dev, struct vpu_buf *vb)
