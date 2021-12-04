@@ -257,6 +257,19 @@
 		#phy-cells = <0>;
 	};
 
+	vpu: video-codec@344800 {
+		compatible = "sstar,ssd20xd-vdec";
+		reg = <0x344800 0x800>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_DEC_PCLK 0>,
+			<&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_DEC_ACLK 0>,
+			<&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_DEC_BCLK 0>,
+			<&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_DEC_CCLK 0>;
+		interrupts-extended = <&intc_irq GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+		status = "disabled";
+	};
+
 	sata: ahci@345000 {
 		compatible = "generic-ahci";
 		reg = <0x345000 0x1000>;
