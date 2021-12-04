@@ -87,7 +87,7 @@ static int wave5_wait_bus_busy(struct vpu_device *vpu_dev, int timeout, unsigned
 	 vpu_dev->product_code == WAVE521E1_CODE)
 		gdi_status_check_value = 0x00ff1f3f;
 
-	return read_poll_timeout(wave5_vdi_read_register, data, data == gdi_status_check_value,
+	return read_poll_timeout(wave5_read_register, data, data == gdi_status_check_value,
 				 0, timeout * 1000, false, vpu_dev, addr);
 }
 
@@ -115,7 +115,7 @@ bool wave5_vpu_is_init(struct vpu_device *vpu_dev)
 static struct dma_vpu_buf *get_sram_memory(struct vpu_device *vpu_dev)
 {
 	u32 sram_size = 0;
-	u32 val = vpu_read_reg(vpu_dev, W5_PRODUCT_NUMBER);
+	u32 val = vpu_dev->product_code;
 
 	if (vpu_dev->sram_buf.size)
 		return &vpu_dev->sram_buf;
@@ -166,7 +166,8 @@ int32_t wave_vpu_get_product_id(struct vpu_device *vpu_dev)
 	u32 product_id = PRODUCT_ID_NONE;
 	u32 val;
 
-	val = vpu_read_reg(vpu_dev, W5_PRODUCT_NUMBER);
+	//val = vpu_read_reg(vpu_dev, W5_PRODUCT_NUMBER);
+	val = vpu_dev->product_code;
 
 	switch (val) {
 	case WAVE521_CODE:
@@ -419,6 +420,8 @@ int wave5_vpu_init(struct device *dev, u8 *firmware, uint32_t size)
 
 	sram_vb = get_sram_memory(vpu_dev);
 
+	vpu_write_reg(vpu_dev, W5_SW_UART_STATUS, W5_SW_UART_STATUS_EN);
+
 	vpu_write_reg(vpu_dev, W5_ADDR_SEC_AXI, sram_vb->daddr);
 	vpu_write_reg(vpu_dev, W5_SEC_AXI_SIZE, sram_vb->size);
 	vpu_write_reg(vpu_dev, W5_VPU_BUSY_STATUS, 1);
@@ -428,6 +431,13 @@ int wave5_vpu_init(struct device *dev, u8 *firmware, uint32_t size)
 	if (ret) {
 		dev_err(vpu_dev->dev, "VPU init(W5_VPU_REMAP_CORE_START) timeout\n");
 		return ret;
+	}
+
+	for (i = 0; i < 0x20; i++){
+		vpu_write_reg(vpu_dev, W5_SW_UART_STATUS, W5_SW_UART_STATUS_EN);
+		vpu_read_reg(vpu_dev, W5_VCPU_CUR_PC);
+		vpu_read_reg(vpu_dev, W5_SW_UART_STATUS);
+		vpu_read_reg(vpu_dev, W5_SW_UART_TX_DATA);
 	}
 
 	reg_val = vpu_read_reg(vpu_dev, W5_RET_SUCCESS);
@@ -517,7 +527,7 @@ int wave5_vpu_build_up_dec_param(struct vpu_instance *vpu_inst,
 		goto free_vb_work;
 	}
 
-	p_dec_info->product_code = vpu_read_reg(vpu_inst->dev, W5_PRODUCT_NUMBER);
+	p_dec_info->product_code = vpu_dev->product_code;
 
 	return 0;
 free_vb_work:
@@ -1849,7 +1859,7 @@ int wave5_vpu_build_up_enc_param(struct device *dev, struct vpu_instance *vpu_in
 	p_enc_info->stream_buf_end_addr = param->bitstream_buffer + param->bitstream_buffer_size;
 	p_enc_info->stride = 0;
 	p_enc_info->initial_info_obtained = false;
-	p_enc_info->product_code = vpu_read_reg(vpu_inst->dev, W5_PRODUCT_NUMBER);
+	p_enc_info->product_code = vpu_dev->product_code;
 
 	return 0;
 }

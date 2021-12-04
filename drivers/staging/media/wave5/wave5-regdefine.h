@@ -170,6 +170,12 @@ enum QUERY_OPT {
 #define W5_VPU_DBG_REG2							(W5_REG_BASE + 0x00f8)
 #define W5_VPU_DBG_REG3							(W5_REG_BASE + 0x00fc)
 
+// V2 uart?
+#define W5_SW_UART_STATUS                                               W5_VPU_DBG_REG0
+#define W5_SW_UART_STATUS_EN						BIT(0)
+#define W5_SW_UART_STATUS_HAVEDATA					BIT(1)
+#define W5_SW_UART_TX_DATA                                              W5_VPU_DBG_REG1
+
 /************************************************************************/
 /* PRODUCT INFORMATION                                                  */
 /************************************************************************/
