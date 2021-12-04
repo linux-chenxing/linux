@@ -26,6 +26,7 @@ properties:
             - cnm,cm521c-dual-vpu
             - cnm,cm521e1-vpu
             - cnm,cm537-vpu
+            - sstar,ssd20xd-vdec
   reg:
     maxItems: 1
 
