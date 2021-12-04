@@ -20,10 +20,12 @@
 
 #define WAVE5_IS_ENC BIT(0)
 #define WAVE5_IS_DEC BIT(1)
+#define WAVE5_QUIRK_NOPRODUCTCODEREG BIT(2)
 
 struct wave5_match_data {
 	int flags;
 	const char *fw_name;
+	int quirk_product_code;
 };
 
 int wave5_vpu_wait_interrupt(struct vpu_instance *inst, unsigned int timeout)
@@ -207,13 +209,19 @@ static int wave5_vpu_probe(struct platform_device *pdev)
 		return ret;
 	}
 
-	dev->product_code = wave5_vdi_read_register(dev, VPU_PRODUCT_CODE_REGISTER);
+	if(match_data->flags & WAVE5_QUIRK_NOPRODUCTCODEREG)
+		dev->product_code = match_data->quirk_product_code;
+	else
+		dev->product_code = wave5_vdi_read_register(dev, VPU_PRODUCT_CODE_REGISTER);
 	ret = wave5_vdi_init(&pdev->dev);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "failed to init vdi: %d\n", ret);
 		goto err_clk_dis;
 	}
 	dev->product = wave_vpu_get_product_id(dev);
+
+	//~dgp, try to enable the uart
+	wave5_vdi_write_register(dev, W5_SW_UART_STATUS, W5_SW_UART_STATUS_EN);
 
 	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
 	if (ret) {
@@ -326,6 +334,12 @@ static const struct wave5_match_data default_match_data = {
 	.fw_name = "chagall.bin",
 };
 
+const struct wave5_match_data ssd20xd_vdec_data = {
+	.flags = WAVE5_IS_DEC | WAVE5_QUIRK_NOPRODUCTCODEREG,
+	.fw_name = "wave511_dec_fw.bin",
+	.quirk_product_code = WAVE511_CODE,
+};
+
 static const struct of_device_id wave5_dt_ids[] = {
 	{ .compatible = "cnm,cm511-vpu", .data = &wave511_data },
 	{ .compatible = "cnm,cm517-vpu", .data = &default_match_data },
@@ -334,6 +348,7 @@ static const struct of_device_id wave5_dt_ids[] = {
 	{ .compatible = "cnm,cm521c-dual-vpu", .data = &wave521c_data },
 	{ .compatible = "cnm,cm521e1-vpu", .data = &default_match_data },
 	{ .compatible = "cnm,cm537-vpu", .data = &default_match_data },
+	{ .compatible = "sstar,ssd20xd-vdec", .data = &ssd20xd_vdec_data },
 	{ /* sentinel */ }
 };
 MODULE_DEVICE_TABLE(of, wave5_dt_ids);
