@@ -21,6 +21,7 @@
 		regulator-min-microvolt = <950000>;
 		regulator-max-microvolt = <1000000>;
 		regulator-boot-on;
+		regulator-ramp-delay = <12000>;
 		gpios = <&sar 1 0>;
 		states = <1000000 0x1
 			  950000  0x0>;
