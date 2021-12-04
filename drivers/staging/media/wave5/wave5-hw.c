@@ -82,6 +82,8 @@ static int wave5_wait_bus_busy(struct vpu_device *vpu_dev, int timeout, unsigned
 	u32 gdi_status_check_value = 0x3f;
 	u32 data;
 
+	dump_stack();
+
 	if (vpu_dev->product_code == WAVE521C_CODE ||
 	    vpu_dev->product_code == WAVE521_CODE ||
 	 vpu_dev->product_code == WAVE521E1_CODE)
@@ -315,6 +317,7 @@ int wave5_vpu_get_version(struct vpu_device *vpu_dev, uint32_t *version_info,
 {
 	u32 reg_val;
 	int ret;
+	u32 tmp;
 
 	vpu_write_reg(vpu_dev, W5_QUERY_OPTION, GET_VPU_INFO);
 	vpu_write_reg(vpu_dev, W5_VPU_BUSY_STATUS, 1);
@@ -336,6 +339,36 @@ int wave5_vpu_get_version(struct vpu_device *vpu_dev, uint32_t *version_info,
 		*version_info = 0;
 	if (revision)
 		*revision = reg_val;
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_FW_VERSION);
+	dev_info(vpu_dev->dev, "fw version: 0x%08x\n", tmp);
+
+	//tmp = wave5_vdi_read_register(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
+	//dev_info(vpu_dev->dev, "config0: 0x%08x\n", tmp);
+	tmp = vpu_read_reg(vpu_dev, W5_RET_STD_DEF0);
+	dev_info(vpu_dev->dev, "fw config0: 0x%08x\n", tmp);
+	//tmp = wave5_vdi_read_register(vpu_dev, W5_VPU_RET_VPU_CONFIG1);
+	//dev_info(vpu_dev->dev, "config1: 0x%08x\n", tmp);
+	tmp = vpu_read_reg(vpu_dev, W5_RET_STD_DEF1);
+	dev_info(vpu_dev->dev, "fw config1: 0x%08x\n", tmp);
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_CONF_FEATURE);
+	dev_info(vpu_dev->dev, "fw conf feature: 0x%08x\n", tmp);
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_CONF_DATE);
+	dev_info(vpu_dev->dev, "fw conf date: 0x%08x\n", tmp);
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_CONF_REVISION);
+	dev_info(vpu_dev->dev, "fw conf revision: 0x%08x\n", tmp);
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_CONF_TYPE);
+	dev_info(vpu_dev->dev, "fw conf type: 0x%08x\n", tmp);
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_PRODUCT_ID);
+	dev_info(vpu_dev->dev, "fw product id: 0x%08x\n", tmp);
+
+	tmp = vpu_read_reg(vpu_dev, W5_RET_CUSTOMER_ID);
+	dev_info(vpu_dev->dev, "fw customer id: 0x%08x\n", tmp);
 
 	return 0;
 }
@@ -433,19 +466,12 @@ int wave5_vpu_init(struct device *dev, u8 *firmware, uint32_t size)
 		return ret;
 	}
 
-	for (i = 0; i < 0x20; i++){
-		vpu_write_reg(vpu_dev, W5_SW_UART_STATUS, W5_SW_UART_STATUS_EN);
-		vpu_read_reg(vpu_dev, W5_VCPU_CUR_PC);
-		vpu_read_reg(vpu_dev, W5_SW_UART_STATUS);
-		vpu_read_reg(vpu_dev, W5_SW_UART_TX_DATA);
-	}
-
 	reg_val = vpu_read_reg(vpu_dev, W5_RET_SUCCESS);
 	if (!reg_val) {
 		u32 reason_code = vpu_read_reg(vpu_dev, W5_RET_FAIL_REASON);
 
 		wave5_print_reg_err(vpu_dev, reason_code);
-		return -EIO;
+		//return -EIO;
 	}
 
 	return setup_wave5_properties(dev);
@@ -1629,7 +1655,7 @@ int wave5_vpu_reset(struct device *dev, enum sw_reset_mode reset_mode)
 
 			// step2 : waiting for completion of bus transaction
 			if (wave5_wait_bus_busy(vpu_dev, VPU_BUSY_CHECK_TIMEOUT,
-						W5_BACKBONE_BUS_STATUS_VCORE0) == -1) {
+						W5_BACKBONE_BUS_STATUS_VCORE0)) {
 				wave5_write_register(vpu_dev, W5_BACKBONE_BUS_CTRL_VCORE0, 0x00);
 				return -EBUSY;
 			}
@@ -1639,7 +1665,7 @@ int wave5_vpu_reset(struct device *dev, enum sw_reset_mode reset_mode)
 
 			// step2 : waiting for completion of bus transaction
 			if (wave5_wait_bus_busy(vpu_dev, VPU_BUSY_CHECK_TIMEOUT,
-						W5_COMBINED_BACKBONE_BUS_STATUS) == -1) {
+						W5_COMBINED_BACKBONE_BUS_STATUS)) {
 				wave5_write_register(vpu_dev, W5_COMBINED_BACKBONE_BUS_CTRL, 0x00);
 				return -EBUSY;
 			}
