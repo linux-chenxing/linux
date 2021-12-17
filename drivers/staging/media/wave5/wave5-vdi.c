@@ -76,7 +76,7 @@ int wave5_vdi_release(struct device *dev)
 
 void wave5_vdi_write_register(struct vpu_device *vpu_dev, unsigned int addr, unsigned int data)
 {
-	printk("write --> 0x%08x:0x08%x\n", addr, data);
+	printk("write --> 0x%08x:0x%08x\n", addr, data);
 	writel(data, vpu_dev->vdb_register + addr);
 }
 
