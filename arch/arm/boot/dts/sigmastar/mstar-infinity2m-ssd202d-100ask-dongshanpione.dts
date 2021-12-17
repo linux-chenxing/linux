@@ -7,6 +7,8 @@
 /dts-v1/;
 #include "mstar-infinity2m-ssd202d.dtsi"
 
+#include <dt-bindings/gpio/gpio.h>
+
 / {
 	model = "DongShanPi One";
 	compatible = "100ask,dongshanpione", "mstar,infinity2m";
@@ -18,8 +20,112 @@
 	chosen {
 		stdout-path = "serial0:115200n8";
 	};
+
+	gpio-keys {
+		compatible = "gpio-keys-polled";
+		poll-interval = <100>;
+
+		button {
+			label = "button";
+			gpios = <&gpio SSD20XD_GPIO_GPIO86 GPIO_ACTIVE_LOW>;
+			linux,code = <0x100>; /* BTN_0 */
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		green {
+			gpios = <&gpio SSD20XD_GPIO_GPIO13 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "heartbeat";
+		};
+		blue {
+			gpios = <&gpio SSD20XD_GPIO_GPIO14 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "activity";
+		};
+	};
+
+	reg_vcc_core: regulator@0 {
+		compatible = "regulator-gpio";
+		regulator-name = "vcc_core";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <900000>;
+		regulator-max-microvolt = <1000000>;
+		regulator-boot-on;
+		regulator-ramp-delay = <12000>;
+		gpios = <&sar 1 0>;
+		states = <1000000 0x1
+			  900000  0x0>;
+	};
+
+	reg_vcc_io: regulator-vcc-io {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_io";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+	};
+
+	reg_vcc_dram: regulator-vcc-dram {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_dram";
+		regulator-min-microvolt = <1500000>;
+		regulator-max-microvolt = <1500000>;
+		regulator-boot-on;
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&reg_vcc_core>;
 };
 
 &pm_uart {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+	nand: nand@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "spi-nand";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+		spi-rx-bus-width = <4>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			ubi@2c0000 {
+				label = "ubi";
+				reg = <0x2c0000 0x7d40000>;
+			};
+		};
+	};
+};
+
+&miu {
+	ddr-supply = <&reg_vcc_dram>;
+};
+
+&sdio {
+	vmmc-supply = <&reg_vcc_io>;
+	vqmmc-supply = <&reg_vcc_io>;
+	status = "okay";
+};
+
+&usbphy0 {
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&usbphy2 {
+	status = "okay";
+};
+
+&uhc2 {
 	status = "okay";
 };
