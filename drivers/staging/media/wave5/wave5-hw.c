@@ -1592,6 +1592,7 @@ int wave5_vpu_reset(struct device *dev, enum sw_reset_mode reset_mode)
 	struct vpu_device *vpu_dev = dev_get_drvdata(dev);
 	struct vpu_attr *p_attr = &vpu_dev->attr;
 	// VPU doesn't send response. force to set BUSY flag to 0.
+	printk("%s:%d\n", __func__, __LINE__);
 	vpu_write_reg(vpu_dev, W5_VPU_BUSY_STATUS, 0);
 
 	if (reset_mode == SW_RESET_SAFETY) {
@@ -1637,6 +1638,7 @@ int wave5_vpu_reset(struct device *dev, enum sw_reset_mode reset_mode)
 
 		} else if (p_attr->support_vcore_backbone) {
 			if (p_attr->support_vcpu_backbone) {
+				printk("%s:%d\n", __func__, __LINE__);
 				// step1 : disable request
 				wave5_write_register(vpu_dev, W5_BACKBONE_BUS_CTRL_VCPU,
 						     0xFF);
@@ -1650,9 +1652,11 @@ int wave5_vpu_reset(struct device *dev, enum sw_reset_mode reset_mode)
 					return ret;
 				}
 			}
+			printk("%s:%d\n", __func__, __LINE__);
 			// step1 : disable request
 			wave5_write_register(vpu_dev, W5_BACKBONE_BUS_CTRL_VCORE0, 0x7);
 
+			printk("%s:%d\n", __func__, __LINE__);
 			// step2 : waiting for completion of bus transaction
 			if (wave5_wait_bus_busy(vpu_dev, VPU_BUSY_CHECK_TIMEOUT,
 						W5_BACKBONE_BUS_STATUS_VCORE0)) {
