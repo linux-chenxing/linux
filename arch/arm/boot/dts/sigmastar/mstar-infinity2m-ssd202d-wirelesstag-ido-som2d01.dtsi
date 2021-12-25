@@ -26,3 +26,25 @@
 	regulator-min-microvolt = <1500000>;
 	regulator-max-microvolt = <1500000>;
 };
+
+/*
+&usbphy0 {
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&usbphy2 {
+	status = "okay";
+};
+
+&uhc2 {
+	status = "okay";
+};
+
+&miu {
+	ddr-supply = <&vcc_dram>;
+};
+*/
