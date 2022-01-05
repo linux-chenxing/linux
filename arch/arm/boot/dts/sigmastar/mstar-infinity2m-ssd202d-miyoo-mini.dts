@@ -190,3 +190,7 @@
         pinctrl-0 = <&i2c1_mode1_pins>;
 	status = "okay";
 };
+
+&miu {
+	ddr-supply = <&reg_vcc_dram>;
+};
