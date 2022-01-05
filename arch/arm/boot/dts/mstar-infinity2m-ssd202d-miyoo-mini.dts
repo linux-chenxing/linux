@@ -20,6 +20,12 @@
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
 	};
 
+	gpio-charger {
+		compatible = "gpio-charger";
+		charger-type = "usb-dcp";
+		gpios = <&gpio_pm SSD20XD_PM_IRIN>;
+	};
+
 	gpio-keys {
 		compatible = "gpio-keys-polled";
 		poll-interval = <10>;
