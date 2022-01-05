@@ -127,6 +127,11 @@
 		};
 	};
 
+	vibrator {
+		compatible = "gpio-vibrator";
+		enable-gpios = <&gpio SSD20XD_GPIO_UART0_TX GPIO_ACTIVE_LOW>;
+	};
+
 	reg_vcc_core: regulator-vcc-core {
 		compatible = "regulator-gpio";
 		regulator-name = "vcc_core";
