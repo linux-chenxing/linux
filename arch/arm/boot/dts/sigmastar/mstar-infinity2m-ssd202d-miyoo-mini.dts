@@ -184,3 +184,9 @@
 	pinctrl-names = "default";
         pinctrl-0 = <&pwm0_mode3_pins>;
 };
+
+&i2c1 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&i2c1_mode1_pins>;
+	status = "okay";
+};
