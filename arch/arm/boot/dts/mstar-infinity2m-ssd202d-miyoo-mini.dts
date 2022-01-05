@@ -179,3 +179,8 @@
 &pm_uart {
 	status = "okay";
 };
+
+&pwm {
+	pinctrl-names = "default";
+        pinctrl-0 = <&pwm0_mode3_pins>;
+};
