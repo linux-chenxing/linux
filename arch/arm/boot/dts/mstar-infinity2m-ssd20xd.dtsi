@@ -82,3 +82,7 @@
 	compatible = "sstar,ssd20x-sar";
 	status = "okay";
 };
+
+&sdio {
+	cd-gpios = <&gpio_pm SSD20XD_PM_SD_CDZ GPIO_ACTIVE_LOW>;
+};
