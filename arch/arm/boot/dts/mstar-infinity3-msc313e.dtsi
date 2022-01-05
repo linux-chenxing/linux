@@ -52,3 +52,7 @@
 &pinctrl_pm {
 	compatible = "mstar,msc313e-pm-pinctrl";
 };
+
+&sdio {
+	cd-gpios = <&gpio_pm MSC313_PM_SD_CDZ GPIO_ACTIVE_LOW>;
+};
