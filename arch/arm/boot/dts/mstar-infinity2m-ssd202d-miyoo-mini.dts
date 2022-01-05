@@ -126,6 +126,43 @@
 			linux,code = <116>; /* KEY_POWER */
 		};
 	};
+
+	reg_vcc_core: regulator-vcc-core {
+		compatible = "regulator-gpio";
+		regulator-name = "vcc_core";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <950000>;
+		regulator-max-microvolt = <1000000>;
+		regulator-boot-on;
+		regulator-ramp-delay = <12000>;
+		gpios = <&sar 1 0>;
+		states = <1000000 0x1
+			  950000  0x0>;
+	};
+
+	reg_vcc_dram: regulator-vcc-dram {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_dram";
+		regulator-min-microvolt = <1500000>;
+		regulator-max-microvolt = <1500000>;
+		regulator-boot-on;
+	};
+
+	reg_vcc_io: regulator-vcc-io {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_io";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+	};
+
+	reg_vdd_sd: regulator-vdd-sd {
+		compatible = "regulator-fixed";
+		regulator-name = "sd_vdd";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio SSD20XD_GPIO_GPIO0 0>;
+	};
 };
 
 &pm_uart {
