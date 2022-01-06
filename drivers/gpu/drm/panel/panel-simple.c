@@ -4611,6 +4611,35 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
 	.lanes = 4,
 };
 
+static const struct drm_display_mode samsung_lms279cc01_mode = {
+	.clock = 154500,
+	.hdisplay = 640,
+	.hsync_start = 640 + 112,
+	.hsync_end = 640 + 112 + 16,
+	.htotal = 640 + 112 + 16 + 32,
+	.vdisplay =  480,
+	.vsync_start = 480 + 16,
+	.vsync_end = 480 + 16 + 2,
+	.vtotal = 480 + 16 + 2 + 16,
+	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+};
+
+static const struct panel_desc_dsi samsung_lms279cc01 = {
+	.desc = {
+		.modes = &samsung_lms279cc01_mode,
+		.num_modes = 1,
+		.bpc = 8,
+		.size = {
+			.width = 57,
+			.height = 44,
+		},
+		.connector_type = DRM_MODE_CONNECTOR_DSI,
+	},
+	.flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_CLOCK_NON_CONTINUOUS,
+	.format = MIPI_DSI_FMT_RGB888,
+	.lanes = 4,
+};
+
 static const struct of_device_id dsi_of_match[] = {
 	{
 		.compatible = "auo,b080uan01",
@@ -4634,6 +4663,10 @@ static const struct of_device_id dsi_of_match[] = {
 		.compatible = "osddisplays,osd101t2045-53ts",
 		.data = &osd101t2045_53ts
 	}, {
+		.compatible = "samsung,lms279cc01",
+		.data = &samsung_lms279cc01
+	},
+	{
 		/* sentinel */
 	}
 };
