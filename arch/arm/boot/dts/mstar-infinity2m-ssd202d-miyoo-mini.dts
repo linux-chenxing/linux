@@ -169,12 +169,14 @@
 		gpio = <&gpio SSD20XD_GPIO_GPIO0 0>;
 	};
 
-	backlight: backlight {
-		compatible = "pwm-backlight";
-		pwms = <&pwm 0 50000>;
-		brightness-levels = <0 4 8 16 32 64 128 255>;
-		default-brightness-level = <6>;
-	};
+	//backlight: backlight {
+	//	compatible = "pwm-backlight";
+	//	pwms = <&pwm 0 50000>;
+	//	brightness-levels = <0 4 8 16 32 64 128 255>;
+	//	default-brightness-level = <6>;
+	//	pinctrl-names = "default";
+	//	pinctrl-0 = <&pwm0_mode3_pins>;
+	//};
 };
 
 &cpu0 {
@@ -183,11 +185,6 @@
 
 &pm_uart {
 	status = "okay";
-};
-
-&pwm {
-	pinctrl-names = "default";
-        pinctrl-0 = <&pwm0_mode3_pins>;
 };
 
 &i2c1 {
@@ -227,6 +224,7 @@
 		pinctrl-0 = <&tx_mipi_mode1_pins>;
 		//backlight = <&backlight>;
 		dsi-lanes = <4>;
+		rotation = <180>;
 		port {
 			panel_in: endpoint {
 				remote-endpoint = <&dsi_out>;
