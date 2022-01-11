@@ -178,5 +178,5 @@
 };
 
 &vpu {
-	status = "okay";
+	//status = "okay";
 };
