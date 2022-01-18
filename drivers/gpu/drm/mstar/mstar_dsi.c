@@ -687,7 +687,7 @@ static void mstar_dsi_poweroff(struct mstar_dsi *dsi)
 	 * mstar_dsi_stop() and mstar_dsi_start() is asymmetric, since
 	 * mstar_dsi_stop() should be called after mtk_drm_crtc_atomic_disable(),
 	 * which needs irq for vblank, and mstar_dsi_stop() will disable irq.
-	 * mstar_dsi_start() needs to be called in mtk_output_dsi_enable(),
+	 * mstar_dsi_start() needs to be called in mstar_output_dsi_enable(),
 	 * after dsi is fully set.
 	 */
 	mstar_dsi_stop(dsi);
@@ -705,7 +705,7 @@ static void mstar_dsi_poweroff(struct mstar_dsi *dsi)
 	phy_power_off(dsi->phy);
 }
 
-static void mtk_output_dsi_enable(struct mstar_dsi *dsi)
+static void mstar_output_dsi_enable(struct mstar_dsi *dsi)
 {
 	int ret;
 
@@ -726,7 +726,7 @@ static void mtk_output_dsi_enable(struct mstar_dsi *dsi)
 	dsi->enabled = true;
 }
 
-static void mtk_output_dsi_disable(struct mstar_dsi *dsi)
+static void mstar_output_dsi_disable(struct mstar_dsi *dsi)
 {
 	if (!dsi->enabled)
 		return;
@@ -759,14 +759,14 @@ static void mstar_dsi_bridge_disable(struct drm_bridge *bridge)
 {
 	struct mstar_dsi *dsi = bridge_to_dsi(bridge);
 
-	//mtk_output_dsi_disable(dsi);
+	//mstar_output_dsi_disable(dsi);
 }
 
 static void mstar_dsi_bridge_enable(struct drm_bridge *bridge)
 {
 	struct mstar_dsi *dsi = bridge_to_dsi(bridge);
 
-	//mtk_output_dsi_enable(dsi);
+	//mstar_output_dsi_enable(dsi);
 }
 
 static const struct drm_bridge_funcs mstar_dsi_bridge_funcs = {
@@ -1125,7 +1125,7 @@ static int mstar_dsi_remove(struct platform_device *pdev)
 {
 	struct mstar_dsi *dsi = platform_get_drvdata(pdev);
 
-	mtk_output_dsi_disable(dsi);
+	mstar_output_dsi_disable(dsi);
 	drm_bridge_remove(&dsi->bridge);
 	component_del(&pdev->dev, &mstar_dsi_component_ops);
 	mipi_dsi_host_unregister(&dsi->host);
