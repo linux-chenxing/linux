@@ -93,12 +93,12 @@
 		turbo-mode;
 	};
 
-	opp-1800000000 {
+/*	opp-1800000000 {
 		opp-hz = /bits/ 64 <1800000000>;
 		opp-microvolt = <1000000>;
 		clock-latency-ns = <300000>;
 		turbo-mode;
-	};
+	};*/
 };
 
 &pmu {
