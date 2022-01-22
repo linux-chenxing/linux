@@ -145,6 +145,16 @@
 				mask = <0x79>;
 			};
 
+			gpio_pm: gpio_pm@1e00 {
+				reg = <0x1e00 0x200>;
+				#gpio-cells = <2>;
+				gpio-controller;
+				interrupt-controller;
+				#interrupt-cells = <3>;
+				interrupt-parent = <&pmintc>;
+				status = "disabled";
+			};
+
 			rtc@2400 {
 				compatible = "mstar,msc313-rtc";
 				reg = <0x2400 0x40>;
