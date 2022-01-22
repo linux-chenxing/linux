@@ -4,6 +4,9 @@
  * Author: Daniel Palmer <daniel@thingy.jp>
  */
 
+#include <dt-bindings/gpio/msc313-gpio-pm.h>
+#include <dt-bindings/pinctrl/mstar.h>
+
 #include "mstar-infinity3.dtsi"
 
 / {
@@ -11,6 +14,15 @@
 		device_type = "memory";
 		reg = <0x20000000 0x4000000>;
 	};
+};
+
+&gpio_pm {
+	compatible = "mstar,msc313-gpio-pm";
+	gpio-ranges = <&pinctrl_pm MSC313_PM_GPIO4 PIN_MSC313_PM_GPIO4 1>,
+		      <&pinctrl_pm MSC313_PM_SD_CDZ PIN_MSC313_PM_SD_CDZ 1>;
+	/*interrupts-extended = <&gpio_pm MSC313_PM_GPIO4 6 IRQ_TYPE_LEVEL_HIGH>,
+			      <&intc_fiq GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;*/
+	status = "okay";
 };
 
 &pinctrl {
