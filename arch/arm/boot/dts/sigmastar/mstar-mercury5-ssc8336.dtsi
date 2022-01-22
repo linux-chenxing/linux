@@ -21,3 +21,24 @@
 	gpio-ranges = <&pinctrl SSC8336_SPI0_CK PIN_SSC8336N_SPI0_CK 1>;
 	status = "okay";
 };
+
+&gpio_pm {
+	compatible = "mstar,ssc8336-gpio-pm";
+	gpio-ranges = <&pinctrl SSC8336_PM_GPIO0 PIN_SSC8336N_PM_GPIO0 1>,
+		      <&pinctrl SSC8336_PM_GPIO2 PIN_SSC8336N_PM_GPIO2 1>,
+		      <&pinctrl SSC8336_PM_GPIO4 PIN_SSC8336N_PM_GPIO4 1>,
+		      <&pinctrl SSC8336_PM_GPIO5 PIN_SSC8336N_PM_GPIO5 1>,
+		      <&pinctrl SSC8336_PM_GPIO6 PIN_SSC8336N_PM_GPIO6 1>,
+		      <&pinctrl SSC8336_PM_GPIO8 PIN_SSC8336N_PM_GPIO8 1>,
+		      <&pinctrl SSC8336_PM_SPI_DO PIN_SSC8336N_PM_SPI_DO 1>,
+		      <&pinctrl SSC8336_PM_SD_SDZ PIN_SSC8336N_PM_SD_CDZ 1>;
+	interrupt-names = "pm_gpio4",
+			  "pm_gpio5",
+			  "pm_spi_do",
+			  "pm_sd_sdz";
+	interrupts-extended = <&gpio_pm SSC8336_PM_GPIO4 PM_GPIO4_IRQ IRQ_TYPE_LEVEL_HIGH>,
+			      <&gpio_pm SSC8336_PM_GPIO5 PM_GPIO5_IRQ IRQ_TYPE_LEVEL_HIGH>,
+			      <&gpio_pm SSC8336_PM_SPI_DO 29 IRQ_TYPE_LEVEL_HIGH>;
+			      /*<&intc_fiq 23 IRQ_TYPE_LEVEL_HIGH>;*/
+	status = "okay";
+};
