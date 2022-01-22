@@ -45,3 +45,9 @@
 &imi {
 	reg = <0xa0000000 0x20000>;
 };
+
+&gpio_pm {
+	interrupt-names = "pm_spi_do", "pm_sd_sdz";
+	interrupts-extended = <&gpio_pm 0 29 IRQ_TYPE_LEVEL_HIGH>;
+			      /*<&intc_fiq 23 IRQ_TYPE_LEVEL_HIGH>;*/
+};
