@@ -12,10 +12,10 @@
 #define MSC313_PM_IRIN		1
 #define MSC313_PM_SD_CDZ	2
 
-#define SSD20XD_PM_LED0		0
-#define SSD20XD_PM_LED1		1
-#define SSD20XD_PM_IRIN		2
-#define SSD20XD_PM_SD_CDZ	3
+#define SSD20XD_PM_IRIN		0
+#define SSD20XD_PM_SD_CDZ	1
+#define SSD20XD_PM_LED0		2
+#define SSD20XD_PM_LED1		3
 
 #define SSC8336_PM_GPIO0	0
 #define SSC8336_PM_GPIO2	1
