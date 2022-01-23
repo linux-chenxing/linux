@@ -823,6 +823,14 @@ config GPIO_IDT3243X
 	  To compile this driver as a module, choose M here: the module will
 	  be called gpio-idt3243x.
 
+config GPIO_MSC313_PM
+	bool "MStar MSC313 PM GPIO support"
+	default y if ARCH_MSTARV7
+	depends on ARCH_MSTARV7
+	select GPIOLIB_IRQCHIP
+	help
+	  Say Y here to support PM GPIO on MStar MSC313 and later SoCs.
+
 endmenu
 
 menu "Port-mapped I/O GPIO drivers"
