@@ -91,6 +91,32 @@ static const unsigned int msc313_offsets[] = {
 CHIP_DATA(msc313);
 #endif /* infinity */
 
+#ifdef CONFIG_MACH_MERCURY
+static const char * const ssc8336_names[] = {
+	NAME_GPIO0,
+	NAME_GPIO2,
+	NAME_GPIO4,
+	NAME_GPIO5,
+	NAME_GPIO6,
+	NAME_GPIO8,
+	NAME_SPI_DO,
+	NAME_SD_SDZ
+};
+
+static const unsigned int ssc8336_offsets[] = {
+	OFF_GPIO0,
+	OFF_GPIO2,
+	OFF_GPIO4,
+	OFF_GPIO5,
+	OFF_GPIO6,
+	OFF_GPIO8,
+	OFF_SPI_DO,
+	OFF_SD_CZ
+};
+
+CHIP_DATA(ssc8336);
+#endif /* mercury */
+
 struct msc313_pm_gpio {
 	struct device *dev;
 	void __iomem *base;
@@ -302,6 +328,13 @@ static const struct of_device_id msc313_pm_gpio_of_match[] = {
 		/* MSC313, MSC313e */
 		.compatible	= "mstar,msc313-gpio-pm",
 		.data		= &info_msc313,
+	},
+#endif
+#ifdef CONFIG_MACH_MERCURY
+	{
+		/* SSC8336, SSC8336N */
+		.compatible	= "mstar,ssc8336-gpio-pm",
+		.data		= &info_ssc8336,
 	},
 #endif
 	{ }
