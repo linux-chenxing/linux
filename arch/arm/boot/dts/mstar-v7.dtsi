@@ -402,6 +402,14 @@
 				clock-frequency = <172000000>;
 				status = "disabled";
 			};
+
+			uart1: uart@221200 {
+				compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
+				reg = <0x221200 0x100>;
+				reg-shift = <3>;
+				interrupts-extended = <&intc_irq GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+				status = "disabled";
+			};
 		};
 
 		imi: sram@a0000000 {
