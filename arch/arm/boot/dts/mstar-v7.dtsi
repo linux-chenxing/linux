@@ -394,8 +394,8 @@
 				status = "disabled";
 			};
 
-			pm_uart: uart@221000 {
-				compatible = "ns16550a";
+			pm_uart: serial@221000 {
+				compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
 				reg = <0x221000 0x100>;
 				reg-shift = <3>;
 				interrupts-extended = <&intc_irq GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
