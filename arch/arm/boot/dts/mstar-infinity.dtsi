@@ -68,6 +68,11 @@
 	reg = <0xa0000000 0x16000>;
 };
 
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart1_pins>;
+};
+
 &gpio {
 	compatible = "mstar,msc313-gpio";
 	gpio-ranges = <&pinctrl 0 36 22>,
