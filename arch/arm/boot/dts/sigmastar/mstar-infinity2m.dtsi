@@ -178,6 +178,18 @@
 		compatible = "sstar,ssd20xd-op2";
 		reg = <0x225200 0x200>;
 		status = "disabled";
+		ports {
+			port@0 {
+				reg = <0>;
+				op2_ttl: endpoint {
+				};
+			};
+			port@1 {
+				reg = <1>;
+				op2_dsi: endpoint {
+				};
+			};
+		};
 	};
 
 	// all zeros
