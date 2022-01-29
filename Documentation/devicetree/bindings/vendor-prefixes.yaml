@@ -240,6 +240,8 @@ patternProperties:
     description: Check Point Software Technologies Ltd.
   "^chefree,.*":
     description: Chefree Technology Corp.
+  "^chenchen,.*":
+    description: Shenzhen Chenchen Technology Co., Ltd
   "^chipidea,.*":
     description: Chipidea, Inc
   "^chipone,.*":
