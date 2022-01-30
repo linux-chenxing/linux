@@ -3546,6 +3546,31 @@ static const struct panel_desc startek_kd070wvfpa = {
 		     DRM_BUS_FLAG_SYNC_SAMPLE_NEGEDGE,
 };
 
+static const struct drm_display_mode std_std70tft102460013f_mode = {
+	.clock = 51200000,
+	.hdisplay = 1024,
+	.hsync_start = 1024 + 140,
+	.hsync_end = 1024 + 140 + 20,
+	.htotal = 1024 + 140 + 20 + 160,
+	.vdisplay = 600,
+	.vsync_start = 600 + 20,
+	.vsync_end = 600 + 20 + 3,
+	.vtotal = 600 + 20 + 3 + 12,
+};
+
+static const struct panel_desc std_std70tft102460013f = {
+	.modes = &std_std70tft102460013f_mode,
+	.num_modes = 1,
+	.bpc = 8,
+	.size = {
+		.width = 154,
+		.height = 86,
+	},
+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
+	.connector_type = DRM_MODE_CONNECTOR_DPI,
+};
+
 static const struct display_timing tsd_tst043015cmhx_timing = {
 	.pixelclock = { 5000000, 9000000, 12000000 },
 	.hactive = { 480, 480, 480 },
@@ -4288,6 +4313,9 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "startek,kd070wvfpa",
 		.data = &startek_kd070wvfpa,
+	}, {
+		.compatible = "std,std7.0tft1024600-13-f",
+		.data = &std_std70tft102460013f,
 	}, {
 		.compatible = "team-source-display,tst043015cmhx",
 		.data = &tsd_tst043015cmhx,
