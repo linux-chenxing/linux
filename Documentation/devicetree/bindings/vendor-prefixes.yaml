@@ -1228,6 +1228,8 @@ patternProperties:
     description: Starry Electronic Technology (ShenZhen) Co., LTD
   "^startek,.*":
     description: Startek
+  "^std,.*":
+    description: Shenzhen STD Technology Co., Ltd.
   "^ste,.*":
     description: ST-Ericsson
     deprecated: true
