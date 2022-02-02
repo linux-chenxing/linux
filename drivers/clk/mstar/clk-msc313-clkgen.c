@@ -553,6 +553,16 @@ static const struct msc313_clkgen_parent_data ge_parents[] = {
 };
 #define GE	MSC313_MUX_PARENT_DATA("ge", ge_parents, 0x144, 0, 2, 3, -1)
 
+static const struct msc313_clkgen_parent_data disp_432_parents[] = {
+	PARENT_GATE(6),
+};
+#define DISP_432	MSC313_MUX_PARENT_DATA("disp_432", disp_432_parents, 0x14c, 0, 2, 2, -1)
+
+static const struct msc313_clkgen_parent_data disp_216_parents[] = {
+	PARENT_GATE(9),
+};
+#define DISP_216	MSC313_MUX_PARENT_DATA("disp_216", disp_216_parents, 0x14c, 8, 10, 2, -1)
+
 /* ssd20xd only? */
 static const struct msc313_clkgen_parent_data mop_parents[] = {
 	PARENT_MUX(MSC313_CLKGEN_MIU), // wrong
@@ -611,6 +621,13 @@ static const struct msc313_clkgen_parent_data isp_parents[] = {
 	PARENT_DIVIDER(9, 4),
 };
 #define ISP	MSC313_MUX_PARENT_DATA("isp", isp_parents, 0x184, 8, 10, 2, 12)
+
+static const struct msc313_clkgen_parent_data sc_pixel_parents[] = {
+	PARENT_GATE(9), // WRONG!!
+	PARENT_GATE(9),
+	/* lpll */
+};
+#define SC_PIXEL MSC313_MUX_PARENT_DATA("sc_pixel", sc_pixel_parents, 0x18c, 0, 2, 3, -1)
 
 static const struct msc313_clkgen_parent_data jpe_parents[] = {
 	PARENT_GATE(8),
@@ -671,6 +688,9 @@ static const struct msc313_mux_data ssd20xd_muxes[] = {
 	DEC_ACLK,
 	DEC_BCLK,
 	DEC_CCLK,
+	SC_PIXEL,
+	DISP_432,
+	DISP_216,
 };
 
 static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
