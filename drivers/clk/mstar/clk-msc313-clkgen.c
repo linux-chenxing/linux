@@ -256,10 +256,6 @@ static const unsigned int gate8_dividers[] = { 2, 4, 8 };
 
 static const unsigned int gate9_dividers[] = { 2, 4, 8 };
 
-#define GATE9_DIVIDEBY_2 0
-#define GATE9_DIVIDEBY_4 1
-#define GATE9_DIVIDEBY_8 2
-
 static const unsigned int gate11_dividers[] = { 2, 4 };
 static const unsigned int gate12_dividers[] = { 2 };
 
@@ -623,11 +619,19 @@ static const struct msc313_clkgen_parent_data isp_parents[] = {
 #define ISP	MSC313_MUX_PARENT_DATA("isp", isp_parents, 0x184, 8, 10, 2, 12)
 
 static const struct msc313_clkgen_parent_data sc_pixel_parents[] = {
-	PARENT_GATE(9), // WRONG!!
+	PARENT_GATE(9), // WRONG!! should be 240MHz -- utmi 240
 	PARENT_GATE(9),
+	PARENT_GATE(3),
+	PARENT_GATE(7),
+	PARENT_GATE(7), // WRONG!! should be 144MHz
+	PARENT_GATE(12),
+	PARENT_DIVIDER(9, 2),
+	PARENT_GATE(14),
+	PARENT_GATE(7), // WRONG!! should be 72MHz
+	PARENT_DIVIDER(9, 4),
 	/* lpll */
 };
-#define SC_PIXEL MSC313_MUX_PARENT_DATA("sc_pixel", sc_pixel_parents, 0x18c, 0, 2, 3, -1)
+#define SC_PIXEL MSC313_MUX_PARENT_DATA("sc_pixel", sc_pixel_parents, 0x18c, 0, 2, 4, -1)
 
 static const struct msc313_clkgen_parent_data jpe_parents[] = {
 	PARENT_GATE(8),
@@ -726,10 +730,10 @@ static struct clk_hw *msc313_clkgen_xlate(struct of_phandle_args *clkspec, void 
 	case MSC313_CLKGEN_DEGLITCHES:
 		return &clkgen->muxes->muxes[idx].deglitch_hw;
 	case MSC313_CLKGEN_GATES:
-		return &clkgen->gates->clk_hw;
+		return &clkgen->gates[idx].clk_hw;
 	case MSC313_CLKGEN_DIVIDERS:
 		divider = clkspec->args[2];
-		return clkgen->gates->clk_hw_dividers[divider];
+		return clkgen->gates[idx].clk_hw_dividers[divider];
 	}
 
 	return msc313_mux_xlate(clkspec, clkgen->muxes);
