@@ -4313,10 +4313,14 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "startek,kd070wvfpa",
 		.data = &startek_kd070wvfpa,
-	}, {
+	},
+#endif
+	{
 		.compatible = "std,std7.0tft1024600-13-f",
 		.data = &std_std70tft102460013f,
-	}, {
+	},
+#if 0
+	{
 		.compatible = "team-source-display,tst043015cmhx",
 		.data = &tsd_tst043015cmhx,
 	}, {
