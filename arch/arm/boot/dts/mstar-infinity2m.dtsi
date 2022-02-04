@@ -172,6 +172,11 @@
 		compatible = "sstar,ssd20xd-display-top";
 		reg = <0x225000 0x200>;
 		interrupts-extended = <&intc_irq GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+		clock-names = "sc_pixel", "disp_432", "disp_216", "hdmi";
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SC_PIXEL 0>,
+			 <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_DISP_432 0>,
+			 <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_DISP_216 0>,
+			 <&sc_gp_ctrl_muxes SSD20XD_SC_GP_HDMI_GATE>;
 	};
 
 	op2: op2@225200 {
