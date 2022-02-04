@@ -59,6 +59,15 @@ static const struct clk_parent_data sdio_parents[] = {
 
 #define SSD20XD_SDIO_BOOT_MUX	0x94
 
+static const struct clk_parent_data hdmi_parents[] = {
+	{ .fw_name = "xtal_div2" },
+	{ .fw_name = "sc_pixel" },
+};
+
+#define SSD20XD_HDMI_MUX	0xd4
+
+#define SSD20XD_HDMI MSC313_MUX_CLK_PARENT_DATA("hdmi", hdmi_parents, SSD20XD_HDMI_MUX, 0, 2, 2, -1)
+
 static const struct msc313_mux_data ssd20xd_muxes[] = {
 	EMAC_MUXES,
 	MSC313_MUX_CLK_PARENT_DATA("emac1_rx", emac_rxtx_parents, 0xcc, 0, 2, 1, -1),
@@ -72,6 +81,7 @@ static const struct msc313_mux_data ssd20xd_muxes[] = {
 	 */
 	MSC313_MUX_CLK_PARENT_DATA_FLAGS("sdio_gate", sdio_parents, SSD20XD_SDIO_BOOT_MUX,
 			-1, 3, 1, -1, 0, CLK_SET_RATE_PARENT),
+	SSD20XD_HDMI,
 };
 
 static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
