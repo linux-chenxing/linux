@@ -113,6 +113,9 @@ static int msc313_lpll_probe(struct platform_device *pdev)
 	lpll->pd = devm_regmap_field_alloc(dev, regmap, ctrl_pd);
 	lpll->input_div = devm_regmap_field_alloc(dev, regmap, input_div);
 
+	/* turn this off while confirming the screen stuff */
+	regmap_field_write(lpll->pd, 1);
+
 	clk_init.name = dev_name(dev);
 	clk_init.ops = &msc313_lpll_ops;
 	clk_init.parent_data = &lpll_parent;
