@@ -164,7 +164,7 @@ static void mstar_gop_dump(struct mstar_gop *gop)
 	regmap_field_read(gop->stretch_window_coordinate_h, &coordinateh);
 	regmap_field_read(gop->stretch_window_coordinate_v, &coordinatev);
 
-	dev_info(gop->dev,
+	dev_dbg(gop->dev,
 		 "rst: %d\n"
 		 "scan_type: %s\n"
 		 "colorspace: %s\n"
@@ -194,7 +194,7 @@ static void mstar_gop_dump(struct mstar_gop *gop)
 		regmap_field_read(window->vend, &vend);
 		regmap_field_read(window->pitch, &pitch);
 
-		dev_info(gop->dev,
+		dev_dbg(gop->dev,
 			"window 1:\n"
 			"en: %d\n"
 			"format: %d\n"
