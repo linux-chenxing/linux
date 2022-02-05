@@ -180,3 +180,7 @@
 &vpu {
 	//status = "okay";
 };
+
+&ubi {
+	reg = <0x2c0000 0xFD40000>;
+};
