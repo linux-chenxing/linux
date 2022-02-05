@@ -123,7 +123,6 @@ static void mstar_mop_dump_window(struct device *dev, struct mstar_mop_window *w
 static int mop_plane_atomic_check(struct drm_plane *plane,
 				    struct drm_atomic_state *state)
 {
-	printk("%s\n", __func__);
 	return 0;
 }
 
@@ -133,8 +132,6 @@ static void mstar_mop_plane_atomic_update(struct drm_plane *plane,
 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state, plane);
 	struct mstar_mop_window *window = plane_to_mop_window(plane);
 	struct mstar_mop *mop = window->mop;
-
-	printk("%s\n", __func__);
 
 	regmap_field_write(window->en, new_state->crtc ? 1 : 0);
 
