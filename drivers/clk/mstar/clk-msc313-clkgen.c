@@ -256,6 +256,10 @@ static const unsigned int gate8_dividers[] = { 2, 4, 8 };
 
 static const unsigned int gate9_dividers[] = { 2, 4, 8 };
 
+#define GATE9_DIVIDEBY_2 0
+#define GATE9_DIVIDEBY_4 1
+#define GATE9_DIVIDEBY_8 2
+
 static const unsigned int gate11_dividers[] = { 2, 4 };
 static const unsigned int gate12_dividers[] = { 2 };
 
@@ -274,6 +278,7 @@ static const struct msc313_clkgen_gate_data gates_data[] = {
 	GATE_DATA("gate2", gate2_dividers),
 	/* utmi 192 */
 	GATE_DATA("gate3", gate3_dividers),
+	/* utmi 240 */
 	GATE_DATA_NO_DIVIDERS("gate4"),
 	GATE_DATA_NO_DIVIDERS("gate5"),
 	/* mpll 432 */
@@ -629,7 +634,7 @@ static const struct msc313_clkgen_parent_data sc_pixel_parents[] = {
 	PARENT_GATE(14),
 	PARENT_GATE(7), // WRONG!! should be 72MHz
 	PARENT_DIVIDER(9, 4),
-	/* lpll */
+	PARENT_OF("lpll"),
 };
 #define SC_PIXEL MSC313_MUX_PARENT_DATA("sc_pixel", sc_pixel_parents, 0x18c, 0, 2, 4, -1)
 
@@ -647,6 +652,17 @@ static const struct msc313_clkgen_parent_data sata_parents[] = {
 	PARENT_GATE(8),
 };
 #define SATA	MSC313_MUX_PARENT_DATA("sata", sata_parents, 0x1b8, 0, 2, 2, -1)
+
+/* MIPI TX */
+static const struct msc313_clkgen_parent_data mipi_tx_parents[] = {
+	PARENT_OF("lpll"),
+	PARENT_GATE(2),
+	PARENT_DIVIDER(8, 2),
+	PARENT_DIVIDER(9, 2),
+	PARENT_GATE(9),
+	PARENT_GATE(4),
+};
+#define MIPI_TX_DSI	MSC313_MUX_PARENT_DATA("mipi_tx_dsi", mipi_tx_parents, 0x1bc, 0, 2, 3, -1)
 
 #define COMMON		\
 	MIU,		\
@@ -695,6 +711,7 @@ static const struct msc313_mux_data ssd20xd_muxes[] = {
 	SC_PIXEL,
 	DISP_432,
 	DISP_216,
+	MIPI_TX_DSI,
 };
 
 static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
