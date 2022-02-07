@@ -8,6 +8,7 @@
 #include <linux/of_device.h>
 #include <linux/platform_device.h>
 #include <linux/regmap.h>
+#include <dt-bindings/clock/mstar-msc313-sc-gp.h>
 
 #if 0
 		clkgen_special_imi_nm: clkgen_mux@1f226680 {
@@ -63,10 +64,15 @@ static const struct clk_parent_data hdmi_parents[] = {
 	{ .fw_name = "xtal_div2" },
 	{ .fw_name = "sc_pixel" },
 };
-
 #define SSD20XD_HDMI_MUX	0xd4
-
 #define SSD20XD_HDMI MSC313_MUX_CLK_PARENT_DATA("hdmi", hdmi_parents, SSD20XD_HDMI_MUX, 0, 2, 2, -1)
+
+static const struct clk_parent_data mipi_tx_dsi_apb_parents[] = {
+	{ .fw_name = "xtal_div2" }, // incorrect, should be mcu
+	{ .fw_name = "xtal_div2" }, // incorrect, should be mipi_tx_dsi
+};
+#define SSD20XD_MIPI_TX_DSI_APB_MUX	0xdc
+#define SSD20XD_MIPI_TX_DSI_APB MSC313_MUX_CLK_PARENT_DATA("mipi_tx_dsi_apb", mipi_tx_dsi_apb_parents, SSD20XD_MIPI_TX_DSI_APB_MUX, 0, 2, 2, -1)
 
 static const struct msc313_mux_data ssd20xd_muxes[] = {
 	EMAC_MUXES,
@@ -82,6 +88,7 @@ static const struct msc313_mux_data ssd20xd_muxes[] = {
 	MSC313_MUX_CLK_PARENT_DATA_FLAGS("sdio_gate", sdio_parents, SSD20XD_SDIO_BOOT_MUX,
 			-1, 3, 1, -1, 0, CLK_SET_RATE_PARENT),
 	SSD20XD_HDMI,
+	SSD20XD_MIPI_TX_DSI_APB,
 };
 
 static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
