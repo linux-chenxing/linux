@@ -101,7 +101,7 @@ static void mstar_mop_dump_window(struct device *dev, struct mstar_mop_window *w
 	regmap_field_read(win->scale_h, &scaleh);
 	regmap_field_read(win->scale_v, &scalev);
 
-	dev_info(dev, "Window dump\n"
+	dev_dbg(dev, "Window dump\n"
 		      "enabled: %d\n"
 		      "yaddr: 0x%08x\n"
 		      "caddr: 0x%08x\n"
