@@ -243,10 +243,16 @@ static int gop_ssd20xd_gop0_gop_color_to_drm(void)
 static int gop_ssd20xd_gop1_drm_color_to_gop(u32 fourcc)
 {
 	switch(fourcc){
-	case DRM_FORMAT_ARGB1555:
+	case DRM_FORMAT_XRGB1555:
 		return 0x0;
 	case DRM_FORMAT_RGB565:
 		return 0x1;
+	case DRM_FORMAT_ARGB8888:
+		return 0x5;
+	case DRM_FORMAT_ARGB1555:
+		return 0x6;
+	case DRM_FORMAT_ABGR8888:
+		return 0x7;
 	};
 
 	return -ENOTSUPP;
@@ -260,6 +266,19 @@ static int gop_ssd20xd_gop1_gop_color_to_drm(void)
 static int gop_plane_atomic_check(struct drm_plane *plane,
 				  struct drm_atomic_state *state)
 {
+	struct mstar_gop_window *window = plane_to_gop_window(plane);
+	struct mstar_gop *gop = window->gop;
+	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state, plane);
+	struct drm_framebuffer *fb = new_state->fb;
+	int ret;
+
+	fb = new_state->fb;
+	if (!fb)
+		return 0;
+
+	ret = gop->data->drm_color_to_gop(fb->format->format);
+	if(ret < 0)
+		return ret;
 
 	return 0;
 }
@@ -271,9 +290,14 @@ static void gop_plane_atomic_update(struct drm_plane *plane,
 	struct mstar_gop *gop = window->gop;
 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state, plane);
 	struct drm_framebuffer *fb = new_state->fb;
-	struct drm_gem_cma_object *gem = drm_fb_cma_get_gem_obj(fb, 0);
+	struct drm_gem_cma_object *gem;
 	u32 addr;
 
+	fb = new_state->fb;
+	if (!fb)
+		return;
+
+	gem = drm_fb_cma_get_gem_obj(fb, 0);
 	if (!gem)
 		return;
 
