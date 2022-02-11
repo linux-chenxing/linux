@@ -487,7 +487,8 @@
 					      "gate13",
 					      "gate14",
 					      "gate15",
-					      "miupll";
+					      "miupll",
+					      "lpll";
 
 				clocks = <&xtal_div2>,
 					 <&xtal_div2>,
@@ -509,7 +510,8 @@
 					 <&unknownclk>,
 					 <&mpll MSTAR_MSC313_MPLL_DIV10>,
 					 <&unknownclk>,
-					 <&miupll>;
+					 <&miupll>,
+					 <&lpll 0>;
 			};
 
 			did: did@7000 {
