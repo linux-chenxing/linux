@@ -184,6 +184,8 @@
 		reg = <0x225200 0x200>;
 		status = "disabled";
 		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
 			port@0 {
 				reg = <0>;
 				op2_ttl: endpoint {
