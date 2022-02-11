@@ -63,6 +63,10 @@
 
 &op2 {
 	status = "okay";
+	assigned-clocks = <&clkgen MSC313_CLKGEN_MUXES SSD20XD_CLKGEN_SC_PIXEL 0>,
+			  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_HDMI_GATE_MUX>;
+	assigned-clock-parents = <&clkgen MSC313_CLKGEN_DIVIDERS MSC313_CLKGEN_GATE_9 GATE9_DIVIDEBY_4>,
+				 <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SC_PIXEL 0>;
 };
 
 &op2_dsi {
@@ -74,6 +78,8 @@
 };
 
 &dsi {
+	//assigned-clocks = <&clkgen MSC313_CLKGEN_MUXES SSD20XD_CLKGEN_MIPI_TX_DSI 0>;
+	//assigned-clock-parents = <&clkgen MSC313_CLKGEN_GATES MSC313_CLKGEN_GATE_9 0>;
 	status = "okay";
 	panel@0 {
 		compatible = "frida,frd720x720bk";
