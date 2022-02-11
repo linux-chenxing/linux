@@ -69,6 +69,10 @@
 	remote-endpoint = <&dsi_in>;
 };
 
+&dsi_out {
+	remote-endpoint = <&panel_in>;
+};
+
 &dsi {
 	status = "okay";
 	panel@0 {
@@ -84,19 +88,4 @@
 			};
 		};
 	};
-
-	ports {
-		port@0 {
-			reg = <0>;
-			dsi_out: endpoint {
-				remote-endpoint = <&panel_in>;
-			};
-                };
-                port@1 {
-			reg = <1>;
-			dsi_in: endpoint {
-				remote-endpoint = <&op2_dsi>;
-			};
-		};
-        };
 };
