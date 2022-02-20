@@ -169,6 +169,16 @@
 		gpio = <&gpio SSD20XD_GPIO_GPIO0 0>;
 	};
 
+	reg_vbat: regulator-vbat {
+		compatible = "regulator-fixed";
+		regulator-name = "vbat";
+		regulator-min-microvolt = <4200000>;
+		regulator-max-microvolt = <4200000>;
+		gpio = <&gpio SSD20XD_GPIO_GPIO85 0>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
 	//backlight: backlight {
 	//	compatible = "pwm-backlight";
 	//	pwms = <&pwm 0 50000>;
