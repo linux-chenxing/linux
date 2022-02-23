@@ -179,6 +179,7 @@ static void mstar_op2_mode_set_nofb(struct drm_crtc *crtc)
 	dev_info(op2->dev, "set mode: hsync s %d, hsync e %d\n", mode->hsync_start, mode->hsync_end);
 	dev_info(op2->dev, "set mode: vsync s %d, vsync e %d\n", mode->vsync_start, mode->vsync_end);
 
+#if 0
 	/* total area */
 	regmap_field_write(op2->htt, mode->htotal -1);
 	regmap_field_write(op2->vtt, mode->vtotal -1);
@@ -199,6 +200,7 @@ static void mstar_op2_mode_set_nofb(struct drm_crtc *crtc)
 	regmap_field_write(op2->hsync_end, mode->hsync_end);
 	regmap_field_write(op2->vsync_start, mode->vsync_start);
 	regmap_field_write(op2->vsync_end, mode->vsync_end);
+#endif
 
 	mstar_op2_dump_config(op2);
 }
