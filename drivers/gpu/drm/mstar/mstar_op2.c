@@ -354,9 +354,10 @@ static int mstar_op2_probe(struct platform_device *pdev)
 		regmap_field_write(op2->swap_r, chanswap[2]);
 	}
 	/* no idea what this does, needed for dongshanpione screen */
-	regmap_field_write(op2->swap_ml, 0);
+	//regmap_field_write(op2->swap_ml, 0);
 
 	/* Setup the color matrix, for now using values that the vendor code wrote */
+#if 0
 	regmap_write(regmap, REG_COLOR_MATRIX_0, 0x077f);
 	regmap_write(regmap, REG_COLOR_MATRIX_1, 0x04a9);
 	regmap_write(regmap, REG_COLOR_MATRIX_2, 0x0000);
@@ -367,6 +368,7 @@ static int mstar_op2_probe(struct platform_device *pdev)
 	regmap_write(regmap, REG_COLOR_MATRIX_7, 0x04a6);
 	regmap_write(regmap, REG_COLOR_MATRIX_8, 0x08bb);
 	regmap_write(regmap, REG_COLOR_MATRIX_CTRL, 0xb);
+#endif
 
 	dev_set_drvdata(dev, op2);
 
