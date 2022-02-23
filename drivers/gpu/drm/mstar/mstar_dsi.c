@@ -760,14 +760,14 @@ static void mstar_dsi_bridge_disable(struct drm_bridge *bridge)
 {
 	struct mstar_dsi *dsi = bridge_to_dsi(bridge);
 
-	mstar_output_dsi_disable(dsi);
+	//mstar_output_dsi_disable(dsi);
 }
 
 static void mstar_dsi_bridge_enable(struct drm_bridge *bridge)
 {
 	struct mstar_dsi *dsi = bridge_to_dsi(bridge);
 
-	mstar_output_dsi_enable(dsi);
+	//mstar_output_dsi_enable(dsi);
 }
 
 static const struct drm_bridge_funcs mstar_dsi_bridge_funcs = {
