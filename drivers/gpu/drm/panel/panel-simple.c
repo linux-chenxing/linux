@@ -4646,13 +4646,13 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
 static const struct drm_display_mode samsung_lms279cc01_mode = {
 	.clock = 154500,
 	.hdisplay = 640,
-	.hsync_start = 640 + 112,
-	.hsync_end = 640 + 112 + 16,
-	.htotal = 640 + 112 + 16 + 32,
+	.hsync_start = 640 + 46,  // bp is 46?
+	.hsync_end = 640 + 46 + 3, // hsync is 3
+	.htotal = 640 + 46 + 3 + 50, // 740
 	.vdisplay =  480,
-	.vsync_start = 480 + 16,
-	.vsync_end = 480 + 16 + 2,
-	.vtotal = 480 + 16 + 2 + 16,
+	.vsync_start = 480 + 10, // bp is 10
+	.vsync_end = 480 + 10 + 3,// vsync is 3
+	.vtotal = 480 + 10 + 4 + 11, // 505
 	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
 };
 
