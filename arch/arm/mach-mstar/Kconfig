@@ -5,6 +5,7 @@ menuconfig ARCH_MSTARV7
 	select ARM_GIC
 	select ARM_HEAVY_MB
 	select HAVE_ARM_ARCH_TIMER
+	select MSC313E_TIMER
 	select MST_IRQ
 	select MSTAR_MSC313_MPLL
 	select MSC313_PM_INTC
