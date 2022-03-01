@@ -20,6 +20,7 @@
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk root=/dev/mmcblk0p2 ro rootfstype=squashfs rootwait";
 	};
 
+	//note: sar channel reads the system voltage which might be battery or usb
 	gpio-charger {
 		compatible = "gpio-charger";
 		charger-type = "usb-dcp";
