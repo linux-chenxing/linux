@@ -158,7 +158,7 @@
 				clocks = <&xtal_div2>;
 			};
 
-			timer@6040 {
+			timer0: timer@6040 {
 				compatible = "mstar,msc313e-timer";
 				reg = <0x6040 0x40>;
 				clocks = <&xtal_div2>;
