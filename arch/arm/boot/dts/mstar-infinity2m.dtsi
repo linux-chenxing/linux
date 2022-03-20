@@ -237,8 +237,6 @@
 		#clock-cells = <1>;
 		compatible = "mstar,msc313-upll";
 		reg = <0x283e00 0x20>;
-		clock-output-names = "upll1_384", "upll1_320";
-		clock-rates = <384000000>, <320000000>;
 		clocks = <&xtal>;
 	};
 
