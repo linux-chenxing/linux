@@ -7,6 +7,7 @@
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/clock/mstar-msc313-mpll.h>
+#include <dt-bindings/clock/mstar-msc313-upll.h>
 #include <dt-bindings/clock/mstar-msc313-pm-muxes.h>
 #include <dt-bindings/clock/mstar-msc313-clkgen.h>
 
@@ -493,8 +494,8 @@
 					 <&xtal_div2>,
 					 <&xtal_div2_div40>,
 					 /* gates */
-					 <&upll 0>,
-					 <&upll 1>,
+					 <&upll MSTAR_MSC313_UPLL_384>,
+					 <&upll MSTAR_MSC313_UPLL_320>,
 					 <&unknownclk_160>,
 					 <&unknownclk_192>,
 					 <&unknownclk_240>,
