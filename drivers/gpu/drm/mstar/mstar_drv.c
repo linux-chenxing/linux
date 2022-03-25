@@ -70,7 +70,7 @@ static int mstar_drv_bind(struct device *dev)
 	}
 
 	drm_mode_config_init(drm);
-	drm->mode_config.allow_fb_modifiers = true;
+	//drm->mode_config.allow_fb_modifiers = true;
 	drm->mode_config.min_width = 0;
 	drm->mode_config.min_height = 0;
 	drm->mode_config.max_width = 8198;
