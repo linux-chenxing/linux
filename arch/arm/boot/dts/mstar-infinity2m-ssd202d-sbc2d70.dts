@@ -11,6 +11,12 @@
 	model = "SBC2D70 (SSD202D)";
 	compatible = "ido,sbc2d70", "mstar,infinity2m";
 
+	aliases {
+		serial0 = &pm_uart;
+		rtc0 = &rtcpwc;
+		rtc1 = &rtc;
+	};
+
 	chosen {
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk root=/dev/sda1 rw rootwait";
 	};
