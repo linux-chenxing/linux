@@ -386,7 +386,7 @@
 				interrupts-extended = <&intc_fiq GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
 			};
 
-			rtc@2400 {
+			rtc: rtc@2400 {
 				compatible = "mstar,msc313-rtc";
 				reg = <0x2400 0x40>;
 				clocks = <&pm_muxes MSC313_PM_MUXES_RTC>;
