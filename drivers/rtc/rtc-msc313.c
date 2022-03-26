@@ -221,6 +221,8 @@ static int msc313_rtc_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
+	device_set_wakeup_capable(dev, true);
+
 	clk = devm_clk_get_enabled(dev, NULL);
 	if (IS_ERR(clk)) {
 		dev_err(dev, "No input reference clock\n");
