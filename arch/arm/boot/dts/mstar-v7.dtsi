@@ -385,6 +385,7 @@
 				interconnects = <&miu 0>;
 				interconnect-names = "dma-mem";
 				interrupts-extended = <&intc_fiq GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+				status = "disabled";
 			};
 
 			rtc: rtc@2400 {
