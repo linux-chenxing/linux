@@ -121,6 +121,8 @@
 	rtcpwc: rtcpwc@6800 {
 		compatible = "sstar,ssd20xd-rtcpwc";
 		reg = <0x6800 0x200>;
+		//TBC from i6 headers
+		interrupts-extended = <&wakeintc 7 IRQ_TYPE_LEVEL_HIGH>;
 		wakeup-source;
 	};
 
