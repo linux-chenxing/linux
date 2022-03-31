@@ -867,7 +867,7 @@ static irqreturn_t msc313_bach_irq(int irq, void *data)
 		 * Just ignore them.
 		 */
 		if (!bach_runtime->running) {
-			spin_unlock(&dma_channel->lock);
+			spin_unlock_irqrestore(&dma_channel->lock, flags);
 			continue;
 		}
 
