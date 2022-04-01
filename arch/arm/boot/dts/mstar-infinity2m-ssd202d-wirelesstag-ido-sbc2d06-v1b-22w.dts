@@ -49,6 +49,10 @@
 	};
 };
 
+&bach {
+	status = "okay";
+};
+
 &emac {
 	pinctrl-names = "default";
 	pinctrl-0 = <&emac_mode1_pins>, <&pm_led_mode1_pins>;
