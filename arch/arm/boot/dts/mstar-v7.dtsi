@@ -647,6 +647,15 @@
 				status = "disabled";
 			};
 
+			mspi0: mspi@222000 {
+				compatible = "mstar,msc313-spi";
+				reg = <0x222000 0x200>;
+				interrupt-parent = <&intc_irq>;
+				interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MSPI0 0>;
+				status = "disabled";
+			};
+
 			i2c0: i2c0@223000 {
 				compatible = "mstar,msc313e-i2c";
 				reg = <0x223000 0x200>;
