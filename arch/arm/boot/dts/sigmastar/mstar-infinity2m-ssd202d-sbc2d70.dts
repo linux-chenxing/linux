@@ -193,3 +193,8 @@
 &ubi {
 	reg = <0x2c0000 0xFD40000>;
 };
+
+/* Connection to the ESP32 */
+&uart2 {
+	// status = "okay";
+};
