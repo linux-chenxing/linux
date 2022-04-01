@@ -144,6 +144,15 @@
 		status = "disabled";
 	};
 
+	uart2: serial@221400 {
+		compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
+		reg = <0x221400 0x100>;
+		reg-shift = <3>;
+		interrupts-extended = <&intc_irq GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+		//clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_UART1 0>;
+		status = "disabled";
+	};
+
 	gpi: interrupt-controller@207a00 {
 		compatible = "sstar,ssd20xd-gpi";
 		reg = <0x207a00 0x200>;
