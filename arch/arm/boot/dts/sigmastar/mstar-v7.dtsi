@@ -694,10 +694,6 @@
 			fuart: serial@220400 {
 				compatible = "mstar,msc313-uart";
 				reg = <0x220400 0x100>;
-				/*
-				 * DMA registers
-				 * <0x1f220600 0x100>
-				 */
 				interrupt-parent = <&intc_irq>;
 				interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
 				reg-shift = <3>;
@@ -705,6 +701,13 @@
 				pinctrl-names = "default";
 				pinctrl-0 = <&fuart_pins>;
 				status = "disabled";
+			};
+
+			urdma: urdma@220600 {
+				compatible = "mstar,msc313-urdma";
+				reg = <0x220600 0x100>;
+				interrupts-extended = <&intc_irq GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&miu 0>;
 			};
 
 			pm_uart: serial@221000 {
