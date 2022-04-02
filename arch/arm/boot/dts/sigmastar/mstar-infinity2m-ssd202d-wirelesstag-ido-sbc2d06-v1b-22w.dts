@@ -102,3 +102,7 @@
 	pinctrl-0 = <&i2c1_mode1_pins>;
 	status = "okay";
 };
+
+&ubi {
+	reg = <0x2c0000 0xfd40000>;
+};
