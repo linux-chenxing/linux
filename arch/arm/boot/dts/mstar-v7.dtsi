@@ -192,6 +192,28 @@
 			 <0x1f000000 0x1f000000 0x00400000>,
 			 <0xa0000000 0xa0000000 0x20000>;
 
+		isp: isp@1f001000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "mstar,msc313-isp";
+			reg = <0x1f001000 0x400>,
+			      <0x1f002c00 0x200>,
+			      <0x1f002e00 0x200>,
+			      <0x14000000 0x1000000>;
+			clock-names = "pm_spi", "cpuclk", "spi";
+			clocks = <&pm_muxes MSC313_PM_MUXES_SPI_PM>,
+				 <&cpuclksrc>,
+				 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SPI 0>;
+			interrupts-extended = <&intc_irq GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+			dmas = <&bdma 0>;
+			dma-names = "qspi";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pm_spi_pins>;
+			status = "disabled";
+			interconnects = <&miu 0>;
+			interconnect-names = "dma-mem";
+		};
+
 		gic: interrupt-controller@16001000 {
 			compatible = "arm,cortex-a7-gic";
 			reg = <0x16001000 0x1000>,
