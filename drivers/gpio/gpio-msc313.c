@@ -20,6 +20,10 @@
 
 #define DRIVER_NAME "gpio-msc313"
 
+static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip*, unsigned int, unsigned int);
+static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip*, unsigned int, unsigned int,
+		unsigned int *, unsigned int*);
+
 #define MSC313_GPIO_IN  BIT(0)
 #define MSC313_GPIO_OUT BIT(4)
 #define MSC313_GPIO_OEN BIT(5)
@@ -227,10 +231,6 @@ static const unsigned int msc313_offsets[] = {
 	I2C1_OFFSETS,
 	SPI0_OFFSETS,
 };
-
-static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip*, unsigned int, unsigned int);
-static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip*, unsigned int, unsigned int,
-		unsigned int *, unsigned int*);
 
 MSC313_GPIO_CHIPDATA(msc313, msc313_gpio_populate_parent_fwspec, msc313e_gpio_child_to_parent_hwirq);
 
