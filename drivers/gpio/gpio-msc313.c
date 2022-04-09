@@ -656,6 +656,7 @@ static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
 	return -EINVAL;
 }
 
+#ifdef CONFIG_MACH_INFINITY
 static int ssd20xd_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
 					     unsigned int child,
 					     unsigned int child_type,
@@ -686,6 +687,7 @@ static int ssd20xd_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
 
 	return -EINVAL;
 }
+#endif
 
 static int msc313_gpio_probe(struct platform_device *pdev)
 {
