@@ -53,6 +53,10 @@
 #define MSTAR_USBC_REG_MIUCFG1	0x2c // miu sel 1 + 2
 #define MSTAR_USBC_REG_MIUCFG2	0x30 // miu sel 3 + miu partition
 
+// 0x10 on i2m
+#define MSTAR_USBC_CONFIG		0x40
+#define MSTAR_USBC_CONFIG_RSTSPDDIS	BIT(0)
+
 #define MSTAR_RSTCTRL_USB_RST		(1 << 0)
 #define MSTAR_RSTCTRL_UHC_RST		(1 << 1)
 #define MSTAR_RSTCTRL_OTG_RST		(1 << 2)
