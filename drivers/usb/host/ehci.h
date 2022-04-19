@@ -263,6 +263,8 @@ struct ehci_hcd {			/* one per controller */
 	/* Broken IO */
 	void (*ehci_writel)(const struct ehci_hcd *ehci, const unsigned int val, __u32 __iomem *regs);
 	unsigned int (*ehci_readl)(const struct ehci_hcd *ehci, __u32 __iomem *regs);
+	/* Fix up port status register being in the wrong place */
+	u32 __iomem *(*get_port_status_reg)(struct ehci_hcd *ehci, unsigned portnum);
 #endif
 
 	/* platform-specific data -- must come last */
@@ -917,4 +919,12 @@ extern void	ehci_adjust_port_wakeup_flags(struct ehci_hcd *ehci,
 extern int	ehci_hub_control(struct usb_hcd	*hcd, u16 typeReq, u16 wValue,
 				 u16 wIndex, char *buf, u16 wLength);
 
+static inline u32 __iomem *ehci_get_port_status_reg(struct ehci_hcd *ehci, unsigned portnum)
+{
+#ifdef CONFIG_HAVE_BROKEN_EHCI_HCD
+	if (ehci->get_port_status_reg)
+		return ehci->get_port_status_reg(ehci, portnum);
+#endif
+	return &ehci->regs->port_status[portnum];
+}
 #endif /* __LINUX_EHCI_HCD_H */

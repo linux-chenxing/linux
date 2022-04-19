@@ -325,7 +325,7 @@ static void ehci_turn_off_all_ports(struct ehci_hcd *ehci)
 		ehci_port_power(ehci, port, false);
 		spin_lock_irq(&ehci->lock);
 		ehci_writel(ehci, PORT_RWC_BITS,
-				&ehci->regs->port_status[port]);
+				ehci_get_port_status_reg(ehci, port));
 	}
 }
 
@@ -813,7 +813,7 @@ restart:
 			if (!(ppcd & (1 << i)))
 				continue;
 			pstatus = ehci_readl(ehci,
-					 &ehci->regs->port_status[i]);
+					ehci_get_port_status_reg(ehci, i));
 
 			if (pstatus & PORT_OWNER)
 				continue;
