@@ -257,6 +257,13 @@ struct ehci_hcd {			/* one per controller */
 						/* us budgeted per uframe */
 	struct list_head	tt_list;
 
+#ifdef CONFIG_HAVE_BROKEN_EHCI_HCD
+	/* Overrides to fix up broken implementations */
+	/* Broken IO */
+	void (*ehci_writel)(const struct ehci_hcd *ehci, const unsigned int val, __u32 __iomem *regs);
+	unsigned int (*ehci_readl)(const struct ehci_hcd *ehci, __u32 __iomem *regs);
+#endif
+
 	/* platform-specific data -- must come last */
 	unsigned long		priv[] __aligned(sizeof(s64));
 };
@@ -746,7 +753,10 @@ static inline unsigned int ehci_readl(const struct ehci_hcd *ehci,
 		readl_be(regs) :
 		readl(regs);
 #else
-	return readl(regs);
+	if (ehci->ehci_readl)
+		return ehci->ehci_readl(ehci, regs);
+	else
+		return readl(regs);
 #endif
 }
 
@@ -762,6 +772,7 @@ static inline void imx28_ehci_writel(const unsigned int val,
 {
 }
 #endif
+
 static inline void ehci_writel(const struct ehci_hcd *ehci,
 		const unsigned int val, __u32 __iomem *regs)
 {
@@ -772,6 +783,8 @@ static inline void ehci_writel(const struct ehci_hcd *ehci,
 #else
 	if (ehci->imx28_write_fix)
 		imx28_ehci_writel(val, regs);
+	else if (ehci->ehci_writel)
+		ehci->ehci_writel(ehci, val, regs);
 	else
 		writel(val, regs);
 #endif
