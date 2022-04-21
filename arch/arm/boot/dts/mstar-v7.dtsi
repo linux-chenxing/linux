@@ -922,6 +922,14 @@
 				};
 			};
 
+			gop0: gop@246200 {
+				reg = <0x246200 0x400>;
+				interrupt-names = "gop";
+				//interrupts-extended = <&intc_irq GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+				//clocks = <&clkgen_mux_gop 0>;
+				status = "disabled";
+			};
+
 			upll: upll@284000 {
 				#clock-cells = <1>;
 				compatible = "mstar,msc313-upll";
@@ -995,11 +1003,14 @@
 
 		/* pnl - RGB lcd driver? */
 		/* different address on m5? */
+
+#if 0
 		pnl: pnl@1f243400 {
 			compatible = "mstar,pnl";
 			reg = <0x1f243400 0x200>;
 			clock-names = "lpll";
 			clocks = <&lpll 0>;
+			status = "disabled";
 			ports {
 				#address-cells = <1>;
 				#size-cells = <0>;
@@ -1010,50 +1021,14 @@
 
 					pnl_in_gop0: endpoint@0 {
 						reg = <0>;
-						remote-endpoint = <&gop0_out_pnl>;
+						//remote-endpoint = <&gop0_out_pnl>;
 					};
 				};
 			};
 		};
+#endif
 
-		/* gop - framebuffer */
-		gop0: gop@1f246200 {
-			compatible = "mstar,gop";
-			reg = <0x1f246200 0x400>;
-			interrupt-names = "gop";
-			interrupts-extended = <&intc_irq GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
-			//clocks = <&clkgen_mux_gop 0>;
-			ports {
-				#address-cells = <1>;
-				#size-cells = <0>;
-				gop0_out: port@0 {
-					#address-cells = <1>;
-					#size-cells = <0>;
-					reg = <0>;
-		
-					gop0_out_pnl: endpoint@1 {
-						reg = <1>;
-						remote-endpoint = <&pnl_in_gop0>;
-					};
-				};
-			};
-		};
-
-		/*
-		gop1: gop@0x1f246800 {
-		
-		};
-		
-		gop2: gop@0x1f246e00 {
-		
-		};*/
-
-		display@0 {
-			compatible = "mstar,drm";
-			ports = <&gop0_out>;
-		};
-
-		usbphy0: usbphy@0 {
+		usbphy0: usb@0 {
 			#phy-cells = <1>;
 			compatible = "mstar,msc313-usb-phy";
 			clocks = <&xtal_div2>;
