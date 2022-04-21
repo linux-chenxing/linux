@@ -112,7 +112,7 @@
 	ddr-supply = <&vcc_dram>;
 };
 
-&pnl {
-	pinctrl-names = "default";
-	pinctrl-0 = <&ttl_mode1_pins>;
-};
+//&pnl {
+//	pinctrl-names = "default";
+//	pinctrl-0 = <&ttl_mode1_pins>;
+//};
