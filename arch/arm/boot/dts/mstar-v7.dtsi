@@ -821,6 +821,23 @@
 				mstar,usbc = <&usbc1>;
 				status = "disabled";
 			};
+
+			audiotop: syscon@206800 {
+				compatible = "syscon";
+				reg = <0x206800 0x200>;
+			};
+
+			bach: bach@2a0400 {
+				compatible = "mstar,msc313-bach";
+				reg = <0x2a0400 0x600>;
+				clocks = <&clkgen MSC313_CLKGEN_GATES 0 0>;
+				interrupt-parent = <&intc_irq>;
+				interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+				interconnect-names = "dma-mem";
+				interconnects = <&miu 0>;
+				mstar,audiotop = <&audiotop>;
+				status = "disabled";
+			};
 		};
 
 		/* csi - camera interface */
