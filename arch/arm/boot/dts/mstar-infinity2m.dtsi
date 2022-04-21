@@ -136,9 +136,54 @@
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
-	mop: mop@280a00 {
-		compatible = "sstar,ssd20xd-mop";
+	display@0 {
+		compatible = "sstar,ssd20xd-drm";
+		ports = <&mopg>,<&mops>,<&gop0>,<&gop1>,<&op2>,<&displaytop>, <&dsi>;
+	};
+
+	displaytop: top@225000 {
+		compatible = "sstar,ssd20xd-display-top";
+		reg = <0x225000 0x200>;
+		interrupts-extended = <&intc_irq GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	op2: op2@225200 {
+		compatible = "sstar,ssd20xd-op2";
+		reg = <0x225200 0x200>;
+		status = "disabled";
+	};
+
+	// all zeros
+	osd: osd@243000 {
+
+	};
+
+	// all zeros
+	scl_to_gop@243400 {
+
+	}
+
+	dip_to_gop@247400 {
+
+	}
+
+	gop1: gop@246800 {
+		compatible = "sstar,ssd20xd-gop1";
+		reg = <0x246800 0x400>;
+	};
+
+	mopg: mopg@280a00 {
+		compatible = "sstar,ssd20xd-mopg";
 		reg = <0x280a00 0x600>;
+	};
+
+	mops: mops@281000 {
+		compatible = "sstar,ssd20xd-mops";
+		reg = <0x281000 0x200>;
+	};
+
+	moprot: moprot@281a00 {
+		reg = <0x281a00 0x200>;
 	};
 
 	upll1: upll@283e00 {
@@ -178,6 +223,23 @@
 		mstar,usbc = <&usbc2>;
 		status = "disabled";
 	};
+
+	dphy: dphy@2a5000 {
+		compatible = "sstar,ssd20xd-dphy";
+		reg = <0x2a5000 0x200>;
+		#phy-cells = <0>;
+	};
+
+	dsi: dsi@345200 {
+		compatible = "sstar,ssd20xd-dsi";
+		reg = <0x345200 0x400>;
+		interrupts-extended = <&intc_irq GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
+		phy-names = "dphy";
+		phys = <&dphy>;
+		clock-names = "engine", "digital", "hs";
+		clocks = <&xtal_div2>, <&xtal_div2>, <&xtal_div2>;
+		status = "disabled";
+	};
 };
 
 &aesdma {
@@ -192,6 +254,11 @@
 		     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
 		     <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>,
 		     <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+};
+
+&gop0 {
+	compatible = "sstar,ssd20xd-gop0";
+	status = "okay";
 };
 
 &gpio {
@@ -227,8 +294,8 @@
 
 &emac {
 	compatible = "mstar,msc313e-emac";
-	reg = <0x2a2000 0x4000>,
-	      <0x343c00 0x4000>;
+	reg = <0x2a2000 0x400>,
+	      <0x343c00 0x400>;
 };
 
 &imi {
