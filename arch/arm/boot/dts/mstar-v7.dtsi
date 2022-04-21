@@ -713,7 +713,18 @@
 				reg = <0x284000 0x20>;
 				clocks = <&xtal>;
 			};
+
+			usbc0: usbc@284600 {
+				compatible = "syscon";
+				reg = <0x284600 0x200>;
+			};
+
+			usbc1: usbc@286200 {
+				compatible = "syscon";
+				reg = <0x286200 0x200>;
+			};
 		};
+
 
 		imi: sram@a0000000 {
 			compatible = "mmio-sram";
