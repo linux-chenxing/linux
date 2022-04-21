@@ -725,6 +725,26 @@
 			};
 		};
 
+		usbphy0: usbphy@0 {
+			#phy-cells = <1>;
+			compatible = "mstar,msc313-usb-phy";
+			clocks = <&xtal_div2>;
+			mstar,utmi = <&utmi0>;
+			mstar,usbc = <&usbc0>;
+			interrupts-extended = <&intc_irq GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+			/*pinctrl-names = "default";
+			pinctrl-0 = <&usb_pins>;*/
+			status = "disabled";
+		};
+
+		usbphy1: usbphy@1 {
+			#phy-cells = <1>;
+			compatible = "mstar,msc313-usb-phy";
+			clocks = <&xtal_div2>;
+			mstar,utmi = <&utmi1>;
+			mstar,usbc = <&usbc1>;
+			status = "disabled";
+		};
 
 		imi: sram@a0000000 {
 			compatible = "mmio-sram";
