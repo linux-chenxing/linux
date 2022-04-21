@@ -715,9 +715,19 @@
 				clocks = <&xtal>;
 			};
 
+			utmi0: utmi@284200 {
+				compatible = "syscon";
+				reg = <0x284200 0x80>;
+			};
+
 			usbc0: usbc@284600 {
 				compatible = "syscon";
 				reg = <0x284600 0x200>;
+			};
+
+			utmi1: utmi@285200 {
+				compatible = "syscon";
+				reg = <0x285200 0x80>;
 			};
 
 			usbc1: usbc@286200 {
