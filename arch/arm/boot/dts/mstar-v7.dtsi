@@ -724,6 +724,16 @@
 				reg = <0x284600 0x200>;
 			};
 
+			uhc0: usb@284800 {
+				compatible = "mstar,msc313-ehci", "faraday,fusbh200";
+				reg = <0x284800 0x200>;
+				interrupts-extended = <&intc_irq GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+				phys = <&usbphy0 0>;
+				phy-names = "usb";
+				mstar,usbc = <&usbc0>;
+				status = "disabled";
+			};
+
 			utmi1: utmi@285200 {
 				compatible = "syscon";
 				reg = <0x285200 0x80>;
@@ -732,6 +742,16 @@
 			usbc1: usbc@286200 {
 				compatible = "syscon";
 				reg = <0x286200 0x200>;
+			};
+
+			uhc1: usb@286400 {
+				compatible = "mstar,msc313-ehci", "faraday,fusbh200";
+				reg = <0x286400 0x200>;
+				interrupts-extended = <&intc_irq GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
+				phys = <&usbphy1 0>;
+				phy-names = "usb";
+				mstar,usbc = <&usbc1>;
+				status = "disabled";
 			};
 		};
 
