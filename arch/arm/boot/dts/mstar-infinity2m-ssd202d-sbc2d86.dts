@@ -44,6 +44,9 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_mode4_pins>;
 	status = "okay";
+	es7243: xxx@10 {
+		reg = <0x10>;
+	};
 	hym8563: rtc@51 {
 		compatible = "haoyu,hym8563";
 		reg = <0x51>;
