@@ -13,6 +13,9 @@
 
 	aliases {
 		serial0 = &pm_uart;
+		rtc0 = &hym8563;
+		rtc1 = &rtcpwc;
+		rtc2 = &rtc;
 	};
 
 	chosen {
