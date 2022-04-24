@@ -173,14 +173,17 @@ static int ehci_mem_init (struct ehci_hcd *ehci, gfp_t flags)
 		goto fail;
 	}
 
-	/* SITD for full/low speed split ISO transfers */
-	ehci->sitd_pool = dma_pool_create ("ehci_sitd",
-			ehci_to_hcd(ehci)->self.sysdev,
-			sizeof (struct ehci_sitd),
-			32 /* byte alignment (for hw parts) */,
-			4096 /* can't cross 4K */);
-	if (!ehci->sitd_pool) {
-		goto fail;
+	/* FOTG210 and FUSBH200 does not use sitds */
+	if (!(ehci->fotg210 || ehci->fusbh200)) {
+		/* SITD for full/low speed split ISO transfers */
+		ehci->sitd_pool = dma_pool_create ("ehci_sitd",
+				ehci_to_hcd(ehci)->self.sysdev,
+				sizeof (struct ehci_sitd),
+				32 /* byte alignment (for hw parts) */,
+				4096 /* can't cross 4K */);
+		if (!ehci->sitd_pool) {
+			goto fail;
+		}
 	}
 
 	/* Hardware periodic table */
