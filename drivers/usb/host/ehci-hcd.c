@@ -513,6 +513,11 @@ static int ehci_init(struct usb_hcd *hcd)
 	else					// N microframes cached
 		ehci->i_thresh = 2 + HCC_ISOC_THRES(hcc_params);
 
+	// mstar
+	ehci->i_thresh = 8;
+	ehci->periodic_count = 0;
+	//
+
 	/*
 	 * dedicate a qh for the async ring head, since we couldn't unlink
 	 * a 'real' qh without stopping the async schedule [4.8].  use it
