@@ -117,3 +117,7 @@
 &emac {
 	status = "okay";
 };
+
+&miu {
+	ddr-supply = <&reg_vcc_dram>;
+};
