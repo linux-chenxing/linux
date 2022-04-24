@@ -74,7 +74,7 @@
 };
 
 &emac1 {
-	status = "okay";
+	//status = "okay";
 	phy-mode = "rmii";
 	phy-handle = <&phy0>;
 
