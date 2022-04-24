@@ -266,6 +266,9 @@ struct ehci_hcd {			/* one per controller */
 	unsigned int (*ehci_readl)(const struct ehci_hcd *ehci, __u32 __iomem *regs);
 	/* Fix up port status register being in the wrong place */
 	u32 __iomem *(*get_port_status_reg)(struct ehci_hcd *ehci, unsigned portnum);
+	bool (*get_port_occ)(struct ehci_hcd *ehci);
+	void (*enable_port_occ)(struct ehci_hcd *ehci, u32 portsc);
+	unsigned int (*port_speed)(struct ehci_hcd *ehci, unsigned int portsc);
 #endif
 
 	/* platform-specific data -- must come last */
@@ -668,6 +671,10 @@ struct ehci_tt {
 static inline unsigned int
 ehci_port_speed(struct ehci_hcd *ehci, unsigned int portsc)
 {
+#ifdef CONFIG_HAVE_BROKEN_EHCI_HCD
+	if (ehci->port_speed)
+		return ehci->port_speed(ehci, portsc);
+#endif
 	if (ehci_is_TDI(ehci)) {
 		switch ((portsc >> (ehci->has_hostpc ? 25 : 26)) & 3) {
 		case 0:
@@ -918,5 +925,15 @@ static inline u32 __iomem *ehci_get_port_status_reg(struct ehci_hcd *ehci, unsig
 		return ehci->get_port_status_reg(ehci, portnum);
 #endif
 	return &ehci->regs->port_status[portnum];
+}
+
+static inline void ehci_enable_port_occ(struct ehci_hcd *ehci, u32 temp, u32 __iomem * status_reg)
+{
+#ifdef CONFIG_HAVE_BROKEN_EHCI_HCD
+	if (ehci->enable_port_occ)
+		ehci->enable_port_occ(ehci, temp);
+#endif
+	ehci_writel(ehci, temp | PORT_OCC, status_reg);
+
 }
 #endif /* __LINUX_EHCI_HCD_H */

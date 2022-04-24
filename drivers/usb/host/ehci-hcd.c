@@ -168,10 +168,11 @@ EXPORT_SYMBOL_GPL(ehci_handshake);
 /* check TDI/ARC silicon is in host mode */
 static int tdi_in_host_mode (struct ehci_hcd *ehci)
 {
-	u32		tmp;
-
-	tmp = ehci_readl(ehci, &ehci->regs->usbmode);
-	return (tmp & 3) == USBMODE_CM_HC;
+	return 1;
+	//u32		tmp;
+//
+	//tmp = ehci_readl(ehci, &ehci->regs->usbmode);
+	//return (tmp & 3) == USBMODE_CM_HC;
 }
 
 /*
@@ -211,6 +212,7 @@ static int ehci_halt (struct ehci_hcd *ehci)
 /* put TDI/ARC silicon into EHCI mode */
 static void tdi_reset (struct ehci_hcd *ehci)
 {
+#if 0
 	u32		tmp;
 
 	tmp = ehci_readl(ehci, &ehci->regs->usbmode);
@@ -222,6 +224,7 @@ static void tdi_reset (struct ehci_hcd *ehci)
 	if (ehci_big_endian_mmio(ehci))
 		tmp |= USBMODE_BE;
 	ehci_writel(ehci, tmp, &ehci->regs->usbmode);
+#endif
 }
 
 /*
@@ -810,7 +813,6 @@ restart:
 				continue;
 			pstatus = ehci_readl(ehci,
 					ehci_get_port_status_reg(ehci, i));
-
 			if (pstatus & PORT_OWNER)
 				continue;
 			if (!(test_bit(i, &ehci->suspended_ports) &&
