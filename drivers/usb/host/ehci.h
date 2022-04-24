@@ -222,6 +222,8 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		spurious_oc:1;
 	unsigned		is_aspeed:1;
 	unsigned		zx_wakeup_clear_needed:1;
+	unsigned		fusbh200:1;	/* Faraday fusb200 */
+	unsigned		fotg210:1;	/* Faraday fotg210 */
 
 	/* required for usb32 quirk */
 	#define OHCI_CTRL_HCFS          (3 << 6)

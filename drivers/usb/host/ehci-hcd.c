@@ -909,7 +909,8 @@ static int ehci_urb_enqueue (
 		return intr_submit(ehci, urb, &qtd_list, mem_flags);
 
 	case PIPE_ISOCHRONOUS:
-		if (urb->dev->speed == USB_SPEED_HIGH)
+		if (urb->dev->speed == USB_SPEED_HIGH ||
+			(ehci->fusbh200 || ehci->fotg210))
 			return itd_submit (ehci, urb, mem_flags);
 		else
 			return sitd_submit (ehci, urb, mem_flags);

@@ -1514,7 +1514,8 @@ iso_stream_schedule(
 			do {
 				start--;
 				/* check schedule: enough space? */
-				if (stream->highspeed) {
+				if (stream->highspeed ||
+						(ehci->fusbh200 || ehci->fotg210)) {
 					if (itd_slot_ok(ehci, stream, start))
 						done = 1;
 				} else {
