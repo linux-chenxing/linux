@@ -97,3 +97,19 @@
 		spi-rx-bus-width = <4>;
 	};
 };
+
+&usbphy0 {
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+//&usbphy1 {
+//	status = "okay";
+//};
+
+//&uhc1 {
+//	status = "okay";
+//};
