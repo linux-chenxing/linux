@@ -113,3 +113,7 @@
 //&uhc1 {
 //	status = "okay";
 //};
+
+&emac {
+	status = "okay";
+};
