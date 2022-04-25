@@ -963,6 +963,8 @@
 				phys = <&usbphy0 0>;
 				phy-names = "usb";
 				mstar,usbc = <&usbc0>;
+				interconnect-names = "dma-mem";
+				interconnects = <&miu 0>;
 				status = "disabled";
 			};
 
@@ -983,6 +985,8 @@
 				phys = <&usbphy1 0>;
 				phy-names = "usb";
 				mstar,usbc = <&usbc1>;
+				interconnect-names = "dma-mem";
+				interconnects = <&miu 0>;
 				status = "disabled";
 			};
 
