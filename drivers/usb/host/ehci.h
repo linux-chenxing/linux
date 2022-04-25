@@ -936,4 +936,12 @@ static inline void ehci_enable_port_occ(struct ehci_hcd *ehci, u32 temp, u32 __i
 	ehci_writel(ehci, temp | PORT_OCC, status_reg);
 
 }
+
+static inline unsigned int ehci_itd_len(struct ehci_hcd *ehci, struct usb_iso_packet_descriptor *desc, u32 t)
+{
+	if(ehci->fotg210 || ehci->fusbh200)
+		return desc->length - EHCI_ITD_LENGTH (t);
+	else
+		return EHCI_ITD_LENGTH(t);
+}
 #endif /* __LINUX_EHCI_HCD_H */
