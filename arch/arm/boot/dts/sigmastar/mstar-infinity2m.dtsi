@@ -179,6 +179,12 @@
 		interconnect-names = "dma-mem";
 	};
 
+	hdmitx_dtop: xxx@224A00 {
+	}
+
+	hdmitx_atop: xxx@224c00 {
+	}
+
 	displaytop: top@225000 {
 		compatible = "sstar,ssd20xd-display-top";
 		reg = <0x225000 0x200>;
