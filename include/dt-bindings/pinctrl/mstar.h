@@ -121,6 +121,17 @@
 #define PINNAME_TTL25		"ttl25"
 #define PINNAME_TTL26		"ttl26"
 #define PINNAME_TTL27		"ttl27"
+#define PINNAME_HDMITX_SCL	"hdmitx_scl"
+#define PINNAME_HDMITX_SDA	"hdmitx_sda"
+#define PINNAME_HDMITXHPD	"hdmitxhpd"
+#define PINNAME_HDMI2TXCN	"hdmi2txcn"
+#define PINNAME_HDMI2TXCP	"hdmi2txcp"
+#define PINNAME_HDMI2TX0N	"hdmi2tx0n"
+#define PINNAME_HDMI2TX0P	"hdmi2tx0p"
+#define PINNAME_HDMI2TX1N	"hdmi2tx1n"
+#define PINNAME_HDMI2TX1P	"hdmi2tx1p"
+#define PINNAME_HDMI2TX2N	"hdmi2tx2n"
+#define PINNAME_HDMI2TX2P	"hdmi2tx2p"
 /*
  * for later parts with more sensor interfaces
  * the pin naming seems to have changed
@@ -294,7 +305,7 @@
 #define PIN_SSC8336N_LCD_14      123
 #define PIN_SSC8336N_LCD_15      124
 
-/* SSD20XD */
+/* SSD20[1|2D] */
 /* Chip pin numbers */
 #define PIN_SSD20XD_GPIO12		1
 #define PIN_SSD20XD_GPIO13		2
@@ -384,6 +395,29 @@
 #define PIN_SSD20XD_UART2_TX		126
 #define PIN_SSD20XD_GPIO10		127
 #define PIN_SSD20XD_GPIO11		128
+
+/* SSD203D */
+/* Chip pin numbers */
+#define PIN_SSD203D_HDMITX_SCL		6
+#define PIN_SSD203D_HDMITX_SDA		7
+#define PIN_SSD203D_HDMITXHPD		8
+#define PIN_SSD203D_PM_SPI_CZ		29
+#define PIN_SSD203D_PM_SPI_CK		30
+#define PIN_SSD203D_PM_SPI_DI		31
+#define PIN_SSD203D_PM_SPI_DO		32
+#define PIN_SSD203D_PM_SPI_HLD		33
+#define PIN_SSD203D_PM_SPI_WPZ		34
+#define PIN_SSD203D_PM_IRIN		35
+#define PIN_SSD203D_PM_UART_RX		37
+#define PIN_SSD203D_PM_UART_TX		38
+#define PIN_SSD203D_HDMI2TXCN		111
+#define PIN_SSD203D_HDMI2TXCP		112
+#define PIN_SSD203D_HDMI2TX0N		113
+#define PIN_SSD203D_HDMI2TX0P		114
+#define PIN_SSD203D_HDMI2TX1N		116
+#define PIN_SSD203D_HDMI2TX1P		117
+#define PIN_SSD203D_HDMI2TX2N		118
+#define PIN_SSD203D_HDMI2TX2P		119
 
 /* SSD210 */
 /* Chip pin numbers */
