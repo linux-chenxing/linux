@@ -398,6 +398,8 @@
 
 /* SSD203D */
 /* Chip pin numbers */
+#define PIN_SSD203D_GPIO85		4
+#define PIN_SSD203D_GPIO86		5
 #define PIN_SSD203D_HDMITX_SCL		6
 #define PIN_SSD203D_HDMITX_SDA		7
 #define PIN_SSD203D_HDMITXHPD		8
