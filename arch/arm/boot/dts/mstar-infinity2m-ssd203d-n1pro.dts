@@ -5,7 +5,7 @@
  */
 
 /dts-v1/;
-#include "mstar-infinity2m-ssd202d.dtsi"
+#include "mstar-infinity2m-ssd203d.dtsi"
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/leds/common.h>
@@ -36,6 +36,12 @@
 	status = "okay";
 };
 
+&i2c0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_mode1_pins>;
+	status = "okay";
+};
+
 &isp {
 	status = "okay";
 	nand: nand@0 {
@@ -58,4 +64,17 @@
 
 &miu {
 	ddr-supply = <&reg_vcc_dram>;
+};
+
+&op2 {
+	status = "okay";
+};
+
+&hdmitx {
+	status = "okay";
+	ddc-i2c-bus = <&i2c0>;
+};
+
+&op2_hdmitx {
+	remote-endpoint = <&hdmitx_in>;
 };
