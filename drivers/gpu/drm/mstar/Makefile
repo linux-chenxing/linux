@@ -8,4 +8,5 @@ obj-$(CONFIG_DRM_MSTAR)		+= mstar_gop.o \
 				   mstar_ttl.o \
 				   mstar_dsi.o \
 				   mstar_framebuffer.o \
-				   mstar_drv.o
+				   mstar_drv.o \
+				   mstar_hdmi.o
