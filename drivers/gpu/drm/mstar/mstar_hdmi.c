@@ -48,6 +48,13 @@ static void mstar_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
 	printk("%s:%d\n", __func__, __LINE__);
 }
 
+static enum drm_connector_status mstar_hdmi_bridge_detect(struct drm_bridge *bridge)
+{
+	struct mstar_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+
+	return connector_status_connected;
+}
+
 static struct edid *mstar_hdmi_bridge_get_edid(struct drm_bridge *bridge,
 					     struct drm_connector *connector)
 {
@@ -66,8 +73,12 @@ static struct edid *mstar_hdmi_bridge_get_edid(struct drm_bridge *bridge,
 }
 
 static const struct drm_bridge_funcs mstar_hdmi_bridge_funcs = {
-	.atomic_enable	= mstar_hdmi_bridge_atomic_enable,
-	.get_edid	= mstar_hdmi_bridge_get_edid,
+	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
+	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
+	.atomic_reset		= drm_atomic_helper_bridge_reset,
+	.atomic_enable		= mstar_hdmi_bridge_atomic_enable,
+	.detect			= mstar_hdmi_bridge_detect,
+	.get_edid		= mstar_hdmi_bridge_get_edid,
 };
 
 static int mstar_hdmi_bind(struct device *dev, struct device *master, void *data)
@@ -78,6 +89,13 @@ static int mstar_hdmi_bind(struct device *dev, struct device *master, void *data
 
 	printk("%s:%d\n", __func__, __LINE__);
 	hdmi->drm_device = drm_device;
+
+	hdmi->bridge.funcs = &mstar_hdmi_bridge_funcs;
+	hdmi->bridge.of_node = dev->of_node;
+	hdmi->bridge.ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_DETECT; //DRM_BRIDGE_OP_HPD;
+	hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+
+	drm_bridge_add(&hdmi->bridge);
 
 	ret = drm_simple_encoder_init(drm_device, &hdmi->encoder,
 			DRM_MODE_ENCODER_TMDS);
@@ -149,12 +167,6 @@ static int mstar_hdmi_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, hdmi);
 
-	hdmi->bridge.funcs = &mstar_hdmi_bridge_funcs;
-	hdmi->bridge.of_node = dev->of_node;
-	hdmi->bridge.ops = DRM_BRIDGE_OP_EDID; //  DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_HPD;
-	hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
-
-	drm_bridge_add(&hdmi->bridge);
 	ret = component_add(&pdev->dev, &mstar_hdmi_component_ops);
 	if (ret)
 		return ret;
