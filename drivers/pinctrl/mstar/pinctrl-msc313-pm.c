@@ -176,6 +176,51 @@ static const struct msc313_pinctrl_pinconf ssd20xd_configurable_pins[] = {
 };
 
 MSTAR_PINCTRL_INFO(ssd20xd);
+
+static const struct pinctrl_pin_desc ssd203d_pins[] = {
+	SSD203D_COMMON_PIN(PM_UART_RX),
+	SSD203D_COMMON_PIN(PM_UART_TX),
+	SSD203D_COMMON_PIN(PM_SPI_CZ),
+	SSD203D_COMMON_PIN(PM_SPI_CK),
+	SSD203D_COMMON_PIN(PM_SPI_DI),
+	SSD203D_COMMON_PIN(PM_SPI_DO),
+	SSD203D_COMMON_PIN(PM_SPI_HLD),
+	SSD203D_COMMON_PIN(PM_SPI_WPZ),
+	SSD203D_COMMON_PIN(PM_IRIN),
+};
+
+static const int ssd203d_pm_uart_pins[] = {
+	PIN_SSD203D_PM_UART_RX,
+	PIN_SSD203D_PM_UART_TX,
+};
+
+static const int ssd203d_pm_spi_pins[] = {
+	PIN_SSD203D_PM_SPI_CZ,
+	PIN_SSD203D_PM_SPI_DI,
+	PIN_SSD203D_PM_SPI_WPZ,
+	PIN_SSD203D_PM_SPI_DO,
+	PIN_SSD203D_PM_SPI_CK,
+	PIN_SSD203D_PM_SPI_HLD,
+};
+
+static const int ssd203d_pm_irin_pins[] = {
+	PIN_SSD203D_PM_IRIN,
+};
+
+static const struct msc313_pinctrl_group ssd203d_pinctrl_groups[] = {
+	SSD203D_PINCTRL_GROUP(PM_UART, pm_uart),
+	SSD203D_PINCTRL_GROUP(PM_SPI, pm_spi),
+	SSD203D_PINCTRL_GROUP(PM_IRIN, pm_irin),
+};
+
+static const struct msc313_pinctrl_function ssd203d_pinctrl_functions[] = {
+	COMMON_FUNCTIONS
+};
+
+static const struct msc313_pinctrl_pinconf ssd203d_configurable_pins[] = {
+};
+
+MSTAR_PINCTRL_INFO(ssd203d);
 #endif /* infinity */
 
 #ifdef CONFIG_MACH_MERCURY
@@ -418,6 +463,10 @@ static const struct of_device_id msc313_pinctrl_pm_of_match[] = {
 	{
 		.compatible	= "sstar,ssd20xd-pm-pinctrl",
 		.data		= &ssd20xd_info,
+	},
+	{
+		.compatible	= "sstar,ssd203d-pm-pinctrl",
+		.data		= &ssd203d_info,
 	},
 #endif
 #ifdef CONFIG_MACH_PIONEER3
