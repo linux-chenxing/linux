@@ -428,8 +428,13 @@ extern const struct pinmux_ops mstar_pinmux_ops;
 /* for ssd20xd pins */
 #define SSD20XD_COMMON_PIN(_pinname) COMMON_PIN(SSD20XD, _pinname)
 
+#define SSD203D_COMMON_PIN(_pinname) COMMON_PIN(SSD203D, _pinname)
+
 #define SSD20XD_PINCTRL_GROUP(_NAME, _name) \
 	MSTAR_PINCTRL_GROUP(GROUPNAME_##_NAME, ssd20xd_##_name##_pins)
+
+#define SSD203D_PINCTRL_GROUP(_NAME, _name) \
+	MSTAR_PINCTRL_GROUP(GROUPNAME_##_NAME, ssd203d_##_name##_pins)
 
 #define SSD20XD_MODE(_func, _modenum) (_modenum << SHIFT_SSD20XD_##_func)
 
