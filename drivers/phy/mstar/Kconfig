@@ -22,3 +22,13 @@ config PHY_SSD20XD_DPHY
 	default ARCH_MSTARV7
 	help
 	  Enable this to support the MIPI D-PHY in MStar/SigmaStar SoCs
+
+config PHY_SSD20XD_SATA
+	tristate "SSD20XD SATA PHY driver"
+	select GENERIC_PHY
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	depends on OF
+	depends on HAS_IOMEM
+	default ARCH_MSTARV7
+	help
+	  Enable this to support the SATA PHY in MStar/SigmaStar SoCs
