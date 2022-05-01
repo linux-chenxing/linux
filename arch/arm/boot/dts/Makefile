@@ -1581,6 +1581,7 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-infinity2m-ssd202d-ssd201htv2.dtb \
 	mstar-infinity2m-ssd202d-unitv2.dtb \
 	mstar-infinity2m-ssd203d-n1pro.dtb \
+	mstar-infinity2m-ssr621d-tlnvr.dtb \
 	mstar-infinity3-msc313e-breadbee.dtb \
 	mstar-infinity3-msc313e-wiibee.dtb \
 	mstar-infinity3-msc313d-mc400l.dtb \
