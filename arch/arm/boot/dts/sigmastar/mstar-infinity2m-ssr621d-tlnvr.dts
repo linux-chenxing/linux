@@ -1,0 +1,103 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2021 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+#include "mstar-infinity2m-ssd203d.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/leds/common.h>
+#include <dt-bindings/clock/mstar-msc313-clkgen.h>
+
+/ {
+	model = "TP-LINK TL-NVR6108C-B";
+	compatible = "tp-link,tl-nvr6108c-b", "mstar,infinity2m";
+
+	aliases {
+		serial0 = &pm_uart;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "console=tty0 console=ttyS0,115200 clk_ignore_unused earlyprintk";
+	};
+
+	reg_vcc_dram: regulator-vcc-dram {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_dram";
+		regulator-min-microvolt = <1500000>;
+		regulator-max-microvolt = <1500000>;
+		regulator-boot-on;
+	};
+};
+
+&pm_uart {
+	status = "okay";
+};
+
+&i2c0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_mode1_pins>;
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+	nand: nand@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <40000000>;
+		spi-rx-bus-width = <4>;
+	};
+};
+
+// Enabling this causes an interrupt storm
+&usbphy1 {
+//	status = "okay";
+};
+
+&uhc1 {
+///	status = "okay";
+};
+//
+
+&usbphy2 {
+	status = "okay";
+};
+
+&uhc2 {
+	status = "okay";
+};
+
+&miu {
+	ddr-supply = <&reg_vcc_dram>;
+};
+
+&op2 {
+	status = "okay";
+};
+
+&hdmitx {
+	status = "okay";
+	ddc-i2c-bus = <&i2c0>;
+};
+
+&op2_hdmitx {
+	remote-endpoint = <&hdmitx_in>;
+};
+
+&emac {
+	/delete-property/ pinctrl-names;
+	/delete-property/ pinctrl-0;
+	status = "okay";
+};
+
+&sata {
+	assigned-clocks = <&clkgen MSC313_CLKGEN_MUXES SSD20XD_CLKGEN_SATA 0>;
+	assigned-clock-parents = <&clkgen MSC313_CLKGEN_GATES MSC313_CLKGEN_GATE_8 0>;
+	status = "okay";
+};
