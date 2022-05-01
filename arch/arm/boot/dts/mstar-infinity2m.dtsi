@@ -304,12 +304,26 @@
 		interconnect-names = "dma-mem";
 		status = "disabled";
 	};
+	
+	//#define SATA_GHC_0          0x1A2800
+	//#define SATA_GHC_0_P0       0x1A2840
+	//#define SATA_GHC_0_MISC     0x152500
+	//#define SATA_GHC_0_PHY      0x152600
+	//#define SATA_GHC_0_PHY_ANA  0x152700
+
+	sata_phy: phy@2a4a00 {
+		#phy-cells = <0>;
+		compatible = "sstar,ssd203d-sata-phy";
+		reg = <0x2a4a00 0x600>;
+	};
 
 	sata: ahci@345000 {
 		compatible = "generic-ahci";
 		reg = <0x345000 0x1000>;
 		interrupts-extended = <&intc_irq GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
 		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SATA 0>;
+		phy-names = "sata-phy";
+		phys = <&sata_phy>;
 		status = "disabled";
 	};
 
