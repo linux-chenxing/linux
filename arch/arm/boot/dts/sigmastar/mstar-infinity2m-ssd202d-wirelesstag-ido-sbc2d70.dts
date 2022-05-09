@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2020 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+#include "mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	model = "SBC2D70 (SSD202D)";
+	compatible = "ido,sbc2d70", "mstar,infinity2m";
+
+
+	leds {
+		compatible = "gpio-leds";
+		sys_led {
+			gpios = <&gpio SSD20XD_GPIO_GPIO10 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "heartbeat";
+		};
+	};
+
+/*
+	vcc_vbus: regulator@2 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_vbus";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_GPIO47 0>;
+		enable-active-high;
+	};
+*/
+
+	vcc_sd: regulator@3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_sd";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpios = <&gpio SSD20XD_GPIO_GPIO0 0>;
+	};
+
+	vcc_4g: regulator@4 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_4g";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_GPIO90 0>;
+		enable-active-high;
+	};
+
+	vcc_5v: regulator@5 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_5v";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_UART0_TX 0>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	vcc_lcd_sw: regulator-lcd-sw {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_5v";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio SSD20XD_GPIO_FUART_RTS 0>;
+		enable-active-high;
+		regulator-always-on;
+	};
+};
