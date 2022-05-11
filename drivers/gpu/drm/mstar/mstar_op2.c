@@ -276,8 +276,10 @@ static int mstar_op2_bind(struct device *dev, struct device *master,
 	 * There is nothing connected to the TTL output,
 	 * use mipi.
 	 */
+	printk("%s:%d - %d\n", __func__, __LINE__, ret);
 	if (ret == -ENODEV) {
-		op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 1);
+		//op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 1);
+		op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 2);
 		return 0;
 	}
 	return 0;
