@@ -39,7 +39,7 @@
 	beeper {
 		compatible = "pwm-beeper";
 		pinctrl-names = "default";
-	        pinctrl-0 = <&pwm1_mode4_pins>;
+		pinctrl-0 = <&pwm1_mode4_pins>;
 		pwms = <&pwm 1 1000000>;
 	};
 /*
