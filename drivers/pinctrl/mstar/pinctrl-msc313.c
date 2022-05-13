@@ -741,6 +741,12 @@ static const int ssd20xd_spi0_mode4_pins[] = {
 	PIN_SSD20XD_FUART_CTS,
 	PIN_SSD20XD_FUART_RTS,
 };
+static const int ssd20xd_spi0_mode5_pins[] = {
+	PIN_SSD20XD_UART2_RX,
+	PIN_SSD20XD_UART2_TX,
+	PIN_SSD20XD_GPIO10,
+	PIN_SSD20XD_GPIO11,
+};
 static const int ssd20xd_spi0_mode6_pins[] = {
 	PIN_SSD20XD_GPIO0,
 	PIN_SSD20XD_GPIO1,
@@ -846,6 +852,7 @@ static const struct msc313_pinctrl_group ssd20xd_pinctrl_groups[] = {
 	SSD20XD_PINCTRL_GROUP(SPI0_MODE2, spi0_mode2),
 	SSD20XD_PINCTRL_GROUP(SPI0_MODE3, spi0_mode3),
 	SSD20XD_PINCTRL_GROUP(SPI0_MODE4, spi0_mode4),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE5, spi0_mode5),
 	SSD20XD_PINCTRL_GROUP(SPI0_MODE6, spi0_mode6),
 	SSD20XD_PINCTRL_GROUP(PWM0_MODE1, pwm0_mode1),
 	SSD20XD_PINCTRL_GROUP(PWM0_MODE2, pwm0_mode2),
@@ -964,6 +971,7 @@ static const char * const ssd20xd_spi0_groups[] = {
 	GROUPNAME_SPI0_MODE2,
 	GROUPNAME_SPI0_MODE3,
 	GROUPNAME_SPI0_MODE4,
+	GROUPNAME_SPI0_MODE5,
 	GROUPNAME_SPI0_MODE6,
 };
 static const u16 ssd20xd_spi0_values[] = {
@@ -971,6 +979,7 @@ static const u16 ssd20xd_spi0_values[] = {
 	SSD20XD_MODE(SPI0, 2),
 	SSD20XD_MODE(SPI0, 3),
 	SSD20XD_MODE(SPI0, 4),
+	SSD20XD_MODE(SPI0, 5),
 	SSD20XD_MODE(SPI0, 6),
 };
 
