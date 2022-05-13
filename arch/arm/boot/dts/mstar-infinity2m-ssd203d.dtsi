@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2020 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+#include "mstar-infinity2m-ssd20xd.dtsi"
+
+/ {
+	memory {
+		device_type = "memory";
+		reg = <0x20000000 0x8000000>;
+	};
+};
+
+&display {
+	ports = <&mopg>,<&mops>,<&gop0>,<&gop1>,<&op2>,<&displaytop>,<&hdmitx>;
+};
+
+&pinctrl {
+	compatible = "sstar,ssd203d-pinctrl";
+};
+
+&pinctrl_pm {
+	compatible = "sstar,ssd203d-pm-pinctrl";
+};
