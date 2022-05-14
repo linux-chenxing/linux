@@ -18,6 +18,7 @@
 #define REG_PERIOD	0x10
 #define REG_DIV  	0x18
 #define REG_CTRL	0x1c
+#define REG_SWRST	0x1fc
 
 struct msc313e_pwm_channel {
 	struct regmap_field *clkdiv;
@@ -26,6 +27,7 @@ struct msc313e_pwm_channel {
 	struct regmap_field *dutyh;
 	struct regmap_field *periodl;
 	struct regmap_field *periodh;
+	struct regmap_field *swrst;
 };
 
 struct msc313e_pwm {
@@ -117,22 +119,37 @@ static int msc313e_pwm_set_polarity(struct pwm_chip *chip, struct pwm_device *de
 static int msc313e_pwm_enable(struct pwm_chip *chip, struct pwm_device *device)
 {
 	struct msc313e_pwm *pwm = to_msc313e_pwm(chip);
+	struct msc313e_pwm_channel *channel = &pwm->channels[device->hwpwm];
+	int ret;
 
-	return clk_prepare_enable(pwm->clk);
+	ret = clk_prepare_enable(pwm->clk);
+	if (ret)
+		return ret;
+
+	regmap_field_write(channel->swrst, 0);
+
+	return 0;
 }
 
 static void msc313e_pwm_disable(struct pwm_chip *chip, struct pwm_device *device)
 {
 	struct msc313e_pwm *pwm = to_msc313e_pwm(chip);
+	struct msc313e_pwm_channel *channel = &pwm->channels[device->hwpwm];
 
+	regmap_field_write(channel->swrst, 1);
 	clk_disable(pwm->clk);
 }
 
 static int msc313e_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 		     const struct pwm_state *state)
 {
-	msc313e_pwm_set_polarity(chip, pwm, state->polarity);
-	msc313e_pwm_config(chip, pwm, state->duty_cycle, state->period);
+	if (state->enabled) {
+		msc313e_pwm_enable(chip, pwm);
+		msc313e_pwm_set_polarity(chip, pwm, state->polarity);
+		msc313e_pwm_config(chip, pwm, state->duty_cycle, state->period);
+	}
+	else
+		msc313e_pwm_disable(chip, pwm);
 
 	return 0;
 }
@@ -192,6 +209,7 @@ static int msc313e_pwm_probe(struct platform_device *pdev)
 		struct reg_field dutyh_field = REG_FIELD(offset + REG_DUTY + 4, 0, 2);
 		struct reg_field periodl_field = REG_FIELD(offset + REG_PERIOD, 0, 15);
 		struct reg_field periodh_field = REG_FIELD(offset + REG_PERIOD + 4, 0, 2);
+		struct reg_field swrst_field = REG_FIELD(REG_SWRST, i, i);
 
 		pwm->channels[i].clkdiv = devm_regmap_field_alloc(dev, pwm->regmap, div_clkdiv_field);
 		pwm->channels[i].polarity = devm_regmap_field_alloc(dev, pwm->regmap, ctrl_polarity_field);
@@ -199,6 +217,7 @@ static int msc313e_pwm_probe(struct platform_device *pdev)
 		pwm->channels[i].dutyh = devm_regmap_field_alloc(dev, pwm->regmap, dutyh_field);
 		pwm->channels[i].periodl = devm_regmap_field_alloc(dev, pwm->regmap, periodl_field);
 		pwm->channels[i].periodh = devm_regmap_field_alloc(dev, pwm->regmap, periodh_field);
+		pwm->channels[i].swrst = devm_regmap_field_alloc(dev, pwm->regmap, swrst_field);
 	}
 
 	pwm->pwmchip.dev = dev;
