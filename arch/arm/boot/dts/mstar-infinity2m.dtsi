@@ -446,3 +446,11 @@
 &sdio {
 	clocks = <&sc_gp_ctrl_muxes SSD20XD_SC_GP_SDIO_GATE>;
 };
+
+&mspi0 {
+	compatible = "sstar,ssd20xd-spi", "mstar,msc313-spi";
+	dma-names = "movedma";
+	dmas = <&movedma 0>;
+	interconnects = <&miu 0>;
+	interconnect-names = "dma-mem";
+};
