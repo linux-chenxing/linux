@@ -738,8 +738,8 @@ static int mipi_dbi_poweron_reset_conditional(struct mipi_dbi_dev *dbidev, bool 
 		}
 	}
 
-	if (cond && mipi_dbi_display_is_on(dbi))
-		return 1;
+	//if (cond && mipi_dbi_display_is_on(dbi))
+	//	return 1;
 
 	mipi_dbi_hw_reset(dbi);
 	ret = mipi_dbi_command(dbi, MIPI_DCS_SOFT_RESET);
