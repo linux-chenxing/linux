@@ -495,6 +495,7 @@ static const struct msc313_clkgen_parent_data mspi_parents[] = {
 
 #define MSPI0		MSC313_MUX_PARENT_DATA("mspi0", mspi_parents, 0xcc, 0, 2, 2, -1)
 #define MSPI1		MSC313_MUX_PARENT_DATA("mspi1", mspi_parents, 0xcc, 8, 10, 2, -1)
+#define MSPI_MOVEDMA	MSC313_MUX_PARENT_DATA("mspi_movedma", mspi_parents, 0xcc, 12, 14, 2, -1)
 
 static const struct msc313_clkgen_parent_data fuart0_synth_in_parents[] = {
 	PARENT_GATE(6),
@@ -712,6 +713,7 @@ static const struct msc313_mux_data ssd20xd_muxes[] = {
 	DISP_432,
 	DISP_216,
 	MIPI_TX_DSI,
+	MSPI_MOVEDMA,
 };
 
 static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
