@@ -44,6 +44,7 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-infinity2m-ssd201-wirelesstag-ido-som2d01.dtb \
 	mstar-infinity2m-ssd202d-100ask-dongshanpione.dtb \
 	mstar-infinity2m-ssd202d-100ask-dongshanpione-100ask_lcd0.dtbo \
+	mstar-infinity2m-ssd202d-100ask-dongshanpione-ili9341.dtbo \
 	mstar-infinity2m-ssd202d-100ask-dongshanpione-carrier.dtb \
 	mstar-infinity2m-ssd202d-gw302.dtb \
 	mstar-infinity2m-ssd202d-miyoo-mini.dtb \
