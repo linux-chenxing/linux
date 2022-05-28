@@ -3553,9 +3553,9 @@ static const struct drm_display_mode std_std70tft102460013f_mode = {
 	.hsync_end = 1024 + 140 + 20,
 	.htotal = 1024 + 140 + 20 + 160,
 	.vdisplay = 600,
-	.vsync_start = 600 + 20,
-	.vsync_end = 600 + 20 + 3,
-	.vtotal = 600 + 20 + 3 + 12,
+	.vsync_start = 600 + 10,
+	.vsync_end = 600 + 10 + 3,
+	.vtotal = 600 + 22 + 3 + 10,
 };
 
 static const struct panel_desc std_std70tft102460013f = {
