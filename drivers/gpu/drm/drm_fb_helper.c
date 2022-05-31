@@ -404,7 +404,7 @@ static void drm_fb_helper_damage_blit_real(struct drm_fb_helper *fb_helper,
 	src = fb_helper->fbdev->screen_buffer + offset;
 	iosys_map_incr(dst, offset); /* go to first pixel within clip rect */
 
-	for (y = clip->y1; y < clip->y2; y++) {
+	for (y = clip->y1; y < min(fb->height, (unsigned int) clip->y2); y++) {
 		iosys_map_memcpy_to(dst, 0, src, len);
 		iosys_map_incr(dst, fb->pitches[0]);
 		src += fb->pitches[0];
