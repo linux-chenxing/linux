@@ -15,6 +15,7 @@
 #include <linux/platform_device.h>
 #include <linux/pm.h>
 #include <linux/module.h>
+#include <linux/spinlock.h>
 
 #include <dt-bindings/gpio/msc313-gpio.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
@@ -547,6 +548,7 @@ MSC313_GPIO_CHIPDATA(ssc8336, msc313_gpio_populate_parent_fwspec, msc313e_gpio_c
 #endif
 
 struct msc313_gpio {
+	spinlock_t lock;
 	void __iomem *base;
 	const struct msc313_gpio_data *gpio_data;
 	u8 *saved;
@@ -555,30 +557,51 @@ struct msc313_gpio {
 static void msc313_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
 {
 	struct msc313_gpio *gpio = gpiochip_get_data(chip);
-	u8 gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
+	unsigned long flags;
+	u8 gpioreg;
 
+	spin_lock_irqsave(&gpio->lock, flags);
+
+	gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
 	if (value)
 		gpioreg |= MSC313_GPIO_OUT;
 	else
 		gpioreg &= ~MSC313_GPIO_OUT;
 
 	writeb_relaxed(gpioreg, gpio->base + gpio->gpio_data->offsets[offset]);
+
+	spin_unlock_irqrestore(&gpio->lock, flags);
 }
 
 static int msc313_gpio_get(struct gpio_chip *chip, unsigned int offset)
 {
 	struct msc313_gpio *gpio = gpiochip_get_data(chip);
+	unsigned long flags;
+	u8 gpioreg;
 
-	return readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]) & MSC313_GPIO_IN;
+	spin_lock_irqsave(&gpio->lock, flags);
+
+	gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
+
+	spin_unlock_irqrestore(&gpio->lock, flags);
+
+	return gpioreg & MSC313_GPIO_IN;
 }
 
 static int msc313_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
 {
 	struct msc313_gpio *gpio = gpiochip_get_data(chip);
-	u8 gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
+	unsigned long flags;
+	u8 gpioreg;
 
+	spin_lock_irqsave(&gpio->lock, flags);
+
+	gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
 	gpioreg |= MSC313_GPIO_OEN;
+
 	writeb_relaxed(gpioreg, gpio->base + gpio->gpio_data->offsets[offset]);
+
+	spin_unlock_irqrestore(&gpio->lock, flags);
 
 	return 0;
 }
@@ -586,14 +609,21 @@ static int msc313_gpio_direction_input(struct gpio_chip *chip, unsigned int offs
 static int msc313_gpio_direction_output(struct gpio_chip *chip, unsigned int offset, int value)
 {
 	struct msc313_gpio *gpio = gpiochip_get_data(chip);
-	u8 gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
+	unsigned long flags;
+	u8 gpioreg;
 
+	spin_lock_irqsave(&gpio->lock, flags);
+
+	gpioreg = readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset]);
 	gpioreg &= ~MSC313_GPIO_OEN;
 	if (value)
 		gpioreg |= MSC313_GPIO_OUT;
 	else
 		gpioreg &= ~MSC313_GPIO_OUT;
+
 	writeb_relaxed(gpioreg, gpio->base + gpio->gpio_data->offsets[offset]);
+
+	spin_unlock_irqrestore(&gpio->lock, flags);
 
 	return 0;
 }
@@ -714,6 +744,8 @@ static int msc313_gpio_probe(struct platform_device *pdev)
 	gpio = devm_kzalloc(dev, sizeof(*gpio), GFP_KERNEL);
 	if (!gpio)
 		return -ENOMEM;
+
+	spin_lock_init(&gpio->lock);
 
 	gpio->gpio_data = match_data;
 
