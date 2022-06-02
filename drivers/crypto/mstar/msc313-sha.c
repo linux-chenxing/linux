@@ -189,7 +189,16 @@ static int msc313_sha_do_one(struct msc313_sha_ctx *ctx,
 	/*
 	 * The vendor code for this thing says it takes ~1us.
 	 * But they seem to only ever do 64 byte blocks at a time.
+	 *
+	 * cryptomgr_test is calling this in an atomic context??
 	 */
+	if (in_atomic()) {
+		mdelay(1);
+		regmap_field_read(sha->ready, &ready);
+		if (!ready)
+			ret = -ETIMEDOUT;
+	}
+
 	if (regmap_field_read_poll_timeout(sha->ready, ready, ready == 1, 1, 100)) {
 		dev_err(sha->dev, "timeout waiting for update to finish\n");
 		ret = -ETIMEDOUT;
