@@ -2491,6 +2491,7 @@ F:	drivers/irqchip/irq-msc313-pm-intc.c
 F:	drivers/irqchip/irq-msc313-pm-wakeup.c
 F:	drivers/irqchip/irq-ssd20xd-gpi.c
 F:	drivers/pinctrl/mstar/
+F:	drivers/pwm/pwm-msc313.c
 F:	drivers/pwm/pwm-msc313e.c
 F:	drivers/rtc/rtc-msc313.c
 F:	drivers/watchdog/msc313e_wdt.c

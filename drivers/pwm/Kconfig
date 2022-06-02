@@ -675,6 +675,12 @@ config PWM_XILINX
 	  To compile this driver as a module, choose M here: the module
 	  will be called pwm-xilinx.
 
+config PWM_MSC313
+        tristate "MStar MSC313 PWM support"
+        depends on ARCH_MSTARV7
+        help
+          PWM drvier for MSC313.
+
 config PWM_MSC313E
         tristate "MStar MSC313e PWM support"
         depends on ARCH_MSTARV7
