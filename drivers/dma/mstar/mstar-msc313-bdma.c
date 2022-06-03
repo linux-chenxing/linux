@@ -91,7 +91,7 @@ struct msc313_bdma {
 	struct msc313_bdma_chan chans[];
 };
 
-#define to_chan(ch) container_of(ch, struct msc313_bdma_chan, chan);
+#define to_chan(ch) container_of(ch, struct msc313_bdma_chan, chan)
 
 struct msc313_bdma_desc {
 	struct dma_async_tx_descriptor tx;
@@ -133,45 +133,6 @@ static void msc313_bdma_tasklet(unsigned long data) {
 	spin_unlock_irqrestore(&chan->lock, flags);
 }
 
-static irqreturn_t msc313_bdma_irq(int irq, void *data)
-{
-	struct msc313_bdma_chan *chan = data;
-	unsigned int irqflag, done;
-	unsigned long flags;
-
-	regmap_field_read(chan->irq, &irqflag);
-	if(!irqflag)
-		return IRQ_NONE;
-
-	regmap_field_write(chan->irq, 1);
-	regmap_field_write(chan->done, 1);
-	regmap_field_write(chan->err, 1);
-
-	chan->inflight->success = true;
-	spin_lock_irqsave(&chan->lock, flags);
-	list_move_tail(&chan->inflight->queue_node, &chan->completed);
-	spin_unlock_irqrestore(&chan->lock, flags);
-
-	chan->inflight = NULL;
-	tasklet_schedule(&chan->tasklet);
-
-	return IRQ_HANDLED;
-}
-
-static irqreturn_t msc313_bdma_irq_single(int irq, void *data)
-{
-	struct msc313_bdma *bdma = data;
-	int i, ret = IRQ_NONE;
-
-	for (i = 0; i < bdma->info->channels; i++) {
-		struct msc313_bdma_chan *chan = &bdma->chans[i];
-		if(msc313_bdma_irq(irq, chan) == IRQ_HANDLED)
-			ret = IRQ_HANDLED;
-	}
-
-	return ret;
-}
-
 static enum dma_status msc313_bdma_tx_status(struct dma_chan *chan,
 		dma_cookie_t cookie, struct dma_tx_state *txstate)
 {
@@ -190,6 +151,8 @@ static void msc313_bdma_write_low_high_pair(struct regmap_field *low,
 
 static void msc313_bdma_do_single(struct msc313_bdma_chan *chan, struct msc313_bdma_desc *desc)
 {
+	BUG_ON(chan->inflight);
+
 	chan->inflight = desc;
 
 	pm_runtime_get_sync(chan->bdma->dma_device.dev);
@@ -213,25 +176,31 @@ static void msc313_bdma_issue_pending(struct dma_chan *chan)
 {
 	struct msc313_bdma_desc *desc;
 	struct msc313_bdma_chan *ch = to_chan(chan);
+	unsigned long flags;
 
-	desc = list_first_entry_or_null(&ch->queue, struct msc313_bdma_desc, queue_node);
-	if(desc)
-		msc313_bdma_do_single(ch, desc);
+	spin_lock_irqsave(&ch->lock, flags);
+	if (!ch->inflight) {
+		desc = list_first_entry_or_null(&ch->queue, struct msc313_bdma_desc, queue_node);
+		if(desc)
+			msc313_bdma_do_single(ch, desc);
+	}
+	spin_unlock_irqrestore(&ch->lock, flags);
 }
 
 static dma_cookie_t msc313_tx_submit(struct dma_async_tx_descriptor *tx)
 {
-	dma_cookie_t cookie;
 	struct msc313_bdma_desc *desc;
 	struct msc313_bdma_chan *chan;
+	unsigned long flags;
 
 	chan = to_chan(tx->chan);
 	desc = to_desc(tx);
 
+	spin_lock_irqsave(&chan->lock, flags);
 	list_add_tail(&desc->queue_node, &chan->queue);
-	cookie = dma_cookie_assign(tx);
+	spin_unlock_irqrestore(&chan->lock, flags);
 
-	return cookie;
+	return dma_cookie_assign(tx);
 }
 
 static struct dma_async_tx_descriptor* msc313_bdma_prep_dma_memcpy(
@@ -366,6 +335,58 @@ static const struct regmap_config regmap_config = {
 	.val_bits = 16,
 	.reg_stride = 4,
 };
+
+static irqreturn_t msc313_bdma_irq(int irq, void *data)
+{
+	struct msc313_bdma_chan *chan = data;
+	struct msc313_bdma_desc *next;
+	unsigned int irqflag, done, err;
+	unsigned long flags;
+
+	regmap_field_read(chan->irq, &irqflag);
+	if(!irqflag)
+		return IRQ_NONE;
+
+	regmap_field_read(chan->done, &done);
+	regmap_field_read(chan->err, &err);
+
+	regmap_field_write(chan->irq, 1);
+	regmap_field_write(chan->done, 1);
+	regmap_field_write(chan->err, 1);
+
+	spin_lock_irqsave(&chan->lock, flags);
+
+	/* Move inflight descriptor to complete list */
+	chan->inflight->success = true;
+	list_move_tail(&chan->inflight->queue_node, &chan->completed);
+	chan->inflight = NULL;
+
+	/* Start next descriptor is there is one */
+	next = list_first_entry_or_null(&chan->queue, struct msc313_bdma_desc, queue_node);
+	if(next)
+		msc313_bdma_do_single(chan, next);
+
+	spin_unlock_irqrestore(&chan->lock, flags);
+
+	/* Kick tasklet to finish up completed descriptors */
+	tasklet_schedule(&chan->tasklet);
+
+	return IRQ_HANDLED;
+}
+
+static irqreturn_t msc313_bdma_irq_single(int irq, void *data)
+{
+	struct msc313_bdma *bdma = data;
+	int i, ret = IRQ_NONE;
+
+	for (i = 0; i < bdma->info->channels; i++) {
+		struct msc313_bdma_chan *chan = &bdma->chans[i];
+		if(msc313_bdma_irq(irq, chan) == IRQ_HANDLED)
+			ret = IRQ_HANDLED;
+	}
+
+	return ret;
+}
 
 static int msc313_bdma_probe(struct platform_device *pdev)
 {
