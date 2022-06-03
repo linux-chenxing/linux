@@ -135,6 +135,7 @@ CHIP_DATA(ssc8336);
 
 struct msc313_pm_gpio {
 	struct device *dev;
+	spinlock_t lock;
 	void __iomem *base;
 	const struct msc313_pm_gpio_data *info;
 };
@@ -195,21 +196,28 @@ static void msc313e_pm_gpio_set(struct gpio_chip *chip, unsigned offset, int val
 {
 	struct msc313_pm_gpio *priv = gpiochip_get_data(chip);
 	void __iomem *addr = priv->base + priv->info->offsets[offset];
-	u16 reg = readw_relaxed(addr);
+	unsigned long flags;
+	u16 reg;
 
+	spin_lock_irqsave(&priv->lock, flags);
+	reg = readw_relaxed(addr);
 	if (value)
 		reg |= BIT_OUT;
 	else
 		reg &= ~BIT_OUT;
-
 	writew_relaxed(reg, addr);
+	spin_unlock_irqrestore(&priv->lock, flags);
 }
 
 static int msc313e_pm_gpio_get(struct gpio_chip *chip, unsigned int offset)
 {
 	struct msc313_pm_gpio *priv = gpiochip_get_data(chip);
+	unsigned long flags;
+	u16 reg;
 
-	u16 reg = readw_relaxed(priv->base + priv->info->offsets[offset]);
+	spin_lock_irqsave(&priv->lock, flags);
+	reg = readw_relaxed(priv->base + priv->info->offsets[offset]);
+	spin_unlock_irqrestore(&priv->lock, flags);
 
 	return reg & BIT_IN ? 1 : 0;
 }
@@ -218,10 +226,14 @@ static int msc313e_pm_gpio_direction_input(struct gpio_chip *chip, unsigned int 
 {
 	struct msc313_pm_gpio *priv = gpiochip_get_data(chip);
 	void __iomem *addr = priv->base + priv->info->offsets[offset];
-	u16 reg = readw_relaxed(addr);
+	unsigned long flags;
+	u16 reg;
 
+	spin_lock_irqsave(&priv->lock, flags);
+	reg = readw_relaxed(addr);
 	reg |= BIT_OEN;
 	writew_relaxed(reg, addr);
+	spin_unlock_irqrestore(&priv->lock, flags);
 
 	return 0;
 }
@@ -231,10 +243,14 @@ static int msc313e_pm_gpio_direction_output(struct gpio_chip *chip, unsigned int
 {
 	struct msc313_pm_gpio *priv = gpiochip_get_data(chip);
 	void __iomem *addr = priv->base + priv->info->offsets[offset];
-	u16 reg = readw_relaxed(addr);
+	unsigned long flags;
+	u16 reg;
 
+	spin_lock_irqsave(&priv->lock, flags);
+	reg = readw_relaxed(addr);
 	reg &= ~BIT_OEN;
 	writew_relaxed(reg, addr);
+	spin_unlock_irqrestore(&priv->lock, flags);
 
 	return 0;
 }
@@ -301,6 +317,7 @@ static int msc313_pm_gpio_probe(struct platform_device *pdev)
 	if (!priv)
 		return -ENOMEM;
 
+	spin_lock_init(&priv->lock);
 	priv->dev = &pdev->dev;
 	priv->info = match_data;
 
