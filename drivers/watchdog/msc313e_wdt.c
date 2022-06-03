@@ -8,13 +8,16 @@
  */
 
 #include <linux/clk.h>
+#include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/mod_devicetable.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/watchdog.h>
+#include <linux/of_irq.h>
 
 #define REG_WDT_CLR			0x0
+#define REG_WDT_INT			0xc
 #define REG_WDT_MAX_PRD_L		0x10
 #define REG_WDT_MAX_PRD_H		0x14
 
@@ -35,7 +38,7 @@ struct msc313e_wdt_priv {
 static int msc313e_wdt_start(struct watchdog_device *wdev)
 {
 	struct msc313e_wdt_priv *priv = watchdog_get_drvdata(wdev);
-	u32 timeout;
+	u32 timeout, pretimeout;
 	int err;
 
 	err = clk_prepare_enable(priv->clk);
@@ -45,6 +48,22 @@ static int msc313e_wdt_start(struct watchdog_device *wdev)
 	timeout = wdev->timeout * clk_get_rate(priv->clk);
 	writew(timeout & 0xffff, priv->base + REG_WDT_MAX_PRD_L);
 	writew((timeout >> 16) & 0xffff, priv->base + REG_WDT_MAX_PRD_H);
+
+	/*
+	 * If there is a pretimeout use it to configure when the interrupt
+	 * fires. The hardware fires the interrupt when the top 16 bits of
+	 * the register and the counter match, and the bottom 16 bits of the
+	 * counter are zero.
+	 *
+	 * If there is no then use the top 16 bits of the timeout.
+	 */
+	if (pretimeout != 0) {
+		pretimeout = wdev->pretimeout * clk_get_rate(priv->clk);
+		writew((pretimeout >> 16) & 0xffff, priv->base + REG_WDT_INT);
+	}
+	else
+		writew((timeout >> 16) & 0xffff, priv->base + REG_WDT_INT);
+
 	writew(1, priv->base + REG_WDT_CLR);
 	return 0;
 }
@@ -75,9 +94,17 @@ static int msc313e_wdt_settimeout(struct watchdog_device *wdev, unsigned int new
 	return msc313e_wdt_start(wdev);
 }
 
+static int msc313e_wdt_setpretimeout(struct watchdog_device *, unsigned int new_time)
+{
+	printk("new time %d", new_time);
+
+	return 0;
+}
+
 static const struct watchdog_info msc313e_wdt_ident = {
 	.identity = "MSC313e watchdog",
-	.options = WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT,
+	.options = WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
+		   WDIOF_SETTIMEOUT | WDIOF_PRETIMEOUT,
 };
 
 static const struct watchdog_ops msc313e_wdt_ops = {
@@ -86,6 +113,8 @@ static const struct watchdog_ops msc313e_wdt_ops = {
 	.stop = msc313e_wdt_stop,
 	.ping = msc313e_wdt_ping,
 	.set_timeout = msc313e_wdt_settimeout,
+	.set_pretimeout = msc313e_wdt_setpretimeout,
+
 };
 
 static const struct of_device_id msc313e_wdt_of_match[] = {
@@ -94,10 +123,20 @@ static const struct of_device_id msc313e_wdt_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, msc313e_wdt_of_match);
 
+static irqreturn_t msc313e_wdt_irq(int irq, void *data)
+{
+	struct watchdog_device *wdog = data;
+
+	watchdog_notify_pretimeout(wdog);
+
+	return IRQ_HANDLED;
+}
+
 static int msc313e_wdt_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct msc313e_wdt_priv *priv;
+	int irq, ret;
 
 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
 	if (!priv)
@@ -112,6 +151,14 @@ static int msc313e_wdt_probe(struct platform_device *pdev)
 		dev_err(dev, "No input clock\n");
 		return PTR_ERR(priv->clk);
 	}
+
+	irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
+	if (!irq)
+		return -EINVAL;
+	ret = devm_request_irq(&pdev->dev, irq, msc313e_wdt_irq, IRQF_SHARED,
+			       dev_name(&pdev->dev), priv);
+	if(ret)
+		return ret;
 
 	priv->wdev.info = &msc313e_wdt_ident,
 	priv->wdev.ops = &msc313e_wdt_ops,
