@@ -50,6 +50,7 @@ properties:
       - description: Silan Accelerometers
         enum:
           - silan,sc7a20
+          - silan,sc7a30e-accel
       - description: STMicroelectronics Gyroscopes
         enum:
           - st,l3g4200d-gyro

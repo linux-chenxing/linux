@@ -112,8 +112,16 @@ static const struct of_device_id st_accel_of_match[] = {
 		.data = LIS302DL_ACCEL_DEV_NAME,
 	},
 	{
-		.compatible = "silan,sc7a20",
+		.compatible = "silan,sc7660-accel",
+		.data = SC7660_ACCEL_DEV_NAME,
+	},
+	{
+		.compatible = "silan,sc7a20-accel",
 		.data = SC7A20_ACCEL_DEV_NAME,
+	},
+	{
+		.compatible = "silan,sc7a30e-accel",
+		.data = SC7A30E_ACCEL_DEV_NAME,
 	},
 	{},
 };
@@ -151,7 +159,9 @@ static const struct i2c_device_id st_accel_id_table[] = {
 	{ LIS2DE12_ACCEL_DEV_NAME },
 	{ LIS2HH12_ACCEL_DEV_NAME },
 	{ LIS302DL_ACCEL_DEV_NAME },
+	{ SC7660_ACCEL_DEV_NAME },
 	{ SC7A20_ACCEL_DEV_NAME },
+	{ SC7A30E_ACCEL_DEV_NAME },
 	{},
 };
 MODULE_DEVICE_TABLE(i2c, st_accel_id_table);
