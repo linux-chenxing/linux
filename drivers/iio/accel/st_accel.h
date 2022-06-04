@@ -38,8 +38,10 @@
 #define LIS2HH12_ACCEL_DEV_NAME		"lis2hh12"
 #define LIS302DL_ACCEL_DEV_NAME		"lis302dl"
 #define LSM303C_ACCEL_DEV_NAME		"lsm303c_accel"
+#define SC7660_ACCEL_DEV_NAME		"sc7660"
 #define SC7A20_ACCEL_DEV_NAME		"sc7a20"
 #define IIS328DQ_ACCEL_DEV_NAME		"iis328dq"
+#define SC7A30E_ACCEL_DEV_NAME		"sc7a30e"
 
 
 #ifdef CONFIG_IIO_BUFFER
