@@ -88,7 +88,7 @@ static u8 msc313_mux_deglitch_get_parent(struct clk_hw *hw)
 	struct msc313_mux *mux = deglitch_to_mux(hw);
 	unsigned int index = 0;
 
-	if (mux->deglitch){
+	if (mux->deglitch) {
 		regmap_field_read(mux->deglitch, &index);
 	}
 
@@ -160,11 +160,11 @@ struct msc313_muxes *msc313_mux_register_muxes(struct device *dev,
         mux = muxes->muxes;
 
 	for (i = 0; i < muxes_data->num_muxes; i++, mux++, mux_data++) {
-		struct reg_field gate_field = REG_FIELD(mux_data->offset,
+		const struct reg_field gate_field = REG_FIELD(mux_data->offset,
 				mux_data->gate_shift, mux_data->gate_shift);
-		struct reg_field mux_field = REG_FIELD(mux_data->offset,
+		const struct reg_field mux_field = REG_FIELD(mux_data->offset,
 				mux_data->mux_shift, mux_data->mux_shift + (mux_data->mux_width - 1));
-		struct reg_field deglitch_field = REG_FIELD(mux_data->offset,
+		const struct reg_field deglitch_field = REG_FIELD(mux_data->offset,
 				mux_data->deglitch_shift, mux_data->deglitch_shift);
 
 		if(!mux_data->name)
@@ -180,7 +180,7 @@ struct msc313_muxes *msc313_mux_register_muxes(struct device *dev,
 		if (IS_ERR(mux->mux))
 			return (struct msc313_muxes*) mux->mux;
 
-		if (mux_data->deglitch_shift != -1){
+		if (mux_data->deglitch_shift != -1) {
 			mux->deglitch =  devm_regmap_field_alloc(dev, regmap, deglitch_field);
 			if (IS_ERR(mux->deglitch))
 				return (struct msc313_muxes*) mux->deglitch;
@@ -213,12 +213,22 @@ struct msc313_muxes *msc313_mux_register_muxes(struct device *dev,
 		if (ret)
 			return ERR_PTR(ret);
 
-		mux->deglitch_parents[0].hw = &mux->mux_hw;
-		mux->deglitch_parents[1].fw_name = "deglitch";
+		/*
+		 * Deglitch selects either the parent selected at the mux
+		 * or the BOOT clock. CHECK THIS!!.
+		 */
+		if (mux->deglitch) {
+			mux->deglitch_parents[0].fw_name = "deglitch";
+			mux->deglitch_parents[1].hw = &mux->mux_hw;
+			deglitch_init.num_parents = 2;
+		}
+		else {
+			mux->deglitch_parents[0].hw = &mux->mux_hw;
+			deglitch_init.num_parents = 1;
+		}
 
 		deglitch_init.name = mux_data->name;
 		deglitch_init.parent_data = mux->deglitch_parents;
-		deglitch_init.num_parents = mux->deglitch ? 2 : 1;
 		deglitch_init.flags = mux_data->flags | CLK_SET_RATE_PARENT;
 		clk_hw = &mux->deglitch_hw;
 		clk_hw->init = &deglitch_init;
