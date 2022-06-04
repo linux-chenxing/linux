@@ -454,10 +454,10 @@ clkgen_mux_bist_sc_gp: clkgen_mux@1f20700c {
 #endif
 
 static const struct msc313_clkgen_parent_data miu_parents[] = {
-	PARENT_GATE(9),
+	PARENT_OF("ddrpll"),
+	PARENT_OF("unknown"),
 	PARENT_OF("miupll"),
-	PARENT_OF("unknown"),
-	PARENT_OF("unknown"),
+	PARENT_GATE(9),
 };
 #define MIU		MSC313_MUX_PARENT_DATA("miu", miu_parents, 0x5c, 0, 2, 2, 4)
 
