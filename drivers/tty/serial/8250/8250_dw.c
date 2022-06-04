@@ -56,6 +56,7 @@
 #define DW_UART_QUIRK_ARMADA_38X	BIT(1)
 #define DW_UART_QUIRK_SKIP_SET_RATE	BIT(2)
 #define DW_UART_QUIRK_IS_DMA_FC		BIT(3)
+#define DW_UART_QUIRK_IS_MSTAR_MSC313	BIT(4)
 
 static inline struct dw8250_data *clk_to_dw8250_data(struct notifier_block *nb)
 {
@@ -481,6 +482,8 @@ static void dw8250_quirks(struct uart_port *p, struct dw8250_data *data)
 			data->data.dma.prepare_tx_dma = dw8250_prepare_tx_dma;
 			data->data.dma.prepare_rx_dma = dw8250_prepare_rx_dma;
 		}
+		if (quirks & DW_UART_QUIRK_IS_MSTAR_MSC313)
+			data->skip_autocfg = true;
 
 	} else if (acpi_dev_present("APMC0D08", NULL, -1)) {
 		p->iotype = UPIO_MEM32;
@@ -772,12 +775,18 @@ static const struct dw8250_platform_data dw8250_starfive_jh7100_data = {
 	.quirks = DW_UART_QUIRK_SKIP_SET_RATE,
 };
 
+static const struct dw8250_platform_data dw8250_mstar_msc313_data = {
+	.usr_reg = 0x7,
+	.quirks = DW_UART_QUIRK_IS_MSTAR_MSC313,
+};
+
 static const struct of_device_id dw8250_of_match[] = {
 	{ .compatible = "snps,dw-apb-uart", .data = &dw8250_dw_apb },
 	{ .compatible = "cavium,octeon-3860-uart", .data = &dw8250_octeon_3860_data },
 	{ .compatible = "marvell,armada-38x-uart", .data = &dw8250_armada_38x_data },
 	{ .compatible = "renesas,rzn1-uart", .data = &dw8250_renesas_rzn1_data },
 	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_starfive_jh7100_data },
+	{ .compatible = "mstar,msc313-uart", .data = &dw8250_mstar_msc313_data },
 	{ /* Sentinel */ }
 };
 MODULE_DEVICE_TABLE(of, dw8250_of_match);
