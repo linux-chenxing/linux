@@ -707,6 +707,16 @@
 				status = "disabled";
 			};
 
+			aesdma: aesdma@224540 {
+				reg = <0x224540 0xc0>;
+				compatible = "mstar,msc313-aesdma";
+				/* We might not have an interrupt for AESDMA */
+				/*interrupts-extended = <&intc_irq GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;*/
+				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_AESDMA 0>;
+				interconnects = <&miu 0>;
+				interconnect-names = "dma-mem";
+			};
+
 			upll: upll@284000 {
 				#clock-cells = <1>;
 				compatible = "mstar,msc313-upll";
