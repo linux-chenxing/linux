@@ -42,15 +42,15 @@ static const struct regmap_config msc313_sha_regmap_config = {
 	.reg_stride = 4
 };
 
-static struct reg_field ctrl_fire = REG_FIELD(REG_CTRL, 0, 0);
-static struct reg_field ctrl_clr = REG_FIELD(REG_CTRL, 6, 6);
-static struct reg_field ctrl_rst = REG_FIELD(REG_CTRL, 7, 7);
-static struct reg_field ctrl_sha256 = REG_FIELD(REG_CTRL, 9, 9);
-static struct reg_field ctrl_disablesg = REG_FIELD(REG_CTRL, 11, 11);
-static struct reg_field ctrl_inithash = REG_FIELD(REG_CTRL, 13, 13);
+static const struct reg_field ctrl_fire = REG_FIELD(REG_CTRL, 0, 0);
+static const struct reg_field ctrl_clr = REG_FIELD(REG_CTRL, 6, 6);
+static const struct reg_field ctrl_rst = REG_FIELD(REG_CTRL, 7, 7);
+static const struct reg_field ctrl_sha256 = REG_FIELD(REG_CTRL, 9, 9);
+static const struct reg_field ctrl_disablesg = REG_FIELD(REG_CTRL, 11, 11);
+static const struct reg_field ctrl_inithash = REG_FIELD(REG_CTRL, 13, 13);
 /* Controls whether padding is automatically added or not */
-static struct reg_field ctrl_manual = REG_FIELD(REG_CTRL, 14, 14);
-static struct reg_field status_ready = REG_FIELD(REG_STATUS, 0, 0);
+static const struct reg_field ctrl_manual = REG_FIELD(REG_CTRL, 14, 14);
+static const struct reg_field status_ready = REG_FIELD(REG_STATUS, 0, 0);
 
 struct msc313_sha {
 	struct device *dev;
