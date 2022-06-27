@@ -107,3 +107,11 @@
 &miu {
 	ddr-supply = <&reg_vcc_ddr>;
 };
+
+&usbphy0 {
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
