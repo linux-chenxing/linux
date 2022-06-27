@@ -21,3 +21,10 @@ config PINCTRL_MSC313
 	select REGMAP_MMIO
 	select PINCTRL_MSTAR
 	default ARCH_MSTARV7
+
+config PINCTRL_SSD210
+	bool "Pinctrl driver for the SigmaStar SSD210"
+	depends on OF && (ARCH_MSTARV7 || COMPILE_TEST)
+	select REGMAP_MMIO
+	select PINCTRL_MSTAR
+	default ARCH_MSTARV7
