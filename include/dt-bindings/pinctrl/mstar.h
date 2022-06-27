@@ -165,6 +165,20 @@
 #define PINNAME_SR1_D1P		"sr1_d1p"
 #define PINNAME_SR1_D1N		"sr1_d1n"
 
+/* pioneer3 parts have some new naming.. */
+#define PINNAME_SR_GPIO0	"sr_gpio0"
+#define PINNAME_SR_GPIO1	"sr_gpio1"
+#define PINNAME_SR_GPIO2	"sr_gpio2"
+#define PINNAME_SR_GPIO3	"sr_gpio3"
+#define PINNAME_SR_GPIO4	"sr_gpio4"
+#define PINNAME_SR_GPIO5	"sr_gpio5"
+#define PINNAME_SR_GPIO6	"sr_gpio6"
+#define PINNAME_SR_GPIO7	"sr_gpio7"
+#define PINNAME_SR_GPIO8	"sr_gpio8"
+#define PINNAME_SR_GPIO9	"sr_gpio9"
+#define PINNAME_SR_GPIO10	"sr_gpio10"
+#define PINNAME_SR_GPIO11	"sr_gpio11"
+
 /* MSC313/MSC313E */
 /* Chip pin numbers */
 #define PIN_MSC313_PM_SD_CDZ	15
@@ -429,6 +443,38 @@
 #define PIN_SSD210_PM_SPI_DO		5
 #define PIN_SSD210_PM_SPI_HOLD		6
 #define PIN_SSD210_PM_SPI_WPZ		7
+#define PIN_SSD210_SR_GPIO0		9
+#define PIN_SSD210_SR_GPIO1		10
+#define PIN_SSD210_SR_GPIO2		11
+#define PIN_SSD210_SR_GPIO3		12
+#define PIN_SSD210_SR_GPIO4		13
+#define PIN_SSD210_SR_GPIO5		14
+#define PIN_SSD210_SR_GPIO6		15
+#define PIN_SSD210_SR_GPIO7		16
+#define PIN_SSD210_SR_GPIO8		17
+#define PIN_SSD210_SR_GPIO9		18
+#define PIN_SSD210_SR_GPIO10		19
+#define PIN_SSD210_SR_GPIO11		20
+#define PIN_SSD210_TTL0			29
+#define PIN_SSD210_TTL1			30
+#define PIN_SSD210_TTL2			31
+#define PIN_SSD210_TTL3			32
+#define PIN_SSD210_TTL4			33
+#define PIN_SSD210_TTL5			34
+#define PIN_SSD210_TTL6			35
+#define PIN_SSD210_TTL7			36
+#define PIN_SSD210_TTL8			37
+#define PIN_SSD210_TTL11		39
+#define PIN_SSD210_TTL12		41
+#define PIN_SSD210_TTL13		42
+#define PIN_SSD210_TTL14		43
+#define PIN_SSD210_TTL15		44
+#define PIN_SSD210_TTL16		45
+#define PIN_SSD210_TTL17		46
+#define PIN_SSD210_TTL18		47
+#define PIN_SSD210_TTL19		48
+#define PIN_SSD210_TTL20		49
+#define PIN_SSD210_TTL21		50
 #define PIN_SSD210_PM_UART_TX		58
 #define PIN_SSD210_PM_UART_RX		59
 
