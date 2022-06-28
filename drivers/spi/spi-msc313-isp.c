@@ -45,7 +45,7 @@
 #define REG_SPI_ADDR_L			(0x2 * REG_OFFSET)
 #define REG_SPI_ADDR_H			(0x3 * REG_OFFSET)
 
-//#define DISABLE_BDMA
+#define DISABLE_BDMA
 
 static const struct regmap_config msc313_isp_regmap_config = {
 	.reg_bits = 16,
