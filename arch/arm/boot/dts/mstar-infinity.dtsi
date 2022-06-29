@@ -53,3 +53,7 @@
 		      <&pinctrl 26 68 6>;
 	status = "okay";
 };
+
+&sar {
+	compatible = "mstar,msc313e-sar";
+};
