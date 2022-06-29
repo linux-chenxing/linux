@@ -42,3 +42,7 @@
 			      /*<&intc_fiq 23 IRQ_TYPE_LEVEL_HIGH>;*/
 	status = "okay";
 };
+
+&sar {
+	compatible = "mstar,ssc8336-sar";
+};
