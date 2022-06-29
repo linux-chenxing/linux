@@ -29,6 +29,10 @@
 	};
 };
 
+&bach {
+	status = "okay";
+};
+
 &cpu0 {
 	cpu-supply = <&reg_vcc_core>;
 };
