@@ -19,14 +19,38 @@
 		stdout-path = "serial0:115200n8";
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk ubi.mtd=1 ubi.block=0,rootfs root=/dev/ubiblock0_0 rootwait";
 	};
-	
-	vcc_dram: fixedregulator@1 {
+
+	vcc_core: regulator-vcc-core {
 		compatible = "regulator-fixed";
-		regulator-name = "vcc_dram";
-		regulator-min-microvolt = <1500000>;
-		regulator-max-microvolt = <1500000>;
+		regulator-name = "vcc_core";
+		regulator-min-microvolt = <950000>;
+		regulator-max-microvolt = <950000>;
 		regulator-boot-on;
 	};
+
+	vcc_dram: regulator-vcc-dram {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_dram";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-boot-on;
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&vcc_core>;
+};
+
+&i2c0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_mode4_pins>;
+	status = "okay";
+};
+
+&i2c1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_mode1_pins>;
+	status = "okay";
 };
 
 &pm_uart {
