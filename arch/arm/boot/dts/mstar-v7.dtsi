@@ -229,6 +229,11 @@
 			interconnect-names = "dma-mem";
 		};
 
+		efuse: efuse@1f004000 {
+			compatible = "mstar,msc313-efuse";
+			reg = <0x1f004000 0x8>;
+		};
+
 		gic: interrupt-controller@16001000 {
 			compatible = "arm,cortex-a7-gic";
 			reg = <0x16001000 0x1000>,
