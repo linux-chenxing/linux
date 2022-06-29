@@ -119,3 +119,7 @@
 &uhc0 {
 	status = "okay";
 };
+
+&sar {
+	status = "okay";
+};
