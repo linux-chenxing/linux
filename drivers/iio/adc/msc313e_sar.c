@@ -45,20 +45,20 @@
 #define REG_PMSLEEP_PD		0xbc
 #define REG_PMSLEEP_TS_PD	BIT(2)
 
-static struct reg_field ctrl_load_field = REG_FIELD(REG_CTRL, 14, 14);
-static struct reg_field ctrl_freerun_field = REG_FIELD(REG_CTRL, 9, 9);
-static struct reg_field ctrl_analogpd_field = REG_FIELD(REG_CTRL, 8, 8);
-static struct reg_field ctrl_start_field = REG_FIELD(REG_CTRL, 7, 7);
-static struct reg_field ctrl_digitalpd_field = REG_FIELD(REG_CTRL, 6, 6);
-static struct reg_field ctrl_mode_field = REG_FIELD(REG_CTRL, 5, 5);
-static struct reg_field ctrl_singlech_field = REG_FIELD(REG_CTRL, 4, 4);
-static struct reg_field ctrl_channel_field = REG_FIELD(REG_CTRL, 0, 2);
+static const struct reg_field ctrl_load_field = REG_FIELD(REG_CTRL, 14, 14);
+static const struct reg_field ctrl_freerun_field = REG_FIELD(REG_CTRL, 9, 9);
+static const struct reg_field ctrl_analogpd_field = REG_FIELD(REG_CTRL, 8, 8);
+static const struct reg_field ctrl_start_field = REG_FIELD(REG_CTRL, 7, 7);
+static const struct reg_field ctrl_digitalpd_field = REG_FIELD(REG_CTRL, 6, 6);
+static const struct reg_field ctrl_mode_field = REG_FIELD(REG_CTRL, 5, 5);
+static const struct reg_field ctrl_singlech_field = REG_FIELD(REG_CTRL, 4, 4);
+static const struct reg_field ctrl_channel_field = REG_FIELD(REG_CTRL, 0, 2);
 
-static struct reg_field gpio_ctrl_en_field = REG_FIELD(REG_GPIO_CTRL, 0, 3);
-static struct reg_field gpio_ctrl_oen_field = REG_FIELD(REG_GPIO_CTRL, 8, 11);
-static struct reg_field gpio_data_value_field = REG_FIELD(REG_GPIO_DATA, 0, 3);
-static struct reg_field gpio_data_in_field = REG_FIELD(REG_GPIO_DATA, 8, 11);
-static struct reg_field vref_ts_field = REG_FIELD(REG_VREF_SEL, 6, 6);
+static const struct reg_field gpio_ctrl_en_field = REG_FIELD(REG_GPIO_CTRL, 0, 3);
+static const struct reg_field gpio_ctrl_oen_field = REG_FIELD(REG_GPIO_CTRL, 8, 11);
+static const struct reg_field gpio_data_value_field = REG_FIELD(REG_GPIO_DATA, 0, 3);
+static const struct reg_field gpio_data_in_field = REG_FIELD(REG_GPIO_DATA, 8, 11);
+static const struct reg_field vref_ts_field = REG_FIELD(REG_VREF_SEL, 6, 6);
 
 /* common */
 #define PINNAME_SAR_GPIO3	"sar_gpio3"
@@ -172,9 +172,9 @@ static const struct sar_pinctrl_group ssd20x_sar_pinctrl_groups[] = {
 
 /* pin and gpio order are reversed */
 static const unsigned ssd20x_rangepins[] = {
-		PIN_SSD20X_SAR_GPIO0,
-		PIN_SSD20X_SAR_GPIO1,
-		PIN_SSD20X_SAR_GPIO2,
+	PIN_SSD20X_SAR_GPIO0,
+	PIN_SSD20X_SAR_GPIO1,
+	PIN_SSD20X_SAR_GPIO2,
 };
 
 static const struct mstar_sar_info ssd20x_info = {
@@ -361,15 +361,23 @@ static int msc313e_sar_read_raw(struct iio_dev *indio_dev,
 		regmap_field_force_write(sar->field_load, 1);
 
 		regmap_read(sar->regmap, chan->address, val);
-		if(chan->type == IIO_TEMP){
+		if (chan->type == IIO_TEMP) {
 			//formula right out of vendor code
 			*val = (1220 * (400 - *val) + 25000);
 		}
 		*val2 = 0;
 		return IIO_VAL_INT;
 	case IIO_CHAN_INFO_SCALE:
-		*val = 3;
-		*val2 = 0;
+		switch(chan->type) {
+		case IIO_TEMP:
+			*val = 1;
+			*val2 = 0;
+			break;
+		default:
+			*val = 3;
+			*val2 = 0;
+			break;
+		}
 		return IIO_VAL_INT;
 	}
 
@@ -805,7 +813,6 @@ static struct platform_driver msc313e_sar_driver = {
 		   .pm = &msc313e_sar_pm_ops,
 	},
 };
-
 module_platform_driver(msc313e_sar_driver);
 
 MODULE_LICENSE("GPL");
