@@ -162,7 +162,9 @@
 		interrupts-extended = <&intc_irq GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
-	padtop: padtop@207800 {
+	pinctrl2: pinctrl@207800 {
+		compatible = "sstar,ssd210-pinctrl";
+		reg = <0x207800 0x200>;
 	};
 
 	gpio: gpio@207c00 {
