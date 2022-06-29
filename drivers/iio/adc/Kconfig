@@ -1338,4 +1338,21 @@ config XILINX_AMS
 	  The driver can also be built as a module. If so, the module will be called
 	  xilinx-ams.
 
+config MSC313E_SAR
+	tristate "MStar MSC313E SAR driver"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	depends on HAS_IOMEM
+	default ARCH_MSTARV7
+	select REGMAP_MMIO
+        select GENERIC_PINCTRL_GROUPS
+        select GENERIC_PINMUX_FUNCTIONS
+        select GENERIC_PINCONF
+        select GPIOLIB_IRQCHIP
+	select IRQ_DOMAIN_HIERARCHY
+	select IIO_BUFFER
+	select IIO_TRIGGERED_BUFFER
+	imply SENSORS_IIO_HWMON
+	help
+	  Say yes here to have support for the MSC313E SAR.
+
 endmenu
