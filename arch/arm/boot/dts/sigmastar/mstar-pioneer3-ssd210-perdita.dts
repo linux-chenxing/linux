@@ -19,6 +19,64 @@
 		stdout-path = "serial0:115200n8";
 		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk";
 	};
+
+	reg_vcc: regulator_vcc {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-boot-on;
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&reg_vcc_core>;
+};
+
+&i2c0 {
+	//pinctrl-names = "default";
+	//pinctrl-0 = <&i2c0_mode1_pins>;
+	status = "okay";
+	ea3056@35 {
+		compatible = "everanalog,ea3056";
+		reg = <0x35>;
+
+		regulators {
+			reg_vcc_core: dcdc1 {
+				regulator-name = "vcc_core";
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-vset = <100000>, <150000>;
+				regulator-min-microvolt = <900000>;
+				regulator-max-microvolt = <1200000>;
+				vin-supply = <&reg_vcc>;
+			};
+			reg_vcc_ddr: dcdc2 {
+				regulator-name = "vcc_ddr";
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-vset = <200000>, <100000>;
+				regulator-min-microvolt = <1700000>;
+				regulator-max-microvolt = <1900000>;
+				vin-supply = <&reg_vcc>;
+			};
+			reg_vcc_io: dcdc3 {
+				regulator-name = "vcc_io";
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-vset = <510000>, <110000>;
+				regulator-min-microvolt = <3200000>;
+				regulator-max-microvolt = <3400000>;
+				vin-supply = <&reg_vcc>;
+			};
+			ldo {
+				regulator-name = "vcc_aux";
+				regulator-boot-on;
+				regulator-vset = <0>, <0>;
+				vin-supply = <&reg_vcc>;
+			};
+		};
+	};
 };
 
 &pm_uart {
@@ -44,4 +102,8 @@
 			};
 		};
 	};
+};
+
+&miu {
+	ddr-supply = <&reg_vcc_ddr>;
 };
