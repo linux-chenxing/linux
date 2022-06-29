@@ -22,6 +22,7 @@
 		#size-cells = <0>;
 
 		cpu0: cpu@0 {
+			#cooling-cells = <2>;
 			device_type = "cpu";
 			compatible = "arm,cortex-a7";
 			reg = <0x0>;
@@ -1075,6 +1076,46 @@
 		imi: sram@a0000000 {
 			compatible = "mmio-sram";
 			reg = <0xa0000000 0x10000>;
+		};
+	};
+	
+	thermal_sensor: thermal-sensor {
+		compatible = "generic-adc-thermal";
+		#thermal-sensor-cells = <0>;
+		io-channels = <&sar 4>;
+		io-channel-names = "sensor-channel";
+    };
+
+	thermal-zones {
+		cpu0-thermal {
+			polling-delay = <1000>;
+			polling-delay-passive = <250>;
+			thermal-sensors = <&thermal_sensor>;
+			trips {
+				cpu0_alert0: trip-point0 {
+					temperature = <60000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				cpu0_alert1: trip-point1 {
+					temperature = <65000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				cpu0_crit: cpu_crit {
+					temperature = <700000>;
+					hysteresis = <1000>;
+					type = "critical";
+				};
+			};
+			cooling-maps {
+				map0 {
+					trip = <&cpu0_alert0>;
+					cooling-device = <&cpu0 3 3>;
+				};
+			};
 		};
 	};
 };
