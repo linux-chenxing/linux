@@ -359,6 +359,17 @@
 						 <&mpll 3>;
 				};
 
+				pm_regulators {
+					compatible = "mstar,msc313-pm-regulators";
+					regulators {
+						reg_ts: ts {
+							regulator-name = "ts";
+							regulator-boot-on;
+							regulator-always-on;
+						};
+					};
+				};
+
 				reboot {
 					compatible = "syscon-reboot";
 					offset = <0xb8>;
