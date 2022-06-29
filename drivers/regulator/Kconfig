@@ -881,6 +881,12 @@ config REGULATOR_MT6397
 	  This driver supports the control of different power rails of device
 	  through regulator interface.
 
+config REGULATOR_MSC313_PM
+	tristate "Regulators and switches in the MSC313 pm domain"
+	depends on MFD_SYSCON
+	help
+	  This driver exposes the supplies managed by the pm domain.
+
 config REGULATOR_MTK_DVFSRC
 	tristate "MediaTek DVFSRC regulator driver"
 	depends on MTK_DVFSRC
