@@ -135,17 +135,17 @@ static const struct of_device_id msc313_miu_dt_ids[] = {
 MODULE_DEVICE_TABLE(of, msc313_miu_dt_ids);
 
 static const struct regmap_config msc313_miu_analog_regmap_config = {
-		.name = "msc313-miu-analog",
-		.reg_bits = 16,
-		.val_bits = 16,
-		.reg_stride = 4,
+	.name = "msc313-miu-analog",
+	.reg_bits = 16,
+	.val_bits = 16,
+	.reg_stride = 4,
 };
 
 static const struct regmap_config msc313_miu_digital_regmap_config = {
-		.name = "msc313-miu-digital",
-		.reg_bits = 16,
-		.val_bits = 16,
-		.reg_stride = 4,
+	.name = "msc313-miu-digital",
+	.reg_bits = 16,
+	.val_bits = 16,
+	.reg_stride = 4,
 };
 
 static const char *types[] = {"SDR", "DDR", "DDR2", "DDR3"};
@@ -241,7 +241,7 @@ static unsigned long mstar_miu_ddrpll_recalc_rate(struct clk_hw *hw, unsigned lo
 }
 
 static const struct clk_ops mstar_miu_ddrpll_ops = {
-		.recalc_rate = mstar_miu_ddrpll_recalc_rate,
+	.recalc_rate = mstar_miu_ddrpll_recalc_rate,
 };
 
 static int msc313_miu_ddrpll_probe(struct platform_device *pdev,
