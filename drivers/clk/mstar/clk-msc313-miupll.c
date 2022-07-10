@@ -45,11 +45,12 @@ static int mstar_miupll_is_enabled(struct clk_hw *hw)
 static unsigned long mstar_miupll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
 {
 	struct mstar_miupll *miupll = to_miupll(hw);
-
 	uint16_t temp = readw_relaxed(miupll->base + REG_RATE);
 	unsigned long freq = parent_rate;
+
 	freq *= temp & 0xff;
 	freq /= ((temp >> 8) & GENMASK(2, 0)) + 2;
+
 	return freq;
 }
 
