@@ -757,6 +757,7 @@
 				 * 0x20 - 24 - vendor kernel writes the log buf addr here. Debugging?
 				 */
 			};
+
 			miu: miu@202000 {
 				compatible = "mstar,msc313-miu";
 				reg = <0x202000	0x200>,
