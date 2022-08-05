@@ -275,21 +275,18 @@ static int msc313e_pm_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
 /*
  * The parent interrupt controller only takes one cell that is the number
  */
-static void *msc313_pm_gpio_populate_parent_fwspec(struct gpio_chip *gc,
-					     unsigned int parent_hwirq,
-					     unsigned int parent_type)
+static int msc313_pm_gpio_populate_parent_fwspec(struct gpio_chip *gc,
+						   union gpio_irq_fwspec *gfwspec,
+						   unsigned int parent_hwirq,
+						   unsigned int parent_type)
 {
-	struct irq_fwspec *fwspec;
-
-	fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
-	if (!fwspec)
-		return NULL;
+	struct irq_fwspec *fwspec = &gfwspec->fwspec;
 
 	fwspec->fwnode = gc->irq.parent_domain->fwnode;
 	fwspec->param_count = 1;
 	fwspec->param[0] = parent_hwirq;
 
-	return fwspec;
+	return 0;
 }
 
 static int msc313_pm_gpio_probe(struct platform_device *pdev)
