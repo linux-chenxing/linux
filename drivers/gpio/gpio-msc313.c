@@ -21,7 +21,7 @@
 
 #define DRIVER_NAME "gpio-msc313"
 
-static void *msc313_gpio_populate_parent_fwspec(struct gpio_chip*, unsigned int, unsigned int);
+static int msc313_gpio_populate_parent_fwspec(struct gpio_chip*, union gpio_irq_fwspec*, unsigned int, unsigned int);
 static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip*, unsigned int, unsigned int,
 		unsigned int *, unsigned int*);
 
@@ -202,7 +202,7 @@ struct msc313_gpio_data {
 	const char * const *names;
 	const unsigned int *offsets;
 	const unsigned int num;
-	void *(*populate_parent_fwspec)(struct gpio_chip*, unsigned int, unsigned int);
+	int (*populate_parent_fwspec)(struct gpio_chip *, union gpio_irq_fwspec *, unsigned int, unsigned int);
 	int (*child_to_parent_hwirq)(struct gpio_chip*, unsigned int, unsigned int,
 			unsigned int*, unsigned int*);
 };
