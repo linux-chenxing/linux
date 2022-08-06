@@ -2,6 +2,7 @@
 
 #include <drm/drm_simple_kms_helper.h>
 #include <drm/drm_of.h>
+#include <linux/of.h>
 
 struct mstar_ttl {
 	struct drm_encoder encoder;
