@@ -6,6 +6,7 @@
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/regulator/consumer.h>
+#include <linux/media-bus-format.h>
 
 #include <video/mipi_display.h>
 #include <video/of_videomode.h>
@@ -14,6 +15,7 @@
 #include <drm/drm_crtc.h>
 #include <drm/drm_mipi_dsi.h>
 #include <drm/drm_panel.h>
+
 
 /* Panel specific color-format bits */
 #define COL_FMT_16BPP 0x55
