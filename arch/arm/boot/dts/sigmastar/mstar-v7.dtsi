@@ -939,6 +939,10 @@
 				/* We might not have an interrupt for AESDMA */
 				/*interrupts-extended = <&intc_irq GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;*/
 				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_AESDMA 0>;
+				assigned-clocks = <&clkgen MSC313_CLKGEN_MUXES MSC313_CLKGEN_AESDMA 0>,
+								  <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_AESDMA 0>;
+				assigned-clock-parents = <&clkgen MSC313_CLKGEN_GATES MSC313_CLKGEN_GATE_10 0>,
+										 <&clkgen MSC313_CLKGEN_MUXES MSC313_CLKGEN_AESDMA 0>;
 				interconnects = <&miu 0>;
 				interconnect-names = "dma-mem";
 			};
