@@ -9,6 +9,14 @@
 #include <dt-bindings/gpio/gpio.h>
 
 / {
+	clk_timer: timer_clk {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <432000000>;
+	};
+};
+
+/ {
 	cpu0_opp_table: opp_table0 {
 		compatible = "operating-points-v2";
 		opp-shared;
@@ -213,4 +221,19 @@
 
 &clkgen {
 	compatible = "sstar,ssd20xd-clkgen";
+};
+
+&timer0 {
+	compatible = "sstar,ssd20xd-timer";
+	clocks = <&clk_timer>;
+};
+
+&timer1 {
+	compatible = "sstar,ssd20xd-timer";
+	clocks = <&clk_timer>;
+};
+
+&timer2 {
+	compatible = "sstar,ssd20xd-timer";
+	clocks = <&clk_timer>;
 };
