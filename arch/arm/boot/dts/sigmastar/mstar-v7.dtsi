@@ -215,6 +215,8 @@
 		 * cpu clk to move between the mpll and the xtal, the spi nor
 		 * controller also uses this clock and it works before the
 		 * mpll is enabled
+		 *
+		 * For spi nor at least this is the MCU clock.
 		 */
 		cpuclksrc: cpuclksrc {
 			compatible = "fixed-factor-clock";
