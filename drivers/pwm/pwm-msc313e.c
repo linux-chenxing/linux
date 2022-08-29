@@ -57,7 +57,10 @@ static const struct msc313e_pwm_info ssd20xd_data = {
 
 static void msc313e_pwm_writecounter(struct regmap_field *low, struct regmap_field *high, u32 value)
 {
-	regmap_field_write(low, value);
+	/* Each counter is divided into two 32 registers, one for the high part, another the low
+	 * part. However we only need to update 16 bits in each of these
+	 */
+	regmap_field_write(low, value & 0xffff);
 	regmap_field_write(high, value >> 16);
 }
 
@@ -121,30 +124,35 @@ static int msc313e_pwm_enable(struct pwm_chip *chip, struct pwm_device *device)
 	ret = clk_prepare_enable(pwm->clk);
 	if (ret)
 		return ret;
-
-	regmap_field_write(channel->swrst, 0);
-
-	return 0;
+	return regmap_field_write(channel->swrst, 0);
 }
 
-static void msc313e_pwm_disable(struct pwm_chip *chip, struct pwm_device *device)
+static int msc313e_pwm_disable(struct pwm_chip *chip, struct pwm_device *device)
 {
 	struct msc313e_pwm *pwm = to_msc313e_pwm(chip);
 	struct msc313e_pwm_channel *channel = &pwm->channels[device->hwpwm];
+	int ret;
 
-	regmap_field_write(channel->swrst, 1);
-	clk_disable(pwm->clk);
+	ret = regmap_field_write(channel->swrst, 1);
+	clk_disable_unprepare(pwm->clk);
+	return ret;
 }
 
 static int msc313e_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 			 const struct pwm_state *state)
 {
+	int ret;
+
 	if (state->enabled) {
-		msc313e_pwm_enable(chip, pwm);
+		if (!pwm->state.enabled) {
+			ret = msc313e_pwm_enable(chip, pwm);
+			if (ret)
+				return ret;
+		}
 		msc313e_pwm_set_polarity(chip, pwm, state->polarity);
 		msc313e_pwm_config(chip, pwm, state->duty_cycle, state->period);
-	} else {
-		msc313e_pwm_disable(chip, pwm);
+	} else if (pwm->state.enabled) {
+		ret = msc313e_pwm_disable(chip, pwm);
 	}
 	return 0;
 }
@@ -223,14 +231,16 @@ static int msc313e_pwm_probe(struct platform_device *pdev)
 		pwm->channels[i].periodl = devm_regmap_field_alloc(dev, pwm->regmap, periodl_field);
 		pwm->channels[i].periodh = devm_regmap_field_alloc(dev, pwm->regmap, periodh_field);
 		pwm->channels[i].swrst = devm_regmap_field_alloc(dev, pwm->regmap, swrst_field);
+
+		/* Channels are enabled on boot, disable it until the pwm subsystem re-enable it
+		 * explicitly
+		 */
+		regmap_field_write(pwm->channels[i].swrst, 1);
 	}
 
 	pwm->pwmchip.dev = dev;
 	pwm->pwmchip.ops = &msc313e_pwm_ops;
-	pwm->pwmchip.base = -1;
 	pwm->pwmchip.npwm = match_data->channels;
-	pwm->pwmchip.of_xlate = of_pwm_xlate_with_flags;
-	pwm->pwmchip.of_pwm_n_cells = 3;
 
 	platform_set_drvdata(pdev, pwm);
 
