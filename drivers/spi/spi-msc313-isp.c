@@ -76,7 +76,7 @@ struct msc313_isp {
 	/* clock for the pm interface */
 	struct clk *pm_spi_clk;
 	/* clocks for the isp interface */
-	struct clk *cpu_clk;
+	struct clk *mcu_clk;
 	struct clk *spi_div_clk;
 	/* clocks for the qspi interface */
 	struct clk *spi_clk;
@@ -172,7 +172,8 @@ static int msc313_isp_setup(struct spi_device *spi)
 {
 	struct msc313_isp *isp = spi_controller_get_devdata(spi->controller);
 
-	//clk_set_rate(isp->spi_div_clk, spi->max_speed_hz);
+	clk_set_rate(isp->spi_div_clk, spi->max_speed_hz);
+
 	//clk_set_rate(isp->spi_clk, spi->max_speed_hz);
 
 	return 0;
@@ -511,9 +512,9 @@ static int msc313_isp_probe(struct platform_device *pdev)
 		return PTR_ERR(isp->pm_spi_clk);
 	}
 
-	isp->cpu_clk = devm_clk_get(&pdev->dev, "cpuclk");
-	if (IS_ERR(isp->cpu_clk)) {
-		return PTR_ERR(isp->cpu_clk);
+	isp->mcu_clk = devm_clk_get(&pdev->dev, "mcu");
+	if (IS_ERR(isp->mcu_clk)) {
+		return PTR_ERR(isp->mcu_clk);
 	}
 
 	isp->spi_clk = devm_clk_get(&pdev->dev, "spi");
@@ -527,7 +528,7 @@ static int msc313_isp_probe(struct platform_device *pdev)
 	 * SPI NAND chips and might not be in our table.
 	 */
 	writew_relaxed(0x400, isp->base + REG_SPI_CLKDIV);
-	isp->spi_div_clk = clk_register_divider_table(dev, "spi_clk", "cpuclksrc", 0,
+	isp->spi_div_clk = clk_register_divider_table(dev, "isp_clk", "mcu", 0,
 			isp->base + REG_SPI_CLKDIV, 0, REG_SPI_CLKDIV_WIDTH,
 			0, div_table, &isp->lock);
 	if(IS_ERR(isp->spi_div_clk))
