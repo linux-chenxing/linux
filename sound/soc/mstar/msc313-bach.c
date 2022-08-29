@@ -1549,7 +1549,8 @@ static int msc313_bach_probe(struct platform_device *pdev)
 	link->name = "cdc";
 	link->stream_name = "CDC PCM";
 	link->codecs->dai_name = "Codec";
-	link->cpus->dai_name = dev_name(dev);
+	//link->cpus->dai_name = dev_name(dev);
+	link->cpus->dai_name = "msc313-bach-cpu-dai";
 	link->codecs->name = dev_name(dev);
 	link->platforms->name = dev_name(dev);
 
