@@ -53,13 +53,13 @@ static const struct regmap_config msc313_isp_regmap_config = {
 	.reg_stride = 4,
 };
 
-static struct reg_field rst_nrst_field = REG_FIELD(REG_RST, 2, 2);
-static struct reg_field readreq_req_field = REG_FIELD(REG_SPI_RDREQ, 0, 0);
-static struct reg_field rdata_field = REG_FIELD(REG_SPI_RDATA, 0, 7);
-static struct reg_field rddatardy_ready_field = REG_FIELD(REG_SPI_RD_DATARDY, 0, 0);
-static struct reg_field wdata_field = REG_FIELD(REG_SPI_WDATA, 0, 7);
-static struct reg_field wrdatardy_ready_field = REG_FIELD(REG_SPI_WR_DATARDY, 0, 0);
-static struct reg_field ceclr_clear_field = REG_FIELD(REG_SPI_CECLR, 0, 0);
+static const struct reg_field rst_nrst_field = REG_FIELD(REG_RST, 2, 2);
+static const struct reg_field readreq_req_field = REG_FIELD(REG_SPI_RDREQ, 0, 0);
+static const struct reg_field rdata_field = REG_FIELD(REG_SPI_RDATA, 0, 7);
+static const struct reg_field rddatardy_ready_field = REG_FIELD(REG_SPI_RD_DATARDY, 0, 0);
+static const struct reg_field wdata_field = REG_FIELD(REG_SPI_WDATA, 0, 7);
+static const struct reg_field wrdatardy_ready_field = REG_FIELD(REG_SPI_WR_DATARDY, 0, 0);
+static const struct reg_field ceclr_clear_field = REG_FIELD(REG_SPI_CECLR, 0, 0);
 
 #define REG_QSPI_CFG			0x1c0
 #define REG_QSPI_READMODE		0x1c8
