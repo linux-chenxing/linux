@@ -474,14 +474,25 @@ static const struct msc313_clkgen_parent_data uart_parents[] = {
 #define UART0		MSC313_MUX_PARENT_DATA("uart0", uart_parents, 0xc4, 0, 2, 2, -1)
 #define UART1		MSC313_MUX_PARENT_DATA("uart1", uart_parents, 0xc4, 8, 10, 2, -1)
 
-static const struct msc313_clkgen_parent_data spi_parents[] = {
+static const struct msc313_clkgen_parent_data spi_msc313_parents[] = {
 	PARENT_GATE(9),
 	PARENT_DIVIDER(9, 2),
 	PARENT_GATE(14),
 	PARENT_DIVIDER(8, 4),
 };
 
-#define	SPI		MSC313_MUX_PARENT_DATA("spi", spi_parents, 0xc8, 0, 2, 2, 4)
+#define	SPI_MSC313	MSC313_MUX_PARENT_DATA("spi", spi_msc313_parents, 0xc8, 0, 2, 2, 4)
+
+static const struct msc313_clkgen_parent_data spi_ssd20xd_parents[] = {
+	PARENT_GATE(9),
+	PARENT_DIVIDER(9, 2),
+	PARENT_GATE(14),
+	PARENT_DIVIDER(8, 4),
+	/* This is MIU, datasheet says "must select this one" :) */
+	PARENT_OF("unknown"),
+};
+
+#define	SPI_SSD20XD	MSC313_MUX_PARENT_DATA("spi", spi_ssd20xd_parents, 0xc8, 0, 2, 3, 5)
 
 static const struct msc313_clkgen_parent_data mspi_parents[] = {
 	PARENT_DIVIDER(9, 2),
@@ -675,7 +686,7 @@ static const struct msc313_clkgen_parent_data mipi_tx_parents[] = {
 	DDR_SYN,	\
 	UART0,		\
 	UART1,		\
-	SPI,		\
+	SPI_##_chip,	\
 	MSPI0,		\
 	MSPI1
 
