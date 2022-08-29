@@ -314,7 +314,6 @@ struct msc313_clkgen {
 	struct msc313_clkgen_gate gates[];
 };
 
-
 static int msc313_clkgen_gate_enable(struct clk_hw *hw)
 {
 	struct msc313_clkgen_gate *gate = to_gate(hw);
@@ -392,34 +391,6 @@ clkgen_mux_xtali: clkgen_mux@1f207000 {
 #endif
 
 #if 0
-clkgen_mux_mcu_riubrdg: clkgen_mux@1f207004 {
-	compatible = "mstar,msc313e-clkgen-mux";
-	reg = <0x1f207004 0x4>;
-	#clock-cells = <1>;
-	clock-output-names = "mcu", "riubrdg";
-	shifts = <0>, <8>;
-	mux-shifts = <2>, <10>;
-	mux-widths = <2>, <2>;
-	mux-ranges = <0 5>, <5 1>;
-	mstar,deglitches = <4>, <MSTAR_CLKGEN_MUX_NULL>;
-	output-flags = <0>, <MSTAR_CLKGEN_OUTPUTFLAG_CRITICAL>;
-	clocks = /* mcu */
-		 <&clkgen_pll MSTAR_MPLL_GATE_MPLL_216>,
-		 <&clkgen_pll MSTAR_MPLL_GATE_MPLL_172>,
-		 <&clk_mpll_288_div2>,
-		 <&clk_mpll_216_div2>,
-		 /*deglitch */
-		 <&xtal_div2>,
-		 /* riubrdg */
-		 <&clkgen_mux_mcu_riubrdg 0>;
-	assigned-clocks = <&clkgen_mux_mcu_riubrdg 0>;
-	assigned-clock-parents = <&clkgen_pll MSTAR_MPLL_GATE_MPLL_216>;
-	assigned-clock-rates = <0>;
-	status = "disabled";
-};
-#endif
-
-#if 0
 clkgen_mux_bist: clkgen_mux@1f207008 {
 	compatible = "mstar,msc313e-clkgen-mux";
 	reg = <0x1f207008 0x4>;
@@ -452,6 +423,31 @@ clkgen_mux_bist_sc_gp: clkgen_mux@1f20700c {
 	status = "disabled";
 };
 #endif
+
+static const struct msc313_clkgen_parent_data mcu_ssd20xd_parents[] = {
+	PARENT_GATE(9),
+	PARENT_GATE(10),
+	PARENT_DIVIDER(8, 2),
+	PARENT_DIVIDER(9, 2), // wrong?
+	PARENT_GATE(6),
+	PARENT_GATE(0),
+	PARENT_GATE(1),
+	PARENT_OF("unknown"),
+};
+#define MCU_SSD20XD	MSC313_MUX_PARENT_DATA("mcu", mcu_ssd20xd_parents, 0x4, 0, 2, 3, 5)
+
+static const struct msc313_clkgen_parent_data mcu_msc313_parents[] = {
+	PARENT_GATE(9),
+	PARENT_GATE(10),
+	PARENT_DIVIDER(8, 2),
+	PARENT_DIVIDER(9, 2),
+};
+#define MCU_MSC313		MSC313_MUX_PARENT_DATA("mcu", mcu_msc313_parents, 0x4, 0, 2, 2, 4)
+
+static const struct msc313_clkgen_parent_data riubrdg_parents[] = {
+	PARENT_OF("unknown"),
+};
+#define RIUBRDG		MSC313_MUX_PARENT_DATA("riubrdg", riubrdg_parents, 0x4, 8, 10, 2, -1)
 
 static const struct msc313_clkgen_parent_data miu_parents[] = {
 	PARENT_OF("ddrpll"),
@@ -665,7 +661,16 @@ static const struct msc313_clkgen_parent_data mipi_tx_parents[] = {
 };
 #define MIPI_TX_DSI	MSC313_MUX_PARENT_DATA("mipi_tx_dsi", mipi_tx_parents, 0x1bc, 0, 2, 3, -1)
 
-#define COMMON		\
+/*
+ * These are the common muxes that all chips have. These must come first in the
+ * mux data for a chip.
+ * Some of these muxes are slightly different (i.e. different number of parents) on
+ * some chips so the _chip parameter allows for a variation to be selected
+ * where needed.
+ */
+#define COMMON(_chip)	\
+	MCU_##_chip,	\
+	RIUBRDG,	\
 	MIU,		\
 	DDR_SYN,	\
 	UART0,		\
@@ -675,7 +680,7 @@ static const struct msc313_clkgen_parent_data mipi_tx_parents[] = {
 	MSPI1
 
 static const struct msc313_mux_data msc313_muxes[] = {
-	COMMON,
+	COMMON(MSC313),
 	FUART0_SYNTH_IN,
 	FUART,
 	MIIC0,
@@ -691,7 +696,7 @@ static const struct msc313_mux_data msc313_muxes[] = {
 static const struct msc313_muxes_data msc313_data = MSC313_MUXES_DATA(msc313_muxes);
 
 static const struct msc313_mux_data ssd20xd_muxes[] = {
-	COMMON,
+	COMMON(SSD20XD),
 	FUART0_SYNTH_IN,
 	FUART,
 	MIIC0,
