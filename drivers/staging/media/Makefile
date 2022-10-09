@@ -17,3 +17,4 @@ obj-$(CONFIG_VIDEO_VIU)		+= deprecated/fsl-viu/
 obj-$(CONFIG_USB_ZR364XX)	+= deprecated/zr364xx/
 obj-y += deprecated/vpfe_capture/
 obj-y += deprecated/saa7146/
+obj-$(CONFIG_VIDEO_WAVE_VPU)	+= wave5/
