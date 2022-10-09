@@ -37,13 +37,10 @@
 #include <linux/pm_runtime.h>
 #include <linux/ptp_classify.h>
 #include <linux/reset.h>
-<<<<<<< HEAD
 #include <linux/firmware/xlnx-zynqmp.h>
-=======
 #ifdef CONFIG_ARCH_MSTARV7
 #include <soc/mstar/riuxiu.h>
 #endif
->>>>>>> 82865b906d5d (macb: Add support for MStar/SigmaStar EMAC)
 #include "macb.h"
 
 /* This structure is only used for MACB on SiFive FU540 devices */
