@@ -21,6 +21,11 @@ properties:
       - items:
           - const: cortina,gemini-usb
           - const: faraday,fotg210
+      - items:
+          - const: mstar,msc313-ehci
+          - const: faraday,fusbh200
+      - const: faraday,fotg210
+      - const: faraday,fusbh200
 
   reg:
     maxItems: 1
