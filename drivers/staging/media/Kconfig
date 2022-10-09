@@ -61,4 +61,6 @@ source "drivers/staging/media/deprecated/vpfe_capture/Kconfig"
 source "drivers/staging/media/deprecated/zr364xx/Kconfig"
 endif
 
+source "drivers/staging/media/wave5/Kconfig"
+
 endif
