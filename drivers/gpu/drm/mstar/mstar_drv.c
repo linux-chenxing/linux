@@ -4,7 +4,6 @@
  */
 
 #include <linux/component.h>
-#include <linux/kfifo.h>
 #include <linux/module.h>
 #include <linux/of_reserved_mem.h>
 #include <linux/of.h>
@@ -24,7 +23,7 @@
 
 #define DRIVER_NAME "mstar-drm"
 
-DEFINE_DRM_GEM_CMA_FOPS(mstar_drv_fops);
+DEFINE_DRM_GEM_DMA_FOPS(mstar_drv_fops);
 
 static const struct drm_driver mstar_drv_driver = {
 	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
@@ -36,7 +35,7 @@ static const struct drm_driver mstar_drv_driver = {
 	.major = 1,
 	.minor = 0,
 
-	DRM_GEM_CMA_DRIVER_OPS,
+	DRM_GEM_DMA_DRIVER_OPS,
 };
 
 static const struct drm_mode_config_funcs drv_mode_config_funcs = {

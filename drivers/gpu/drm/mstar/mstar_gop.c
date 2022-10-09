@@ -291,14 +291,14 @@ static void gop_plane_atomic_update(struct drm_plane *plane,
 	struct mstar_gop *gop = window->gop;
 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state, plane);
 	struct drm_framebuffer *fb = new_state->fb;
-	struct drm_gem_cma_object *gem;
+	struct drm_gem_dma_object *gem;
 	u32 addr;
 
 	fb = new_state->fb;
 	if (!fb)
 		return;
 
-	gem = drm_fb_cma_get_gem_obj(fb, 0);
+	gem = drm_fb_dma_get_gem_obj(fb, 0);
 	if (!gem)
 		return;
 
