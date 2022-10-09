@@ -326,7 +326,7 @@ static void gop_plane_atomic_update(struct drm_plane *plane,
 
 	regmap_field_write(window->pitch, fb->pitches[0] >> gop->data->addr_shift);
 
-	addr = gem->paddr >> window->gop->data->addr_shift;
+	addr = gem->dma_addr >> window->gop->data->addr_shift;
 
 	regmap_field_write(window->addrh, addr >> 16);
 	regmap_field_write(window->addrl, addr);
