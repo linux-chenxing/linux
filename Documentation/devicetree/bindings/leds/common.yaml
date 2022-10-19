@@ -81,6 +81,8 @@ properties:
 
     oneOf:
       - enum:
+            # LED will flashing will represent current CPU usage
+          - activity
             # LED will act as a back-light, controlled by the framebuffer system
           - backlight
             # LED will turn on (but for leds-gpio see "default-state" property in
