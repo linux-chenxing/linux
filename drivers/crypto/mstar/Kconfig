@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-only
+config CRYPTO_DEV_MSC313_SHA
+	tristate "Support for MSC313 SHA unit"
+	depends on ARCH_MSTARV7
+	select CRYPTO_SHA256
+	select CRYPTO_ENGINE
+
+config CRYPTO_DEV_MSC313_AESDMA
+	tristate "Support for MSC313 AESDMA unit"
+	depends on ARCH_MSTARV7
+	depends on HAS_DMA
