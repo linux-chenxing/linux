@@ -123,10 +123,10 @@ static void msc313_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
 }
 
 static const struct pwm_ops msc313_pwm_ops = {
-	.config = msc313_pwm_config,
-	.set_polarity = msc313_pwm_set_polarity,
-	.enable = msc313_pwm_enable,
-	.disable = msc313_pwm_disable,
+	//.config = msc313_pwm_config,
+	//.set_polarity = msc313_pwm_set_polarity,
+	//.enable = msc313_pwm_enable,
+	//.disable = msc313_pwm_disable,
 	.apply = msc313_apply,
 	.get_state = msc313_get_state,
 	.owner = THIS_MODULE
