@@ -21,7 +21,7 @@
  */
 static inline u32 riu_readl_abs(void __iomem *base)
 {
-	return readw_relaxed(base + 4) << 16 | readw(base);
+	return readw(base + 4) << 16 | readw(base);
 }
 
 static inline u32 riu_readl(void __iomem *base, unsigned int offset)
@@ -65,7 +65,7 @@ static inline void riu_writel_abs(void __iomem *base, u32 value)
 	 * longer triggers sending a frame.
 	 */
 	writew(value, base);
-	writew_relaxed(value >> 16, base + 4);
+	writew(value >> 16, base + 4);
 }
 
 static inline void riu_writel(void __iomem *base, unsigned int offset, u32 value)
