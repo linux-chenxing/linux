@@ -253,22 +253,22 @@ static void hw_writel(struct macb *bp, int offset, u32 value)
 #ifdef CONFIG_ARCH_MSTARV7
 static u32 hw_readl_riu(struct macb *bp, int offset)
 {
-	return riu_readl_relaxed(bp->regs, offset);
+	return riu_readl(bp->regs, offset);
 }
 
 static void hw_writel_riu(struct macb *bp, int offset, u32 value)
 {
-	riu_writel_relaxed(bp->regs, offset, value);
+	riu_writel(bp->regs, offset, value);
 }
 
 static u32 hw_readl_xiu(struct macb *bp, int offset)
 {
-	return xiu_readl_relaxed(bp->regs, offset);
+	return xiu_readl(bp->regs, offset);
 }
 
 static void hw_writel_xiu(struct macb *bp, int offset, u32 value)
 {
-	xiu_writel_relaxed(bp->regs, offset, value);
+	xiu_writel(bp->regs, offset, value);
 }
 #endif
 
@@ -5094,7 +5094,7 @@ static const struct macb_config msc313_config = {
 
 static const struct macb_config msc313e_config = {
 	.caps = MACB_CAPS_NEEDS_RSTONUBR | MACB_CAPS_MACB_IS_EMAC |
-		MACB_CAPS_MSTAR_XIU | MACB_CAPS_MSTAR_TXQ,
+		MACB_CAPS_MSTAR_RIU | MACB_CAPS_MSTAR_TXQ,
 	.clk_init = msc313_clk_init,
 	.init = msc313_init,
 	.usrio = &macb_default_usrio,
