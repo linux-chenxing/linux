@@ -557,8 +557,11 @@ static const struct msc313_clkgen_parent_data ge_parents[] = {
 	PARENT_GATE(10),
 	PARENT_DIVIDER(8, 2),
 	// upll 320
+	//PARENT_GATE(1)
 	// upll 384
+	//PARENT_GATE(6)
 	// mpll 432
+	//PARENT_GATE(6),
 };
 #define GE	MSC313_MUX_PARENT_DATA("ge", ge_parents, 0x144, 0, 2, 3, -1)
 
