@@ -168,12 +168,11 @@
 
 	ge: ge@281200 {
 		compatible = "sstar,ssd20xd-ge";
-		// TBC, address from DTS
-		//reg = <0x224000 0x200>; seems wrong
-		// TBC, address from hal
 		reg = <0x281200 0x200>;
 		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_GE 0>;
 		clock-names = "ge";
+		//assigned-clocks = <&clkgen MSC313_CLKGEN_MUXES MSC313_CLKGEN_GE 0>;
+		//assigned-clock-parents = <&clkgen MSC313_CLKGEN_DIVIDERS MSC313_CLKGEN_GATE_9 GATE9_DIVIDEBY_4>;
 		interrupts-extended = <&intc_irq GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
 		interconnects = <&miu 0>;
 		interconnect-names = "dma-mem";
