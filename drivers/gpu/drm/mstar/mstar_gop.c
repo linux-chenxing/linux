@@ -18,7 +18,6 @@
 #include <linux/of_irq.h>
 
 #include "mstar_drm.h"
-#include "mstar_ge.h"
 #include "mstar_gop.h"
 
 #define DRIVER_NAME "mstar-gop"
