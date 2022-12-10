@@ -93,7 +93,7 @@ struct fotg210_ehci_priv {
 	bool clocked;
 };
 
-#ifdef CONFIG_ARCH_MSTARV7
+#if defined(CONFIG_ARCH_MSTARV7) || defined(CONFIG_MSTAR_MIPS)
 static inline unsigned int mstar_ehci_readl(const struct ehci_hcd *ehci, __u32 __iomem *regs)
 {
 	unsigned int value;
@@ -344,7 +344,7 @@ static int ehci_fotg210_drv_probe(struct platform_device *pdev)
 			"faraday,fusbh200"))
 		ehci->fusbh200 = 1;
 
-#ifdef CONFIG_ARCH_MSTARV7
+#if defined(CONFIG_ARCH_MSTARV7) || defined(CONFIG_MSTAR_MIPS)
 	if (dev->of_node && of_device_is_compatible(dev->of_node,
 			"mstar,msc313-ehci")) {
 		fotg210_ehci->mstar = true;

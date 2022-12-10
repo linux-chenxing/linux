@@ -352,7 +352,7 @@ config HAVE_BROKEN_EHCI_HCD
 
 config USB_FOTG210_HCD
 	tristate "FOTG210 HCD support"
-	depends on USB_EHCI_HCD && (ARCH_MSTARV7 || COMPILE_TEST)
+	depends on USB_EHCI_HCD && (ARCH_MSTARV7 || MSTAR_MIPS || COMPILE_TEST)
 	select USB_EHCI_ROOT_HUB_TT
 	select HAVE_BROKEN_EHCI_HCD
 	help
