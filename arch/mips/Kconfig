@@ -987,6 +987,24 @@ config CAVIUM_OCTEON_SOC
 		Hikari
 	  Say Y here for most Octeon reference boards.
 
+config MSTAR_MIPS
+	bool "MStar MIPS SoC"
+	select CEVT_R4K
+	select CSRC_R4K
+	select BOOT_RAW
+	select NO_EXCEPT_FILL
+	select DMA_NONCOHERENT
+	select IRQ_MIPS_CPU
+	select USE_OF
+	select SYS_HAS_CPU_MIPS32_R2
+	select SYS_SUPPORTS_32BIT_KERNEL
+	select SYS_SUPPORTS_LITTLE_ENDIAN
+	select SYS_SUPPORTS_MIPS16
+	select SYS_SUPPORTS_MULTITHREADING
+	select SYS_SUPPORTS_HIGHMEM
+	help
+	  This enables support for MStar's MIPS-based SoCs.
+
 endchoice
 
 source "arch/mips/alchemy/Kconfig"
@@ -999,6 +1017,7 @@ source "arch/mips/generic/Kconfig"
 source "arch/mips/ingenic/Kconfig"
 source "arch/mips/jazz/Kconfig"
 source "arch/mips/lantiq/Kconfig"
+source "arch/mips/mstar/Kconfig"
 source "arch/mips/pic32/Kconfig"
 source "arch/mips/ralink/Kconfig"
 source "arch/mips/sgi-ip27/Kconfig"
