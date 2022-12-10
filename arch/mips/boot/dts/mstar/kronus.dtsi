@@ -1,0 +1,216 @@
+// SPDX-License-Identifier: GPL-2.0
+#include "common.dtsi"
+
+/ {
+	compatible = "mstar,kronus";
+
+	usb_phy2: usb-phy@2 {
+		compatible = "mstar,msc313-usb-phy";
+		clocks = <&xtal_div2>;
+		interrupts-extended = <&intc_irq 13 IRQ_TYPE_LEVEL_HIGH>;
+		mstar,utmi = <&utmi2>;
+		mstar,usbc = <&usbc2>;
+		#phy-cells = <1>;
+		status = "disabled";
+	};
+};
+
+&riu {
+	utmi2: utmi@205400 {
+		compatible = "syscon";
+		reg = <0x205400 0x100>;
+	};
+
+	usbc2: usbc@220400 {
+		compatible = "syscon";
+		reg = <0x220400 0x100>;
+	};
+
+	uhc2: uhc@220600 {
+		compatible = "mstar,msc313-ehci", "faraday,fusbh200";
+		reg = <0x220600 0x200>;
+		interrupts-extended = <&intc_irq 15 IRQ_TYPE_LEVEL_HIGH>;
+		//phys = <&usb_phy2 0>;
+		phy-names = "usb";
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+		mstar,usbc = <&usbc2>;
+		status = "disabled";
+	};
+
+	/*--------------------*/
+
+	miic0: miic@206800 {
+		compatible = "mstar,msd7816-miic";
+		reg = <0x206800 0x40>;
+		interrupts-extended = <&intc_irq 22 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&mpll_24m>; // TODO, clkgen2!
+	};
+
+	miic1: miic@206840 {
+		compatible = "mstar,msd7816-miic";
+		reg = <0x206840 0x40>;
+		interrupts-extended = <&intc_irq 1 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&mpll_24m>; // TODO, clkgen2!
+	};
+
+	mpif: mpif@220800 {
+		compatible = "mstar,msd7816-mpif";
+		reg = <0x220800 0x200>;
+		interrupts-extended = <&intc_irq 42 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&mpll_123m>; // TODO, clkgen!
+	};
+
+	/*==================================================*/
+
+	chiptop: chiptop@203c00 {
+		compatible = "mstar,msd7816-chiptop", "syscon";
+		reg = <0x203c00 0x200>;
+
+		/* pinctrl & some GPIOs live there */
+	};
+
+	adc_atop: adc-atop@204a00 {
+		compatible = "mstar,msd7816-adc-atop", "syscon";
+		reg = <0x204a00 0x200>;
+
+		/* some GPIOs live there */
+	};
+
+	adc_dtop: adc-dtop@204c00 {
+		compatible = "mstar,msd7816-adc-dtop", "syscon";
+		reg = <0x204c00 0x200>;
+
+		/* some GPIOs live there */
+	};
+
+	ana_misc: ana-misc@221800 {
+		compatible = "mstar,msd7816-ana-misc", "syscon";
+		reg = <0x221800 0x200>;
+
+		/* MIPSPLL lives there */
+	};
+
+	dmd_ana_misc: dmd-ana-misc@225000 {
+		compatible = "mstar,msd7816-dmd-ana-misc", "syscon";
+		reg = <0x225000 0x200>;
+
+		/* MPLL lives there */
+	};
+
+	/*==================================================*/
+
+	#if 0
+	idac: idac@203400 {
+		compatible = "mstar,msd7816-idac";
+		reg = <0x203400 0x200>;
+
+		// clocks...
+		clocks = "dac1",
+			 "dac2";
+	};
+
+	gop: gop@203e00 {
+		compatible = "mstar,msd7816-gop";
+		reg = <0x203e00 0x200>;
+		interrupts-extended = <&intc_irq 20 IRQ_TYPE_LEVEL_HIGH>;
+
+		// clocks...
+		clocks = "gopg0",
+			 "gopg1",
+			 "gopmux",
+			 "gopd",
+			 "gopg2",
+			 "gopg3",
+			 "psram0";
+	};
+
+	xc: xc@205e00 {
+		compatible = "mstar,msd7816-xc";
+		reg = <0x205e00 0x200>;
+
+		// clocks...
+	};
+
+	hdgen: hdgen@206000 {
+		compatible = "mstar,msd7816-hdgen";
+		reg = <0x220e00 0x200>;
+
+		// clocks...
+		clocks = "hdgen",
+			 "hdgen_fir";
+	};
+
+	ve: ve@207600 {
+		compatible = "mstar,msd7816-ve";
+
+		reg = <0x207600 0x200>,
+		      <0x207c00 0x200>,
+		      <0x207e00 0x200>;
+		reg-names = "source", "encoder", "encoder-ex";
+
+		interrupts-extended = <&intc_irq 17 IRQ_TYPE_LEVEL_HIGH>,
+				      <&intc_fiq 21 IRQ_TYPE_EDGE_RISING>,
+				      <&intc_fiq 22 IRQ_TYPE_EDGE_RISING>,
+				      <&intc_fiq 24 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "ve",
+				  "vsync_ve4vbi",
+				  "field_ve4vbi",
+				  "ve_done_tt";
+
+		// TODO, clkgen!
+		clocks = <&mpll_27m>,
+			 <&mpll_108m>,
+			 <&mpll_108m>;
+		clock-names = "ve",
+			      "vein",
+			      "vedac";
+	};
+
+	vivaldi: vivaldi@225400 {
+		compatible = "mstar,msd7816-vivaldi";
+
+		reg = <0x225400 0x200>,
+		      <0x225600 0x200>,
+		      <0x225800 0x200>,
+		      <0x225a00 0x200>,
+		      <0x225c00 0x200>,
+		      <0x225e00 0x200>;
+
+		interrupts-extended = <&intc_fiq 14 IRQ_TYPE_EDGE_RISING>,
+				      <&intc_fiq 29 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "se_dsp2up",
+				  "dec_dsp2up";
+
+		// clocks: some!
+	};
+
+	/* Maybe split it into the phy and hdmi parts? */
+	hdmitx: hdmitx@226000 {
+		compatible = "mstar,msd7816-hdmitx";
+
+		reg = <0x226000 0x200>,
+		      <0x226200 0x200>,
+		      <0x226400 0x200>,
+		      <0x226600 0x200>;
+		reg-names = "atop", "dtop", "video", "audio";
+
+		/* probably that is the same interrupt that is connected
+		 * to both IRQ and FIQ intc's...
+		 */
+		interrupts-extended = <&intc_irq 54 IRQ_TYPE_LEVEL_HIGH>,
+				      <&intc_fiq 54 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "level",
+				  "edge";
+
+		// clocks: something
+		//   ----> txpll / dac_clk_out
+		// another clock -> clk_hdmitx ==> odclk!
+		// presumeably the 'atop' is a different block afterall
+	};
+	#endif
+};
+
+&miu {
+	compatible = "mstar,msd7816-miu";
+};
