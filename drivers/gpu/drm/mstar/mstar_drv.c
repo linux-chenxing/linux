@@ -26,7 +26,7 @@
 
 DEFINE_DRM_GEM_CMA_FOPS(mstar_drv_fops);
 
-static struct drm_driver mstar_drv_driver = {
+static const struct drm_driver mstar_drv_driver = {
 	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
 
 	.fops = &mstar_drv_fops,
