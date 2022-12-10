@@ -13,3 +13,6 @@ config DRM_MSTAR
 	help
 	  MStar DRM
 
+config DRM_MSTAR_GE_SELFTEST
+	bool "Run selftests on GE at boot"
+	depends on DRM_MSTAR
