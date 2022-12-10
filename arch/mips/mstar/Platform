@@ -1,0 +1,1 @@
+load-$(CONFIG_MSTAR_MIPS)	+= 0xffffffff80000000

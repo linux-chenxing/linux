@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: GPL-2.0
+#include "common.dtsi"
+
+/ {
+	compatible = "mstar,titania4";
+
+	usb_phy0: usb-phy@0 {
+		compatible = "mstar,msc313-usb-phy";
+		clocks = <&xtal_div2>;
+		interrupts-extended = <&intc_irq 6 IRQ_TYPE_LEVEL_HIGH>;
+		mstar,utmi = <&utmi0>;
+		mstar,usbc = <&usbc0>;
+		#phy-cells = <1>;
+		status = "disabled";
+	};
+
+	usb_phy1: usb-phy@1 {
+		compatible = "mstar,msc313-usb-phy";
+		clocks = <&xtal_div2>;
+		interrupts-extended = <&intc_irq 33 IRQ_TYPE_LEVEL_HIGH>;
+		mstar,utmi = <&utmi1>;
+		mstar,usbc = <&usbc1>;
+		#phy-cells = <1>;
+		status = "disabled";
+	};
+};
+
+&riu {
+	utmi0: utmi@207500 {
+		compatible = "syscon";
+		reg = <0x207500 0x100>;
+	};
+
+	usbc0: usbc@200e00 {
+		compatible = "syscon";
+		reg = <0x200e00 0x100>;
+	};
+
+	uhc0: uhc@204800 {
+		compatible = "mstar,msc313-ehci", "faraday,fusbh200";
+		reg = <0x204800 0x200>;
+		interrupts-extended = <&intc_irq 7 IRQ_TYPE_LEVEL_HIGH>;
+		//phys = <&usb_phy0 0>;
+		phy-names = "usb";
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+		mstar,usbc = <&usbc0>;
+		status = "disabled";
+	};
+
+	utmi1: utmi@207400 {
+		compatible = "syscon";
+		reg = <0x207400 0x100>;
+	};
+
+	usbc1: usbc@200f00 {
+		compatible = "syscon";
+		reg = <0x200f00 0x100>;
+	};
+
+	uhc1: uhc@201a00 {
+		compatible = "mstar,msc313-ehci", "faraday,fusbh200";
+		reg = <0x201a00 0x200>;
+		interrupts-extended = <&intc_irq 34 IRQ_TYPE_LEVEL_HIGH>;
+		//phys = <&usb_phy1 0>;
+		phy-names = "usb";
+		interconnects = <&miu 0>;
+		interconnect-names = "dma-mem";
+		mstar,usbc = <&usbc1>;
+		status = "disabled";
+	};
+};
+
+&miu {
+	compatible = "mstar,msd309px-miu";
+};

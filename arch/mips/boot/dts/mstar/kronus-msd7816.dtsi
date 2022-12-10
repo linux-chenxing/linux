@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0
+#include "kronus.dtsi"
+
+/ {
+	compatible = "mstar,msd7816", "mstar,kronus";
+};
+
+&sar {
+	compatible = "mstar,msd7816-sar";
+};
