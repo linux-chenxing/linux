@@ -122,9 +122,14 @@ static const struct reg_field prim_type_field = REG_FIELD(REG_CMD, 4, 6);
 #define PRIM_TYPE_BITBLT	4
 #define PRIM_TYPE_FREEZE	7
 
+static const struct reg_field pri_x_dir_field = REG_FIELD(REG_CMD, 9, 9);
+
 /* s1.12 */
 static const struct reg_field line_delta_field = REG_FIELD(REG_LINE_CTRL0, 1, 14);
 static const struct reg_field line_major_field = REG_FIELD(REG_LINE_CTRL0, 15, 15);
+static const struct reg_field line_ptn_field = REG_FIELD(REG_LINE_CTRL1, 0, 5);
+static const struct reg_field line_ptnrpf_field = REG_FIELD(REG_LINE_CTRL1, 6, 7);
+static const struct reg_field line_ptnrst_field = REG_FIELD(REG_LINE_CTRL1, 8, 8);
 static const struct reg_field line_last_field = REG_FIELD(REG_LINE_CTRL1, 9, 9);
 static const struct reg_field line_length_field = REG_FIELD(REG_LINE_LENGTH, 0, 11);
 
@@ -164,6 +169,9 @@ struct mstar_ge {
 	struct drm_device *drm_device;
 	struct clk *clk;
 	u32 tag;
+
+	struct regmap *regmap;
+
 	struct regmap_field *en, *abl, *dfb, *clk_en, *busy;
 	struct regmap_field *cmq_free, *cmq2_free;
 	struct regmap_field *irq_mask, *irq_force, *irq_clr, *irq_status;
@@ -176,7 +184,7 @@ struct mstar_ge {
 	struct regmap_field *srcclrfmt, *dstclrfmt;
 	struct regmap_field *clip_left, *clip_right, *clip_top, *clip_bottom;
 	struct regmap_field *rot;
-	struct regmap_field *prim_type;
+	struct regmap_field *prim_type, *pri_x_dir;
 	struct regmap_field *line_delta, *line_major, *line_last, *line_length;
 	struct regmap_field *x0, *y0, *x1, *y1, *x2, *y2;
 
@@ -208,7 +216,7 @@ static bool mstar_ge_volatile_reg(struct device *dev, unsigned int reg)
 
 	switch(reg) {
 	case REG_IRQ:
-	case REG_CMD:
+	//case REG_CMD:
 		return true;
 	default:
 		return false;
@@ -352,21 +360,32 @@ static int mstar_ge_do_line(struct mstar_ge *ge,
 			    unsigned int y1)
 {
 
-	unsigned int w = x1 - x0;
-	unsigned int h = y1 - y0;
+	unsigned int w = max(x0, x1) - min(x0, x1);
+	unsigned int h = max(y0, y1) - min(y0, y1);
 	bool ymajor = h > w;
+	unsigned int length = (ymajor ? h : w) + 1;
+	const unsigned int factor = 0x1000;
+	int delta = (w * factor) / h;
 
-	dev_info(ge->dev, "doing line draw from %d,%d to %d,%d (area %d x %d), free %d\n",
+	//if (ymajor) {
+	//	if (y0 > y1)
+	//		delta = -delta;
+	//}
+	if (x0 > x1) {
+		regcache_cache_only(ge->regmap, true);
+		regmap_field_write(ge->pri_x_dir, 1);
+		regcache_cache_only(ge->regmap, false);
+	}
+
+	dev_info(ge->dev, "doing line draw from %d,%d to %d,%d (area %d x %d, length %d, delta %x, ymajor %d), free %d\n",
 			x0, y0, x1, y1,
-			w, h,
+			w, h, length, delta, ymajor,
 			mstar_ge_cmq_free(ge));
 
-	regmap_field_write(ge->rot, 0);
 	regmap_field_write(ge->line_last, 1);
-	regmap_field_write(ge->line_length, ymajor ? h : w);
+	regmap_field_write(ge->line_length, length);
 	regmap_field_write(ge->line_major, ymajor ? 1 : 0);
-	// should set the angle I guess but it does nothing
-	regmap_field_write(ge->line_delta, 0x2000);
+	regmap_field_write(ge->line_delta, delta);
 
 	mstar_ge_set_priv0(ge, x0, y0);
 	mstar_ge_set_priv1(ge, x1, y1);
@@ -587,6 +606,17 @@ static int mstar_ge_queue_job(struct mstar_ge *ge, struct mstar_ge_job *job)
 	mstar_ge_tag(ge);
 	regmap_field_write(ge->en, 1);
 
+	/* Make sure we don't trigger by mistake */
+	//regmap_field_force_write(ge->prim_type, PRIM_TYPE_FREEZE);
+	/* Reset shared fields */
+
+	/* reset the pri x dir, but don't actually write the register.. */
+	regcache_cache_only(ge->regmap, true);
+	regmap_field_write(ge->pri_x_dir, 0);
+	regcache_cache_only(ge->regmap, false);
+
+	regmap_field_write(ge->rot, 0);
+
 	/* set the clip */
 	mstar_ge_set_clip(ge, 0, 0,
 			job->dst_cfg.width - 1,
@@ -602,7 +632,6 @@ static int mstar_ge_queue_job(struct mstar_ge *ge, struct mstar_ge_job *job)
 				 job->opdata.line.y1);
 		break;
 	case MSTAR_GE_OP_RECTFILL:
-		regmap_field_write(ge->rot, 0);
 		mstar_ge_set_start_color(ge, &job->opdata.rectfill.start_color);
 		mstar_ge_do_rectfill(ge,
 				     job->opdata.rectfill.x0,
@@ -844,19 +873,75 @@ static int mstar_ge_test(struct mstar_ge *ge)
 	memcpy(&j->src_cfg, &src.cfg, sizeof(j->src_cfg));
 	memcpy(&j->dst_cfg, &dst.cfg, sizeof(j->dst_cfg));
 
-	/* Line */
-	dev_info(ge->dev, "Test, line\n");
+	/* Line top,left to bottom,right */
+	dev_info(ge->dev, "Test, line - top,left to bottom,right\n");
 	j->opdata.op = MSTAR_GE_OP_LINE;
 	j->opdata.line.x0 = 0;
 	j->opdata.line.y0 = 0;
 	j->opdata.line.x1 = dst.cfg.width - 1;
 	j->opdata.line.y1 = dst.cfg.height - 1;
-	j->opdata.line.start_color.r = 0xaa;
-	j->opdata.line.start_color.g = 0x00;
-	j->opdata.line.start_color.b = 0x00;
+	j->opdata.line.start_color.r = 0xff;
+	j->opdata.line.start_color.g = 0xff;
+	j->opdata.line.start_color.b = 0xff;
 	j->opdata.line.start_color.a = 0xff;
 
 	//mstar_get_filltestbuf(j->opdata.dst, j->opdata.dst_height, j->opdata.dst_pitch);
+	ret = mstar_ge_test_pretest(ge, j, &src, &dst);
+	if (ret)
+		goto free_src;
+
+	mstar_ge_queue_job(ge, j);
+
+	mstar_ge_test_posttest(ge, j, &src, &dst, src_alloc, dst_alloc);
+
+	/* Line top,right to bottom,left */
+	dev_info(ge->dev, "Test, line - top,right to bottom,left\n");
+	j->opdata.line.x0 = dst.cfg.width - 1;
+	j->opdata.line.y0 = 0;
+	j->opdata.line.x1 = 0;
+	j->opdata.line.y1 = dst.cfg.height - 1;
+
+	//mstar_get_filltestbuf(j->opdata.dst, j->opdata.dst_height, j->opdata.dst_pitch);
+	mstar_ge_cleartestbuf(&dst);
+	ret = mstar_ge_test_pretest(ge, j, &src, &dst);
+	if (ret)
+		goto free_src;
+
+	mstar_ge_queue_job(ge, j);
+
+	mstar_ge_test_posttest(ge, j, &src, &dst, src_alloc, dst_alloc);
+
+	/* Line vertical */
+	dev_info(ge->dev, "Test, line - top to bottom\n");
+	j->opdata.line.x0 = (dst.cfg.width / 2) - 1;
+	j->opdata.line.y0 = 0;
+	j->opdata.line.x1 = (dst.cfg.width / 2) - 1;
+	j->opdata.line.y1 = dst.cfg.height - 1;
+
+	//mstar_get_filltestbuf(j->opdata.dst, j->opdata.dst_height, j->opdata.dst_pitch);
+	mstar_ge_cleartestbuf(&dst);
+	ret = mstar_ge_test_pretest(ge, j, &src, &dst);
+	if (ret)
+		goto free_src;
+
+	mstar_ge_queue_job(ge, j);
+
+	mstar_ge_test_posttest(ge, j, &src, &dst, src_alloc, dst_alloc);
+
+	/* Line horizontal */
+	dev_info(ge->dev, "Test, line - left to right\n");
+	j->opdata.line.x0 = 0;
+	j->opdata.line.y0 = (dst.cfg.height / 2) - 1;
+	j->opdata.line.x1 =
+
+
+
+
+			dst.cfg.width - 1;
+	j->opdata.line.y1 = (dst.cfg.height / 2) - 1;
+
+	//mstar_get_filltestbuf(j->opdata.dst, j->opdata.dst_height, j->opdata.dst_pitch);
+	mstar_ge_cleartestbuf(&dst);
 	ret = mstar_ge_test_pretest(ge, j, &src, &dst);
 	if (ret)
 		goto free_src;
@@ -1238,6 +1323,8 @@ static int mstar_ge_probe(struct platform_device *pdev)
 	if (IS_ERR(regmap))
 		return PTR_ERR(regmap);
 
+	ge->regmap = regmap;
+
 	ge->en = devm_regmap_field_alloc(dev, regmap, en_field);
 	ge->abl = devm_regmap_field_alloc(dev, regmap, abl_field);
 	ge->dfb = devm_regmap_field_alloc(dev, regmap, dfb_field);
@@ -1281,6 +1368,7 @@ static int mstar_ge_probe(struct platform_device *pdev)
 
 	ge->rot = devm_regmap_field_alloc(dev, regmap, rot_field);
 	ge->prim_type = devm_regmap_field_alloc(dev, regmap, prim_type_field);
+	ge->pri_x_dir = devm_regmap_field_alloc(dev, regmap, pri_x_dir_field);
 
 	/* Line controls */
 	ge->line_delta = devm_regmap_field_alloc(dev, regmap, line_delta_field);
