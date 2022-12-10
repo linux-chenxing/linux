@@ -1,0 +1,366 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	cpus {
+		cpu {
+			compatible = "mips,mips34KEc";
+		};
+	};
+
+	cpuintc: cpuintc {
+		compatible = "mti,cpu-interrupt-controller";
+		#interrupt-cells = <1>;
+		interrupt-controller;
+	};
+
+	clocks: clocks {
+		xtal: xtal {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <24000000>;
+		};
+
+		xtal_div2: xtal_div2 {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&xtal>;
+			clock-mult = <1>;
+			clock-div = <2>;
+		};
+
+		/* TODO */
+		mpll: mpll {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <432000000>;
+		};
+
+		mpll_172m: mpll_172m { // 172.8 MHz
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <2>;
+			clock-div = <5>;
+		};
+
+		mpll_170m: mpll_170m { // ???? MHz
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			// something close to 170 MHz,
+			//  not sure if there is exactly 170 MHz in HW
+			clock-mult = <13>;
+			clock-div = <33>;
+		};
+
+		mpll_160m: mpll_160m { // ???? MHz
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			// not sure if there is exactly 160 MHz in HW
+			clock-mult = <10>;
+			clock-div = <27>;
+		};
+
+		mpll_144m: mpll_144m {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <1>;
+			clock-div = <3>;
+		};
+
+		mpll_123m: mpll_123m { // 123.4285 MHz
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <2>;
+			clock-div = <7>;
+		};
+
+		mpll_108m: mpll_108m {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <1>;
+			clock-div = <4>;
+		};
+
+		mpll_54m: mpll_54m {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <1>;
+			clock-div = <8>;
+		};
+
+		mpll_27m: mpll_27m {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <1>;
+			clock-div = <16>;
+		};
+
+		mpll_24m: mpll_24m {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&mpll>;
+			clock-mult = <1>;
+			clock-div = <18>;
+		};
+	};
+
+	isp: isp@1f001000 {
+		compatible = "mstar,msd7816-isp", "mstar,msc313-isp";
+		reg = <0x1f001000 0x180>,     /* isp */
+		      <0x1f001180 0x40>,      /* fsp (not present though) */
+		      <0x1f0011c0 0x40>,      /* qspi */
+		      <0x14000000 0x1000000>; /* map "xiu"/etc */
+		clocks = <&xtal_div2>, // TODO, pm clkgen...
+		         <&mpll_172m>, // TODO, clkgen!
+		         <&mpll_54m>;  // TODO, clkgen!
+		clock-names = "pm_spi",
+			      "mcu",
+			      "spi";
+		dmas = <&bdma 0>;
+		dma-names = "qspi";
+		status = "disabled";
+	};
+
+	riu: riu@1f000000 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "mstar,riu", "simple-bus";
+		reg = <0x1f000000 0x400000>;
+		ranges = <0x0 0x1f000000 0x400000>;
+
+		/*----------------------- PM RIU area -----------------------*/
+
+		pmsleep: syscon@1c00 {
+			compatible = "mstar,msd7816-pmsleep",
+							"syscon", "simple-mfd";
+			reg = <0x1c00 0x100>;
+			use-raw-spinlock;
+
+			reboot {
+				compatible = "syscon-reboot";
+				offset = <0xb8>;
+				mask = <0x79>;
+			};
+
+			/* TODO - PM GPIOs and stuff */
+		};
+
+		cec: cec@2200 {
+			compatible = "mstar,msd7816-cec";
+			reg = <0x2200 0x200>;
+			interrupts-extended = <&intc_irq 53 IRQ_TYPE_LEVEL_HIGH>; // probably
+			clocks = <&xtal_div2>; // TODO?
+		};
+
+		rtc@2400 {
+			compatible = "mstar,msd7816-rtc", "mstar,msc313-rtc";
+			reg = <0x2400 0x200>;
+			interrupts-extended = <&intc_irq 23 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&xtal_div2>; // TODO? goes from pm clkgen?
+		};
+
+		rtc@2600 {
+			compatible = "mstar,msd7816-rtc", "mstar,msc313-rtc";
+			reg = <0x2600 0x200>;
+			interrupts-extended = <&intc_irq 29 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&xtal_div2>; // TODO? goes from pm clkgen?
+		};
+
+		sar: sar@2800 {
+			/* compatible is defined by the specific chip dtsi */
+			reg = <0x2800 0x200>;
+			interrupts-extended = <&intc_irq 24 IRQ_TYPE_LEVEL_HIGH>; // probably
+			clocks = <&xtal_div2>; // TODO?
+			#io-channel-cells = <1>;
+			#gpio-cells = <2>;
+			status = "disabled";
+		};
+
+		watchdog@6000 {
+			compatible = "mstar,msc313e-wdt";
+			reg = <0x6000 0x40>;
+			clocks = <&xtal_div2>;
+			interrupts-extended = <&intc_fiq 2 IRQ_TYPE_EDGE_RISING>;
+		};
+
+		timer@6040 {
+			compatible = "mstar,msc313e-timer";
+			reg = <0x6040 0x40>;
+			clocks = <&xtal_div2>;
+			interrupts-extended = <&intc_fiq 0 IRQ_TYPE_EDGE_RISING>;
+		};
+
+		timer@6080 {
+			compatible = "mstar,msc313e-timer";
+			reg = <0x6080 0x40>;
+			clocks = <&xtal_div2>;
+			interrupts-extended = <&intc_fiq 1 IRQ_TYPE_EDGE_RISING>;
+		};
+
+		/* for NEC-like protocols, and gathering raw data in general */
+		ir: ir@7b00 {
+			compatible = "mstar,msd7816-ir";
+			reg = <0x7b00 0x100>;
+			interrupts-extended = <&intc_fiq 27 IRQ_TYPE_EDGE_RISING>;
+			clocks = <&xtal_div2>; // TODO?
+			status = "disabled";
+		};
+
+		/*-------------------- Non-PM RIU area ----------------------*/
+
+		bdma: bdma@201200 {
+			compatible = "mstar,msd7816-bdma", "mstar,msc313-bdma";
+			reg = <0x201200 0x80>;
+			interrupts-extended = <&intc_irq 48 IRQ_TYPE_LEVEL_HIGH>,
+					      <&intc_irq 49 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&xtal_div2>; // TODO, what's the clock?
+			dma-channels = <2>;
+			#dma-cells = <1>;
+		};
+
+		piu_uart0: serial@201300 {
+			compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
+			reg = <0x201300 0x100>;
+			reg-shift = <3>;
+			interrupts-extended = <&intc_irq 0 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&mpll_123m>; // TODO, clkgen!
+			status = "disabled";
+		};
+
+		dscrmb@201800 {
+			compatible = "mstar,msd7816-dscrmb";
+			reg = <0x201800 0x200>;
+		};
+
+		mvd@202200 {
+			compatible = "mstar,msd7816-mvd";
+			reg = <0x202200 0x200>;
+			interrupts-extended = <&intc_irq 3 IRQ_TYPE_LEVEL_HIGH>;
+			// clocks...
+			clock-names = "mvd_syn",
+				      "mvd",
+				      "mvd2",
+				      "mvd_chroma",
+				      "mvd_luma_a",
+				      "mvd_luma_b",
+				      "mvd_luma_c",
+				      "mvd_rmem",
+				      "mvd_rmem1";
+		};
+
+		miu: miu@202400 {
+			/* compatible is defined by the chip family dtsi */
+
+			reg = <0x221a00 0x100>, /* atop (MIU_ATOP) */
+			      <0x202400 0x200>; /* dtop (MIU) */
+
+			interrupts-extended = <&intc_irq 35 IRQ_TYPE_LEVEL_HIGH>;
+
+			// clocks... TODO, clkgen!
+			clocks = <&mpll>,
+			         <&mpll>;
+			clock-names = "miu",
+			              "ddr";
+
+			clock-output-names = "ddrpll";
+			#clock-cells = <0>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+			dma-ranges = <0x0 0x0 0x8000000>;
+			#interconnect-cells = <1>;
+		};
+
+		jpd@202e00 {
+			compatible = "mstar,msd7816-jpd";
+			reg = <0x202e00 0x200>;
+			interrupts-extended = <&intc_irq 45 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&mpll_144m>; // TODO, clkgen!
+		};
+
+		intc_fiq: interrupt-controller@203380 {
+			compatible = "mstar,mst-intc";
+			reg = <0x203390 0x30>;
+			#interrupt-cells = <2>;
+			interrupt-controller;
+			interrupts-extended = <&cpuintc 3>;
+			mstar,irqs-map-range = <64 127>;
+		};
+
+		intc_irq: interrupt-controller@2033c0 {
+			compatible = "mstar,mst-intc";
+			reg = <0x2033d0 0x30>;
+			#interrupt-cells = <2>;
+			interrupt-controller;
+			interrupts-extended = <&cpuintc 2>;
+			mstar,irqs-map-range = <0 63>;
+			mstar,intc-no-eoi;
+		};
+
+		hvd@203600 {
+			compatible = "mstar,msd7816-hvd";
+			reg = <0x203600 0x200>;
+			interrupts-extended = <&intc_irq 32 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&mpll_160m>; // TODO, clkgen!
+		};
+
+		ge@205000 {
+			compatible = "mstar,msd7816-ge";
+			reg = <0x205000 0x200>;
+			clocks = <&mpll_170m>; // TODO, clkgen!
+		};
+
+		urdma: urdma@206980 {
+			compatible = "mstar,msc313-urdma";
+			reg = <0x206980 0x80>;
+			interrupts-extended = <&intc_irq 51 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&miu 0>; // miu clock?
+		};
+
+		/*-----------------------------------------------------------*/
+
+		piu_uart1: serial@220c00 {
+			compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
+			reg = <0x220c00 0x80>;
+			reg-shift = <2>;
+			interrupts-extended = <&intc_irq 39 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&mpll_172m>; // TODO, clkgen!
+			status = "disabled";
+		};
+
+		piu_uart2: serial@220c80 {
+			compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
+			reg = <0x220c80 0x80>;
+			reg-shift = <2>;
+			interrupts-extended = <&intc_irq 40 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&mpll_172m>; // TODO, clkgen!
+			status = "disabled";
+		};
+
+		piu_fuart: serial@220d00 {
+			compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
+			reg = <0x220d00 0x100>;
+			reg-shift = <3>;
+			interrupts-extended = <&intc_irq 50 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&mpll_54m>; // TODO, clkgen!
+			status = "disabled";
+		};
+
+		ge@220e00 {
+			compatible = "mstar,msd7816-ge";
+			reg = <0x220e00 0x200>;
+			clocks = <&mpll_170m>; // TODO, clkgen!
+		};
+	};
+};
