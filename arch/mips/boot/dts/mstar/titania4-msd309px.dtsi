@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0
+#include "titania4.dtsi"
+
+/ {
+	compatible = "mstar,msd309px", "mstar,titania4";
+};
+
+&sar {
+	compatible = "mstar,msd309px-sar";
+};

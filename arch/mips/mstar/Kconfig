@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-2.0
+if MSTAR_MIPS
+
+config MACH_KROUNS
+	bool "MStar Kronus family support"
+	help
+	  Support for the Kronus SoC family, which consists of at least:
+	    - MSD7816
+	    - MSD7818
+
+config MACH_TITANIA4
+	bool "MStar Titania4 family support"
+	help
+	  Support for the Titania4 SoC family, which consists of at least:
+	    - MSD306PT
+	    - MSD309PX
+
+choice
+	prompt "Device tree selection"
+	default DTB_MST_NONE
+	help
+	  Select the device tree that will be built into kernel
+
+	config DTB_MST_NONE
+		bool "None"
+
+	config DTB_MST_MSD7816_TEST
+		bool "MSD7816 test"
+		depends on MACH_KROUNS
+		select BUILTIN_DTB
+
+	config DTB_MST_MSD309PX_TEST
+		bool "MSD309PX test"
+		depends on MACH_TITANIA4
+		select BUILTIN_DTB
+endchoice
+
+endif

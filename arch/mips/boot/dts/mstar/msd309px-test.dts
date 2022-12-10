@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+#include "titania4-msd309px.dtsi"
+
+/ {
+	compatible = "mstar,msd309px", "mstar,kronus";
+	model = "MStar MSD309PX test";
+
+	aliases {
+		serial0 = &piu_uart0;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200 root=/dev/sda2 rootwait clk_ignore_unused";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x4000000>;
+	};
+
+	memory@40000000 {
+		device_type = "memory";
+		reg = <0x40000000 0x4000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		/* ~2 megs for the framebuffer (fits up to 1366x768 @ 16bpp) */
+		fb-memory@3a00000 {
+			reg = <0x3a00000 0x210000>;
+		};
+	};
+
+	framebuffer@3a00000 {
+		compatible = "simple-framebuffer";
+		reg = <0x3a00000 0x210000>;
+		width = <1280>;
+		height = <800>;
+		stride = <(1280*2)>;
+		format = "r5g6b5";
+	};
+};
+
+
+&isp {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	flash@0 {
+		compatible = "winbond,w25q32", "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <54000000>; /* something like that */
+		m25p,fast-read;
+
+		partitions {
+			#address-cells = <1>;
+			#size-cells = <1>;
+			compatible = "fixed-partitions";
+
+			sboot@0 {
+				label = "sboot";
+				reg = <0x0 0x10000>;
+			};
+
+			pm51-fw@10000 {
+				label = "pm51 fw";
+				reg = <0x10000 0x10000>;
+			};
+
+			rest@20000 {
+				label = "the rest";
+				reg = <0x20000 0x3e0000>;
+			};
+		};
+	};
+};
+
+&usb_phy1 {
+	status = "okay";
+};
+
+&uhc1 {
+	status = "okay";
+};
+
+&piu_uart0 {
+	status = "okay";
+};
