@@ -3,6 +3,7 @@
  * Copyright (C) 2020 Daniel Palmer <daniel@thingy.jp>
  */
 
+#include <linux/dev_printk.h>
 #include <linux/pinctrl/pinconf-generic.h>
 #include <linux/pinctrl/pinctrl.h>
 #include <linux/pinctrl/pinmux.h>
