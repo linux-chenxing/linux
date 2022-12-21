@@ -916,10 +916,10 @@ static const char * const ssd20xd_uart0_groups[] = {
 static const u16 ssd20xd_uart0_values[] = {
 };
 static const char * const ssd20xd_uart1_groups[] = {
-	GROUPNAME_UART1_MODE1
-	GROUPNAME_UART1_MODE2
-	GROUPNAME_UART1_MODE3
-	GROUPNAME_UART1_MODE4
+	GROUPNAME_UART1_MODE1,
+	GROUPNAME_UART1_MODE2,
+	GROUPNAME_UART1_MODE3,
+	GROUPNAME_UART1_MODE4,
 };
 static const u16 ssd20xd_uart1_values[] = {
 	SSD20XD_MODE(UART1, 1),
