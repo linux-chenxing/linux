@@ -480,6 +480,8 @@ error:
 
 //#define DISABLE_DMA
 
+#define DMA_THRESHOLD 8
+
 static int msc313_i2c_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg msgs[],
 			   int num)
 {
@@ -500,7 +502,7 @@ static int msc313_i2c_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg msgs[],
 		bool first = i == 0;
 		bool last = i + 1 == num;
 #ifndef DISABLE_DMA
-		u8 *dma_buf = i2c_get_dma_safe_msg_buf(msg, 8);
+		u8 *dma_buf = i2c_get_dma_safe_msg_buf(msg, DMA_THRESHOLD);
 
 		if(dma_buf)
 			ret = msc313_i2c_xfer_dma(bus, msg, dma_buf, last);
