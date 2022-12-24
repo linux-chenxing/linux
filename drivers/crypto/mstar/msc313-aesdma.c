@@ -6,6 +6,7 @@
  */
 
 #include <crypto/aes.h>
+#include <crypto/algapi.h>
 #include <linux/clk.h>
 #include <linux/dma-mapping.h>
 #include <linux/delay.h>
