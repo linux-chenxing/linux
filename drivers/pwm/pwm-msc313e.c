@@ -157,7 +157,7 @@ static int msc313e_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 	return 0;
 }
 
-static void msc313e_get_state(struct pwm_chip *chip, struct pwm_device *device,
+static int msc313e_get_state(struct pwm_chip *chip, struct pwm_device *device,
 			      struct pwm_state *state)
 {
 	struct msc313e_pwm *pwm = to_msc313e_pwm(chip);
@@ -176,6 +176,8 @@ static void msc313e_get_state(struct pwm_chip *chip, struct pwm_device *device,
 
 	msc313e_pwm_readcounter(channel->periodl, channel->periodh, &val);
 	state->period = val * nspertick;
+
+	return 0;
 }
 
 static const struct pwm_ops msc313e_pwm_ops = {
