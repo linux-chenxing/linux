@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include <drm/drm_fourcc.h>
 #include <linux/clk.h>
+#include <linux/devfreq.h>
 #include <linux/dma-buf.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
@@ -212,6 +213,12 @@ struct mstar_ge {
 	struct miscdevice ge_dev;
 
 	struct kmem_cache *jobs;
+
+#if defined(CONFIG_PM_DEVFREQ)
+	/* devfreq */
+	struct devfreq_dev_profile profile;
+	struct devfreq *devfreq;
+#endif
 };
 
 #define mstar_ge_buf_sz(b) (b->cfg.pitch * b->cfg.height)
@@ -1520,6 +1527,27 @@ static const struct file_operations ge_fops = {
 	.unlocked_ioctl = mstar_ge_ioctl,
 };
 
+#if defined(CONFIG_PM_DEVFREQ)
+static int mstar_ge_target(struct device *dev,
+		unsigned long *freq, u32 flags)
+{
+	struct mstar_ge *ge = dev_get_drvdata(dev);
+
+	dev_info(ge->dev, "%s:%d\n", __func__, __LINE__);
+
+	return 0;
+}
+
+static int mstar_ge_get_cur_freq(struct device *dev, unsigned long *freq)
+{
+	struct mstar_ge *ge = dev_get_drvdata(dev);
+
+	*freq = clk_get_rate(ge->clk);
+
+	return 0;
+}
+#endif
+
 static int mstar_ge_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -1664,6 +1692,28 @@ static int mstar_ge_probe(struct platform_device *pdev)
 	ge->ge_dev.minor = MISC_DYNAMIC_MINOR;
 	ge->ge_dev.name	= DRIVER_NAME;
 	ge->ge_dev.fops	= &ge_fops;
+
+#if defined(CONFIG_PM_DEVFREQ)
+	ret = dev_pm_opp_of_add_table(dev);
+	if (ret < 0) {
+		dev_err(dev, "failed to get OPP table\n");
+		return ret;
+	}
+
+	ge->profile.target = mstar_ge_target;
+	ge->profile.get_cur_freq = mstar_ge_get_cur_freq;
+	ge->profile.initial_freq = clk_get_rate(ge->clk);
+
+	ge->devfreq = devm_devfreq_add_device(dev,
+					      &ge->profile,
+					      DEVFREQ_GOV_USERSPACE,
+					      NULL);
+	if (IS_ERR(ge->devfreq)) {
+		ret = PTR_ERR(ge->devfreq);
+		dev_err(dev, "failed to add devfreq device: %d\n", ret);
+		return ret;
+	}
+#endif
 
 	return misc_register(&ge->ge_dev);
 }
