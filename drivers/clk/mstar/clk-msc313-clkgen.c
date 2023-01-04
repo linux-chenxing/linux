@@ -552,16 +552,20 @@ static const struct msc313_clkgen_parent_data sdio_parents[] = {
 
 /* ssd20xd only? */
 static const struct msc313_clkgen_parent_data ge_parents[] = {
+	/* miu, 240MHz */
 	PARENT_MUX(MSC313_CLKGEN_MIU),
+	/* 216MHz */
 	PARENT_GATE(9),
+	/* 172MHz */
 	PARENT_GATE(10),
+	/* 144MHz */
 	PARENT_DIVIDER(8, 2),
 	// upll 320
-	//PARENT_GATE(1)
+	PARENT_GATE(1),
 	// upll 384
-	//PARENT_GATE(6)
+	PARENT_GATE(0),
 	// mpll 432
-	//PARENT_GATE(6),
+	PARENT_GATE(6),
 };
 #define GE	MSC313_MUX_PARENT_DATA("ge", ge_parents, 0x144, 0, 2, 3, -1)
 
