@@ -93,4 +93,12 @@
 
 &sar {
 	status = "okay";
+	muxctrl {
+		gpio-hog;
+		/* low to enable WiFi */
+		gpios = <&sar 2 GPIO_ACTIVE_LOW>;
+		/* enable WiFi */
+		output-high;
+	};
+};
 };
