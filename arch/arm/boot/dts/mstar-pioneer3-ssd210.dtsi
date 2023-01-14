@@ -25,6 +25,10 @@
 	status = "okay";
 };
 
+&sdio {
+	cd-gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+};
+
 &emac {
 	/*
 	 * For the SSD210 only the RMII pins are broken so configure everything
