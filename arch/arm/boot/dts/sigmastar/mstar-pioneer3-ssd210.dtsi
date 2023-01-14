@@ -24,3 +24,26 @@
 	compatible = "sstar,ssd210-sar";
 	status = "okay";
 };
+
+&emac {
+	/*
+	 * For the SSD210 only the RMII pins are broken so configure everything
+	 * RMII here instead of having it in every board DTS.
+	 */
+	phy-mode = "rmii";
+	clock-names = "pclk", "hclk", "tx_clk", "rx_clk", "tx_ref", "rx_ref";
+	clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_EMAC_AHB 0>,
+			 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_EMAC_AHB 0>,
+			 <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_TX>,
+			 <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX>,
+			 <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_TX_REF>,
+			 <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_RX_REF>;
+	assigned-clocks = <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX_MUX>,
+					  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_RX_REF_MUX>,
+					  <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_TX_MUX>,
+					  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_TX_REF_MUX>;
+	assigned-clock-parents = <&rmii_buf>,
+							 <&rmii_buf>,
+							 <&rmii_buf>,
+							 <&rmii_buf>;
+};
