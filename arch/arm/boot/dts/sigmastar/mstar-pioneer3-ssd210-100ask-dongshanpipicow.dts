@@ -43,9 +43,17 @@
 
 	reg_ddr: regulator_ddr {
 		compatible = "regulator-fixed";
-		regulator-name = "vcc";
+		regulator-name = "vcc_ddr";
 		regulator-min-microvolt = <1800000>;
 		regulator-max-microvolt = <1800000>;
+		regulator-boot-on;
+	};
+
+	reg_3v3: regulator_3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
 		regulator-boot-on;
 	};
 };
@@ -121,4 +129,12 @@
 &pwm {
 	pinctrl-names = "default";
 	pinctrl-0 = <&ssd210_pwm0_mode1_pins>;
+};
+
+&sdio {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ssd210_sdio_mode2_pins>;
+	vmmc-supply = <&reg_3v3>;
+	vqmmc-supply = <&reg_3v3>;
+	//status = "okay";
 };
