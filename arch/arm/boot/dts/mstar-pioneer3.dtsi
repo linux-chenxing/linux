@@ -160,6 +160,13 @@
 &riu {
 	/delete-node/ gpio@207800;
 
+	pwm: pwm@3400 {
+		compatible = "mstar,msc313e-pwm";
+		reg = <0x3400 0x400>;
+		#pwm-cells = <2>;
+		clocks = <&xtal_div2>;
+	};
+
 	smpctrl: smpctrl@204000 {
 		compatible = "sstar,ssd201-smpctrl", "mstar,smpctrl";
 		reg = <0x204000 0x200>;
