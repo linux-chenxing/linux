@@ -1,0 +1,661 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Chip data for SSD201 and SSD202D
+ */
+
+#ifndef DRIVERS_PINCTRL_MSTAR_PINCTRL_MSC313_SSD20XD_H_
+#define DRIVERS_PINCTRL_MSTAR_PINCTRL_MSC313_SSD20XD_H_
+
+#ifdef CONFIG_MACH_INFINITY
+/* ssd20xd */
+#define SSD20XD_COMMON_PIN(_pinname) COMMON_PIN(SSD20XD, _pinname)
+
+/* pinctrl pins */
+static const struct pinctrl_pin_desc ssd20xd_pins[] = {
+	SSD20XD_COMMON_PIN(GPIO12),
+	SSD20XD_COMMON_PIN(GPIO13),
+	SSD20XD_COMMON_PIN(GPIO14),
+	SSD20XD_COMMON_PIN(GPIO85),
+	SSD20XD_COMMON_PIN(GPIO86),
+	SSD20XD_COMMON_PIN(GPIO90),
+	SSD20XD_COMMON_PIN(GPIO47),
+	SSD20XD_COMMON_PIN(GPIO48),
+	SSD20XD_COMMON_PIN(UART1_RX),
+	SSD20XD_COMMON_PIN(UART1_TX),
+	SSD20XD_COMMON_PIN(FUART_RX),
+	SSD20XD_COMMON_PIN(FUART_TX),
+	SSD20XD_COMMON_PIN(FUART_CTS),
+	SSD20XD_COMMON_PIN(FUART_RTS),
+	SSD20XD_COMMON_PIN(TTL0),
+	SSD20XD_COMMON_PIN(TTL1),
+	SSD20XD_COMMON_PIN(TTL2),
+	SSD20XD_COMMON_PIN(TTL3),
+	SSD20XD_COMMON_PIN(TTL4),
+	SSD20XD_COMMON_PIN(TTL5),
+	SSD20XD_COMMON_PIN(USB_DP),
+	SSD20XD_COMMON_PIN(USB_DM),
+	SSD20XD_COMMON_PIN(TTL6),
+	SSD20XD_COMMON_PIN(TTL7),
+	SSD20XD_COMMON_PIN(TTL8),
+	SSD20XD_COMMON_PIN(TTL9),
+	SSD20XD_COMMON_PIN(TTL10),
+	SSD20XD_COMMON_PIN(TTL11),
+	SSD20XD_COMMON_PIN(TTL12),
+	SSD20XD_COMMON_PIN(TTL13),
+	SSD20XD_COMMON_PIN(TTL14),
+	SSD20XD_COMMON_PIN(TTL15),
+	SSD20XD_COMMON_PIN(TTL16),
+	SSD20XD_COMMON_PIN(TTL17),
+	SSD20XD_COMMON_PIN(TTL18),
+	SSD20XD_COMMON_PIN(TTL19),
+	SSD20XD_COMMON_PIN(TTL20),
+	SSD20XD_COMMON_PIN(TTL21),
+	SSD20XD_COMMON_PIN(TTL22),
+	SSD20XD_COMMON_PIN(TTL23),
+	SSD20XD_COMMON_PIN(TTL24),
+	SSD20XD_COMMON_PIN(TTL25),
+	SSD20XD_COMMON_PIN(TTL26),
+	SSD20XD_COMMON_PIN(TTL27),
+	SSD20XD_COMMON_PIN(SD_CLK),
+	SSD20XD_COMMON_PIN(SD_CMD),
+	SSD20XD_COMMON_PIN(SD_D0),
+	SSD20XD_COMMON_PIN(SD_D1),
+	SSD20XD_COMMON_PIN(SD_D2),
+	SSD20XD_COMMON_PIN(SD_D3),
+	SSD20XD_COMMON_PIN(GPIO0),
+	SSD20XD_COMMON_PIN(GPIO1),
+	SSD20XD_COMMON_PIN(GPIO2),
+	SSD20XD_COMMON_PIN(GPIO3),
+	SSD20XD_COMMON_PIN(ETH_RN),
+	SSD20XD_COMMON_PIN(ETH_RP),
+	SSD20XD_COMMON_PIN(ETH_TN),
+	SSD20XD_COMMON_PIN(ETH_TP),
+	SSD20XD_COMMON_PIN(USB1_DP),
+	SSD20XD_COMMON_PIN(USB1_DM),
+	SSD20XD_COMMON_PIN(GPIO4),
+	SSD20XD_COMMON_PIN(GPIO5),
+	SSD20XD_COMMON_PIN(GPIO6),
+	SSD20XD_COMMON_PIN(GPIO7),
+	SSD20XD_COMMON_PIN(UART2_RX),
+	SSD20XD_COMMON_PIN(UART2_TX),
+	SSD20XD_COMMON_PIN(GPIO10),
+	SSD20XD_COMMON_PIN(GPIO11),
+};
+
+/* mux pin groupings */
+static const int ssd20xd_fuart_mode1_pins[] = {
+	PIN_SSD20XD_FUART_RX,
+	PIN_SSD20XD_FUART_TX,
+	PIN_SSD20XD_FUART_CTS,
+	PIN_SSD20XD_FUART_RTS
+};
+static const int ssd20xd_fuart_mode2_pins[] = {
+	PIN_SSD20XD_FUART_RX,
+	PIN_SSD20XD_FUART_TX,
+};
+static const int ssd20xd_fuart_mode3_pins[] = {
+	PIN_SSD20XD_TTL0,
+	PIN_SSD20XD_TTL1,
+};
+static const int ssd20xd_fuart_mode4_pins[] = {
+	PIN_SSD20XD_TTL20,
+	PIN_SSD20XD_TTL21,
+};
+static const int ssd20xd_fuart_mode5_pins[] = {
+	PIN_SSD20XD_GPIO0,
+	PIN_SSD20XD_GPIO1,
+	PIN_SSD20XD_GPIO2,
+	PIN_SSD20XD_GPIO3,
+};
+static const int ssd20xd_fuart_mode6_pins[] = {
+	PIN_SSD20XD_GPIO4,
+	PIN_SSD20XD_GPIO5,
+	PIN_SSD20XD_TTL16,
+};
+static const int ssd20xd_fuart_mode7_pins[] = {
+	PIN_SSD20XD_SD_D1,
+	PIN_SSD20XD_SD_D0,
+};
+static const int ssd20xd_uart1_mode1_pins[] = {
+	PIN_SSD20XD_UART1_RX,
+	PIN_SSD20XD_UART1_TX,
+};
+static const int ssd20xd_uart1_mode2_pins[] = {
+	PIN_SSD20XD_TTL15,
+	PIN_SSD20XD_TTL15,
+};
+static const int ssd20xd_uart1_mode3_pins[] = {
+	PIN_SSD20XD_GPIO13,
+	PIN_SSD20XD_GPIO14,
+};
+static const int ssd20xd_uart1_mode4_pins[] = {
+	PIN_SSD20XD_GPIO10,
+	PIN_SSD20XD_GPIO11,
+};
+static const int ssd20xd_usb_pins[] = {
+	PIN_SSD20XD_USB_DP,
+	PIN_SSD20XD_USB_DM,
+};
+static const int ssd20xd_usb1_pins[] = {
+	PIN_SSD20XD_USB1_DP,
+	PIN_SSD20XD_USB1_DM,
+};
+/* sdio */
+static const int ssd20xd_sdio_mode1_pins[] = {
+	PIN_SSD20XD_SD_D1,
+	PIN_SSD20XD_SD_D0,
+	PIN_SSD20XD_SD_CLK,
+	PIN_SSD20XD_SD_CMD,
+	PIN_SSD20XD_SD_D3,
+	PIN_SSD20XD_SD_D2,
+};
+/* eth */
+static const int ssd20xd_eth_mode1_pins[] = {
+	PIN_SSD20XD_ETH_RN,
+	PIN_SSD20XD_ETH_RP,
+	PIN_SSD20XD_ETH_TN,
+	PIN_SSD20XD_ETH_TP,
+};
+/* eth1 */
+static const int ssd20xd_eth1_mode1_pins[] = {
+	PIN_SSD20XD_TTL16,
+	PIN_SSD20XD_TTL17,
+	PIN_SSD20XD_TTL18,
+	PIN_SSD20XD_TTL19,
+	PIN_SSD20XD_TTL20,
+	PIN_SSD20XD_TTL21,
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+	PIN_SSD20XD_TTL24,
+};
+static const int ssd20xd_eth1_mode2_pins[] = {
+	PIN_SSD20XD_TTL16,
+	PIN_SSD20XD_TTL17,
+	PIN_SSD20XD_TTL18,
+	PIN_SSD20XD_TTL19,
+	PIN_SSD20XD_TTL20,
+	PIN_SSD20XD_TTL21,
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+	PIN_SSD20XD_TTL24,
+};
+static const int ssd20xd_eth1_mode3_pins[] = {
+	PIN_SSD20XD_TTL16,
+	PIN_SSD20XD_TTL17,
+	PIN_SSD20XD_TTL18,
+	PIN_SSD20XD_TTL19,
+	PIN_SSD20XD_TTL20,
+	PIN_SSD20XD_TTL21,
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+	PIN_SSD20XD_TTL24,
+};
+static const int ssd20xd_eth1_mode4_pins[] = {
+	PIN_SSD20XD_GPIO0,
+	PIN_SSD20XD_GPIO1,
+	PIN_SSD20XD_TTL17,
+	PIN_SSD20XD_TTL18,
+	PIN_SSD20XD_TTL19,
+	PIN_SSD20XD_TTL20,
+	PIN_SSD20XD_TTL21,
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+};
+static const int ssd20xd_eth1_mode5_pins[] = {
+	PIN_SSD20XD_GPIO0,
+	PIN_SSD20XD_GPIO1,
+	PIN_SSD20XD_TTL21,
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+	PIN_SSD20XD_TTL24,
+	PIN_SSD20XD_TTL25,
+	PIN_SSD20XD_TTL26,
+	PIN_SSD20XD_TTL27,
+};
+/* ttl */
+static const int ssd20xd_ttl_mode1_pins[] = {
+	PIN_SSD20XD_TTL0,
+	PIN_SSD20XD_TTL1,
+	PIN_SSD20XD_TTL2,
+	PIN_SSD20XD_TTL3,
+	PIN_SSD20XD_TTL4,
+	PIN_SSD20XD_TTL5,
+	PIN_SSD20XD_TTL6,
+	PIN_SSD20XD_TTL7,
+	PIN_SSD20XD_TTL8,
+	PIN_SSD20XD_TTL9,
+	PIN_SSD20XD_TTL10,
+	PIN_SSD20XD_TTL11,
+	PIN_SSD20XD_TTL12,
+	PIN_SSD20XD_TTL13,
+	PIN_SSD20XD_TTL14,
+	PIN_SSD20XD_TTL15,
+	PIN_SSD20XD_TTL16,
+	PIN_SSD20XD_TTL17,
+	PIN_SSD20XD_TTL18,
+	PIN_SSD20XD_TTL19,
+	PIN_SSD20XD_TTL20,
+	PIN_SSD20XD_TTL21,
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+	PIN_SSD20XD_TTL24,
+	PIN_SSD20XD_TTL25,
+	PIN_SSD20XD_TTL26,
+	PIN_SSD20XD_TTL27,
+};
+/* tx mipi */
+static const int ssd20xd_tx_mipi_mode1_pins[] = {
+	PIN_SSD20XD_TTL6,
+	PIN_SSD20XD_TTL7,
+	PIN_SSD20XD_TTL8,
+	PIN_SSD20XD_TTL9,
+	PIN_SSD20XD_TTL10,
+	PIN_SSD20XD_TTL11,
+	PIN_SSD20XD_TTL12,
+	PIN_SSD20XD_TTL13,
+	PIN_SSD20XD_TTL14,
+	PIN_SSD20XD_TTL15,
+};
+static const int ssd20xd_tx_mipi_mode2_pins[] = {
+	PIN_SSD20XD_TTL6,
+	PIN_SSD20XD_TTL7,
+	PIN_SSD20XD_TTL8,
+	PIN_SSD20XD_TTL9,
+	PIN_SSD20XD_TTL10,
+	PIN_SSD20XD_TTL11,
+};
+/* i2c0 */
+static const int ssd20xd_i2c0_mode2_pins[] = {
+	PIN_SSD20XD_TTL1,
+	PIN_SSD20XD_TTL2,
+};
+static const int ssd20xd_i2c0_mode3_pins[] = {
+	PIN_SSD20XD_TTL14,
+	PIN_SSD20XD_TTL15,
+};
+static const int ssd20xd_i2c0_mode4_pins[] = {
+	PIN_SSD20XD_GPIO6,
+	PIN_SSD20XD_GPIO7,
+};
+/* i2c1 */
+static const int ssd20xd_i2c1_mode1_pins[] = {
+	PIN_SSD20XD_GPIO2,
+	PIN_SSD20XD_GPIO3,
+};
+static const int ssd20xd_i2c1_mode3_pins[] = {
+	PIN_SSD20XD_FUART_CTS,
+	PIN_SSD20XD_FUART_RTS,
+};
+static const int ssd20xd_i2c1_mode4_pins[] = {
+	PIN_SSD20XD_TTL22,
+	PIN_SSD20XD_TTL23,
+};
+static const int ssd20xd_i2c1_mode5_pins[] = {
+	PIN_SSD20XD_SD_CLK,
+	PIN_SSD20XD_SD_CMD,
+};
+/* spi0 */
+static const int ssd20xd_spi0_mode1_pins[] = {
+	PIN_SSD20XD_SD_CLK,
+	PIN_SSD20XD_SD_CMD,
+	PIN_SSD20XD_SD_D0,
+	PIN_SSD20XD_SD_D1,
+};
+static const int ssd20xd_spi0_mode2_pins[] = {
+	PIN_SSD20XD_TTL16,
+	PIN_SSD20XD_TTL17,
+	PIN_SSD20XD_TTL18,
+	PIN_SSD20XD_TTL19,
+};
+static const int ssd20xd_spi0_mode3_pins[] = {
+	PIN_SSD20XD_GPIO4,
+	PIN_SSD20XD_GPIO5,
+	PIN_SSD20XD_GPIO6,
+	PIN_SSD20XD_GPIO7,
+};
+static const int ssd20xd_spi0_mode4_pins[] = {
+	PIN_SSD20XD_FUART_RX,
+	PIN_SSD20XD_FUART_TX,
+	PIN_SSD20XD_FUART_CTS,
+	PIN_SSD20XD_FUART_RTS,
+};
+static const int ssd20xd_spi0_mode5_pins[] = {
+	PIN_SSD20XD_UART2_RX,
+	PIN_SSD20XD_UART2_TX,
+	PIN_SSD20XD_GPIO10,
+	PIN_SSD20XD_GPIO11,
+};
+static const int ssd20xd_spi0_mode6_pins[] = {
+	PIN_SSD20XD_GPIO0,
+	PIN_SSD20XD_GPIO1,
+	PIN_SSD20XD_GPIO2,
+	PIN_SSD20XD_GPIO3,
+};
+/* pwm0 */
+static const int ssd20xd_pwm0_mode1_pins[] = {
+	PIN_SSD20XD_GPIO0,
+};
+static const int ssd20xd_pwm0_mode2_pins[] = {
+	PIN_SSD20XD_TTL23,
+};
+static const int ssd20xd_pwm0_mode3_pins[] = {
+	PIN_SSD20XD_GPIO4,
+};
+static const int ssd20xd_pwm0_mode4_pins[] = {
+	PIN_SSD20XD_GPIO14,
+};
+static const int ssd20xd_pwm0_mode5_pins[] = {
+	PIN_SSD20XD_TTL0,
+};
+/* pwm1 */
+static const int ssd20xd_pwm1_mode1_pins[] = {
+	PIN_SSD20XD_GPIO1,
+};
+static const int ssd20xd_pwm1_mode2_pins[] = {
+	PIN_SSD20XD_TTL12,
+};
+static const int ssd20xd_pwm1_mode3_pins[] = {
+	PIN_SSD20XD_TTL22,
+};
+static const int ssd20xd_pwm1_mode4_pins[] = {
+	PIN_SSD20XD_GPIO5,
+};
+/* pwm2 */
+static const int ssd20xd_pwm2_mode1_pins[] = {
+	PIN_SSD20XD_GPIO2,
+};
+static const int ssd20xd_pwm2_mode2_pins[] = {
+	PIN_SSD20XD_GPIO11,
+};
+static const int ssd20xd_pwm2_mode4_pins[] = {
+	PIN_SSD20XD_TTL21,
+};
+static const int ssd20xd_pwm2_mode5_pins[] = {
+	PIN_SSD20XD_FUART_TX,
+};
+static const int ssd20xd_pwm2_mode6_pins[] = {
+	PIN_SSD20XD_SD_D1,
+};
+/* pwm3 */
+static const int ssd20xd_pwm3_mode1_pins[] = {
+	PIN_SSD20XD_GPIO3,
+};
+static const int ssd20xd_pwm3_mode2_pins[] = {
+	PIN_SSD20XD_GPIO7,
+};
+static const int ssd20xd_pwm3_mode3_pins[] = {
+	PIN_SSD20XD_GPIO13,
+};
+static const int ssd20xd_pwm3_mode4_pins[] = {
+	PIN_SSD20XD_TTL20,
+};
+static const int ssd20xd_pwm3_mode5_pins[] = {
+	PIN_SSD20XD_FUART_RX,
+};
+#define SSD20XD_PINCTRL_GROUP(_NAME, _name) \
+	MSTAR_PINCTRL_GROUP(GROUPNAME_##_NAME, ssd20xd_##_name##_pins)
+
+static const struct msc313_pinctrl_group ssd20xd_pinctrl_groups[] = {
+	SSD20XD_PINCTRL_GROUP(FUART_MODE1, fuart_mode1),
+	SSD20XD_PINCTRL_GROUP(FUART_MODE2, fuart_mode2),
+	SSD20XD_PINCTRL_GROUP(FUART_MODE3, fuart_mode3),
+	SSD20XD_PINCTRL_GROUP(FUART_MODE4, fuart_mode4),
+	SSD20XD_PINCTRL_GROUP(FUART_MODE5, fuart_mode5),
+	SSD20XD_PINCTRL_GROUP(FUART_MODE6, fuart_mode6),
+	SSD20XD_PINCTRL_GROUP(FUART_MODE7, fuart_mode7),
+	SSD20XD_PINCTRL_GROUP(UART1_MODE1, uart1_mode1),
+	SSD20XD_PINCTRL_GROUP(UART1_MODE2, uart1_mode2),
+	SSD20XD_PINCTRL_GROUP(UART1_MODE3, uart1_mode3),
+	SSD20XD_PINCTRL_GROUP(UART1_MODE4, uart1_mode4),
+	SSD20XD_PINCTRL_GROUP(USB, usb),
+	SSD20XD_PINCTRL_GROUP(USB1, usb1),
+	SSD20XD_PINCTRL_GROUP(SDIO_MODE1, sdio_mode1),
+	SSD20XD_PINCTRL_GROUP(ETH_MODE1, eth_mode1),
+	SSD20XD_PINCTRL_GROUP(ETH1_MODE1, eth1_mode1),
+	SSD20XD_PINCTRL_GROUP(ETH1_MODE2, eth1_mode2),
+	SSD20XD_PINCTRL_GROUP(ETH1_MODE3, eth1_mode3),
+	SSD20XD_PINCTRL_GROUP(ETH1_MODE4, eth1_mode4),
+	SSD20XD_PINCTRL_GROUP(ETH1_MODE5, eth1_mode5),
+	SSD20XD_PINCTRL_GROUP(TTL_MODE1, ttl_mode1),
+	SSD20XD_PINCTRL_GROUP(TX_MIPI_MODE1, tx_mipi_mode1),
+	SSD20XD_PINCTRL_GROUP(TX_MIPI_MODE2, tx_mipi_mode2),
+	SSD20XD_PINCTRL_GROUP(I2C0_MODE2, i2c0_mode2),
+	SSD20XD_PINCTRL_GROUP(I2C0_MODE3, i2c0_mode3),
+	SSD20XD_PINCTRL_GROUP(I2C0_MODE4, i2c0_mode4),
+	SSD20XD_PINCTRL_GROUP(I2C1_MODE1, i2c1_mode1),
+	SSD20XD_PINCTRL_GROUP(I2C1_MODE3, i2c1_mode3),
+	SSD20XD_PINCTRL_GROUP(I2C1_MODE4, i2c1_mode4),
+	SSD20XD_PINCTRL_GROUP(I2C1_MODE5, i2c1_mode5),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE1, spi0_mode1),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE2, spi0_mode2),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE3, spi0_mode3),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE4, spi0_mode4),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE5, spi0_mode5),
+	SSD20XD_PINCTRL_GROUP(SPI0_MODE6, spi0_mode6),
+	SSD20XD_PINCTRL_GROUP(PWM0_MODE1, pwm0_mode1),
+	SSD20XD_PINCTRL_GROUP(PWM0_MODE2, pwm0_mode2),
+	SSD20XD_PINCTRL_GROUP(PWM0_MODE3, pwm0_mode3),
+	SSD20XD_PINCTRL_GROUP(PWM0_MODE4, pwm0_mode4),
+	SSD20XD_PINCTRL_GROUP(PWM0_MODE5, pwm0_mode5),
+	SSD20XD_PINCTRL_GROUP(PWM1_MODE1, pwm1_mode1),
+	SSD20XD_PINCTRL_GROUP(PWM1_MODE2, pwm1_mode2),
+	SSD20XD_PINCTRL_GROUP(PWM1_MODE3, pwm1_mode3),
+	SSD20XD_PINCTRL_GROUP(PWM1_MODE4, pwm1_mode4),
+	SSD20XD_PINCTRL_GROUP(PWM2_MODE1, pwm2_mode1),
+	SSD20XD_PINCTRL_GROUP(PWM2_MODE2, pwm2_mode2),
+	SSD20XD_PINCTRL_GROUP(PWM2_MODE4, pwm2_mode4),
+	SSD20XD_PINCTRL_GROUP(PWM2_MODE5, pwm2_mode5),
+	SSD20XD_PINCTRL_GROUP(PWM2_MODE6, pwm2_mode6),
+	SSD20XD_PINCTRL_GROUP(PWM3_MODE1, pwm3_mode1),
+	SSD20XD_PINCTRL_GROUP(PWM3_MODE2, pwm3_mode2),
+	SSD20XD_PINCTRL_GROUP(PWM3_MODE3, pwm3_mode3),
+	SSD20XD_PINCTRL_GROUP(PWM3_MODE4, pwm3_mode4),
+	SSD20XD_PINCTRL_GROUP(PWM3_MODE5, pwm3_mode5),
+};
+
+/* chip specific functions */
+/* eth1 */
+static const char * const ssd20xd_eth1_groups[] = {
+	GROUPNAME_ETH1_MODE1,
+	GROUPNAME_ETH1_MODE2,
+	GROUPNAME_ETH1_MODE3,
+	GROUPNAME_ETH1_MODE4,
+	GROUPNAME_ETH1_MODE5,
+};
+static const u16 ssd20xd_eth1_values[] = {
+	SSD20XD_MODE(ETH1, 1),
+	SSD20XD_MODE(ETH1, 2),
+	SSD20XD_MODE(ETH1, 3),
+	SSD20XD_MODE(ETH1, 4),
+	SSD20XD_MODE(ETH1, 5),
+};
+/* fuart */
+static const char * const ssd20xd_fuart_groups[] = {
+	GROUPNAME_FUART_MODE1,
+	GROUPNAME_FUART_MODE2,
+	GROUPNAME_FUART_MODE3,
+	GROUPNAME_FUART_MODE4,
+	GROUPNAME_FUART_MODE5,
+	GROUPNAME_FUART_MODE6,
+	GROUPNAME_FUART_MODE7,
+};
+static const u16 ssd20xd_fuart_values[] = {
+	SSD20XD_MODE(FUART, 1),
+	SSD20XD_MODE(FUART, 2),
+	SSD20XD_MODE(FUART, 3),
+	SSD20XD_MODE(FUART, 4),
+	SSD20XD_MODE(FUART, 5),
+	SSD20XD_MODE(FUART, 6),
+	SSD20XD_MODE(FUART, 7),
+};
+static const char * const ssd20xd_uart0_groups[] = {
+};
+static const u16 ssd20xd_uart0_values[] = {
+};
+static const char * const ssd20xd_uart1_groups[] = {
+	GROUPNAME_UART1_MODE1,
+	GROUPNAME_UART1_MODE2,
+	GROUPNAME_UART1_MODE3,
+	GROUPNAME_UART1_MODE4,
+};
+static const u16 ssd20xd_uart1_values[] = {
+	SSD20XD_MODE(UART1, 1),
+	SSD20XD_MODE(UART1, 2),
+	SSD20XD_MODE(UART1, 3),
+	SSD20XD_MODE(UART1, 4),
+};
+static const char * const ssd20xd_uart2_groups[] = {
+};
+static const u16 ssd20xd_uart2_values[] = {
+};
+static const char * const ssd20xd_ttl_groups[] = {
+	GROUPNAME_TTL_MODE1,
+};
+static const u16 ssd20xd_ttl_values[] = {
+	SSD20XD_MODE(TTL, 1),
+};
+static const char * const ssd20xd_tx_mipi_groups[] = {
+	GROUPNAME_TX_MIPI_MODE1,
+	GROUPNAME_TX_MIPI_MODE2,
+};
+static const u16 ssd20xd_tx_mipi_values[] = {
+	SSD20XD_MODE(TX_MIPI, 1),
+	SSD20XD_MODE(TX_MIPI, 2),
+};
+static const char * const ssd20xd_i2c0_groups[] = {
+	GROUPNAME_I2C0_MODE2,
+	GROUPNAME_I2C0_MODE3,
+	GROUPNAME_I2C0_MODE4,
+};
+static const u16 ssd20xd_i2c0_values[] = {
+	SSD20XD_MODE(I2C0, 2),
+	SSD20XD_MODE(I2C0, 3),
+	SSD20XD_MODE(I2C0, 4),
+};
+static const char * const ssd20xd_i2c1_groups[] = {
+	GROUPNAME_I2C1_MODE1,
+	GROUPNAME_I2C1_MODE3,
+	GROUPNAME_I2C1_MODE4,
+	GROUPNAME_I2C1_MODE5,
+};
+static const u16 ssd20xd_i2c1_values[] = {
+	SSD20XD_MODE(I2C1, 1),
+	SSD20XD_MODE(I2C1, 3),
+	SSD20XD_MODE(I2C1, 4),
+	SSD20XD_MODE(I2C1, 5),
+};
+static const char * const ssd20xd_spi0_groups[] = {
+	GROUPNAME_SPI0_MODE1,
+	GROUPNAME_SPI0_MODE2,
+	GROUPNAME_SPI0_MODE3,
+	GROUPNAME_SPI0_MODE4,
+	GROUPNAME_SPI0_MODE5,
+	GROUPNAME_SPI0_MODE6,
+};
+static const u16 ssd20xd_spi0_values[] = {
+	SSD20XD_MODE(SPI0, 1),
+	SSD20XD_MODE(SPI0, 2),
+	SSD20XD_MODE(SPI0, 3),
+	SSD20XD_MODE(SPI0, 4),
+	SSD20XD_MODE(SPI0, 5),
+	SSD20XD_MODE(SPI0, 6),
+};
+
+/* pwm0 */
+static const char * const ssd20xd_pwm0_groups[] = {
+	GROUPNAME_PWM0_MODE1,
+	GROUPNAME_PWM0_MODE2,
+	GROUPNAME_PWM0_MODE3,
+	GROUPNAME_PWM0_MODE4,
+	GROUPNAME_PWM0_MODE5,
+};
+
+static const u16 ssd20xd_pwm0_values[] = {
+	SSD20XD_MODE(PWM0, 1),
+	SSD20XD_MODE(PWM0, 2),
+	SSD20XD_MODE(PWM0, 3),
+	SSD20XD_MODE(PWM0, 4),
+	SSD20XD_MODE(PWM0, 5),
+};
+
+/* pwm1 */
+static const char * const ssd20xd_pwm1_groups[] = {
+	GROUPNAME_PWM1_MODE1,
+	GROUPNAME_PWM1_MODE2,
+	GROUPNAME_PWM1_MODE3,
+	GROUPNAME_PWM1_MODE4,
+};
+
+static const u16 ssd20xd_pwm1_values[] = {
+	SSD20XD_MODE(PWM1, 1),
+	SSD20XD_MODE(PWM1, 2),
+	SSD20XD_MODE(PWM1, 3),
+	SSD20XD_MODE(PWM1, 4),
+};
+
+/* pwm2 */
+static const char * const ssd20xd_pwm2_groups[] = {
+	GROUPNAME_PWM2_MODE1,
+	GROUPNAME_PWM2_MODE2,
+	GROUPNAME_PWM2_MODE4,
+	GROUPNAME_PWM2_MODE5,
+	GROUPNAME_PWM2_MODE6,
+};
+
+static const u16 ssd20xd_pwm2_values[] = {
+	SSD20XD_MODE(PWM2, 1),
+	SSD20XD_MODE(PWM2, 2),
+	SSD20XD_MODE(PWM2, 4),
+	SSD20XD_MODE(PWM2, 5),
+	SSD20XD_MODE(PWM2, 6),
+};
+
+/* pwm3 */
+static const char * const ssd20xd_pwm3_groups[] = {
+	GROUPNAME_PWM3_MODE1,
+	GROUPNAME_PWM3_MODE2,
+	GROUPNAME_PWM3_MODE3,
+	GROUPNAME_PWM3_MODE4,
+	GROUPNAME_PWM3_MODE5,
+};
+
+static const u16 ssd20xd_pwm3_values[] = {
+	SSD20XD_MODE(PWM3, 1),
+	SSD20XD_MODE(PWM3, 2),
+	SSD20XD_MODE(PWM3, 3),
+	SSD20XD_MODE(PWM3, 4),
+	SSD20XD_MODE(PWM3, 5),
+};
+
+#define SSD20XD_FUNCTION(_NAME, _name) \
+	MSTAR_PINCTRL_FUNCTION(FUNCTIONNAME_##_NAME, REG_SSD20XD_##_NAME, \
+	MASK_SSD20XD_##_NAME, ssd20xd_##_name##_groups, ssd20xd_##_name##_values)
+
+static const struct msc313_pinctrl_function ssd20xd_pinctrl_functions[] = {
+	SSD20XD_FUNCTION(FUART, fuart),
+	SSD20XD_FUNCTION(UART0, uart0),
+	SSD20XD_FUNCTION(UART1, uart1),
+	SSD20XD_FUNCTION(UART2, uart2),
+	COMMON_FIXED_FUNCTION(USB, usb),
+	SSD20XD_FUNCTION(I2C0, i2c0),
+	SSD20XD_FUNCTION(I2C1, i2c1),
+	COMMON_FUNCTION(SDIO, sdio),
+	COMMON_FUNCTION(ETH, eth),
+	SSD20XD_FUNCTION(ETH1, eth1),
+	SSD20XD_FUNCTION(TTL, ttl),
+	SSD20XD_FUNCTION(TX_MIPI, tx_mipi),
+	SSD20XD_FUNCTION(SPI0, spi0),
+	SSD20XD_FUNCTION(PWM0, pwm0),
+	SSD20XD_FUNCTION(PWM1, pwm1),
+	SSD20XD_FUNCTION(PWM2, pwm2),
+	SSD20XD_FUNCTION(PWM3, pwm3),
+};
+
+static const struct msc313_pinctrl_pinconf ssd20xd_configurable_pins[] = {
+	SD_PINS(SSD20XD),
+};
+
+MSTAR_PINCTRL_INFO(ssd20xd);
+#endif
+
+#endif /* DRIVERS_PINCTRL_MSTAR_PINCTRL_MSC313_SSD20XD_H_ */
