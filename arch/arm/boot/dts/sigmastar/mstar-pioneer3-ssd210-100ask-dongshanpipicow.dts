@@ -117,3 +117,8 @@
 		smsc,disable-energy-detect;
 	};
 };
+
+&pwm {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ssd210_pwm0_mode1_pins>;
+};
