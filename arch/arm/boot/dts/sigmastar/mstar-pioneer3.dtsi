@@ -183,6 +183,10 @@
 	pinctrl2: pinctrl@207800 {
 		compatible = "sstar,ssd210-pinctrl";
 		reg = <0x207800 0x200>;
+		ssd210_pwm0_mode1_pins: ssd210_pwm0_mode1_pins {
+			function = "pwm0";
+			groups = "pwm0_mode1";
+		};
 		eth_mode8_pins: eth_mode8_pins {
 			function = "eth";
 			groups = "eth_mode8";
