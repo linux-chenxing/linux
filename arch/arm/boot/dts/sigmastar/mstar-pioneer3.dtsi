@@ -187,6 +187,10 @@
 			function = "pwm0";
 			groups = "pwm0_mode1";
 		};
+		ssd210_sdio_mode2_pins: ssd210_sdio_mode2_pins {
+			function = "sdio";
+			groups = "sdio_mode2";
+		};
 		eth_mode8_pins: eth_mode8_pins {
 			function = "eth";
 			groups = "eth_mode8";
@@ -270,6 +274,10 @@
 		 <&xtal_div2>,
 		 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SDIO 0>,
 		 <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SC_PIXEL 0>;
+};
+
+&sdio {
+	clocks = <&sc_gp_ctrl_muxes SSD210_SC_GP_SDIO_GATE>;
 };
 
 &timer0 {
