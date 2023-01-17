@@ -980,6 +980,12 @@
 				reg = <0x284200 0x80>;
 			};
 
+			bc0: syscon@284400 {
+				compatible = "syscon";
+				/* 0x1f284400 - Called "BC" which seems to be battery charger */
+				reg = <0x284400 0x200>;
+			};
+
 			usbc0: usbc@284600 {
 				compatible = "syscon";
 				reg = <0x284600 0x200>;
