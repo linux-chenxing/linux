@@ -21,10 +21,10 @@
 #include "musb_core.h"
 
 struct mstar_glue {
-	struct device           *dev;
-	struct platform_device  *musb;
+	struct platform_device	*pdev;
+	struct musb		*musb;
 	struct clk		*clk;
-	struct regmap *usbc;
+	struct regmap		*usbc;
 };
 
 static irqreturn_t mstar_musb_interrupt(int irq, void *__hci)
@@ -55,11 +55,13 @@ static irqreturn_t mstar_musb_interrupt(int irq, void *__hci)
 	return retval;
 }
 
+#if 0
 static struct musb_fifo_cfg mstar_musb_fifo_cfg[] = {
-{ .hw_ep_num = 1, .style = FIFO_TX, .maxpacket = 512, },
-{ .hw_ep_num = 1, .style = FIFO_RX, .maxpacket = 512, },
-{ .hw_ep_num = 2, .style = FIFO_TX, .maxpacket = 64, },
+	{ .hw_ep_num = 1, .style = FIFO_TX, .maxpacket = 512, },
+	{ .hw_ep_num = 1, .style = FIFO_RX, .maxpacket = 512, },
+	{ .hw_ep_num = 2, .style = FIFO_TX, .maxpacket = 64, },
 };
+#endif
 
 static const struct musb_hdrc_config mstar_musb_config = {
 	/* Silicon does not implement USB OTG. */
@@ -68,8 +70,8 @@ static const struct musb_hdrc_config mstar_musb_config = {
 	.num_eps    = 4,
 	/* RAMbits needed to configure EPs from table */
 	.ram_bits   = 9,
-	.fifo_cfg = mstar_musb_fifo_cfg,
-	.fifo_cfg_size = ARRAY_SIZE(mstar_musb_fifo_cfg),
+	//.fifo_cfg = mstar_musb_fifo_cfg,
+	//.fifo_cfg_size = ARRAY_SIZE(mstar_musb_fifo_cfg),
 };
 
 static struct musb_hdrc_platform_data mstar_musb_platform_data = {
@@ -80,25 +82,85 @@ static struct musb_hdrc_platform_data mstar_musb_platform_data = {
 static int mstar_musb_init(struct musb *musb)
 {
 	struct device *dev = musb->controller->parent;
+	struct mstar_glue *glue = dev_get_drvdata(dev);
 
-	if (dev->of_node)
-		musb->xceiv = devm_usb_get_phy_by_phandle(dev, "phys", 0);
-	else
-		musb->xceiv = devm_usb_get_phy(dev, USB_PHY_TYPE_USB2);
+	musb->phy = devm_of_phy_get_by_index(dev, dev->of_node, 0);
+	if (IS_ERR(musb->phy)) {
+		int err = PTR_ERR(musb->phy);
+		if (err != -ENODEV) {
+			dev_err(dev, "Unable to get PHY\n");
+			return err;
+		}
 
-	if (IS_ERR(musb->xceiv)) {
-		dev_err(dev, "No transceiver configured\n");
-		return PTR_ERR(musb->xceiv);
+		musb->phy = NULL;
 	}
 
-	/* Silicon does not implement ConfigData register.
+	/*
+	 * Silicon does not implement ConfigData register.
 	 * Set dyn_fifo to avoid reading EP config from hardware.
 	 */
-	musb->dyn_fifo = true;
+	//musb->dyn_fifo = true;
 
 	musb->isr = mstar_musb_interrupt;
 
 	return 0;
+}
+
+/* io jank workarounds */
+#define WORDADDR(_offset) (_offset << 1)
+#define BYTEADDR(_offset) (((_offset & ~1) << 1) + (_offset & 1))
+
+static u8 mstar_musb_readb(void __iomem *addr, u32 offset)
+{
+	u8 ret = readb(addr + BYTEADDR(offset));
+
+	printk("%s:%d - 0x%p 0x%x(0x%x): 0x%x\n", __func__, __LINE__, addr,
+			offset, BYTEADDR(offset), ret);
+
+	return ret;
+}
+
+static void mstar_musb_writeb(void __iomem *addr, u32 offset, u8 data)
+{
+	printk("%s:%d - 0x%p 0x%x(0x%x) <= 0x%02x\n", __func__, __LINE__, addr,
+			offset, BYTEADDR(offset), data);
+
+	writeb(data, addr + BYTEADDR(offset));
+}
+
+static u8 mstar_musb_clearb(void __iomem *addr, u32 offset)
+{
+	u8 ret = mstar_musb_readb(addr, offset);
+
+	mstar_musb_writeb(addr, offset, 0);
+	printk("%s:%d - 0x%p 0x%x: 0x%x\n", __func__, __LINE__, addr, offset, ret);
+
+	return ret;
+}
+
+static u16 mstar_musb_readw(void __iomem *addr, u32 offset)
+{
+	u16 ret = readw(addr + WORDADDR(offset));
+
+	printk("%s:%d - 0x%p 0x%x: 0x%x\n", __func__, __LINE__, addr, offset, ret);
+
+	return ret;
+}
+
+static void mstar_musb_writew(void __iomem *addr, u32 offset, u16 data)
+{
+	printk("%s:%d - 0x%p 0x%x <= 0x%04x\n", __func__, __LINE__, addr, offset, data);
+	writew(data, addr + WORDADDR(offset));
+}
+
+static u16 mstar_musb_clearw(void __iomem *addr, u32 offset)
+{
+	u16 ret = mstar_musb_readw(addr, offset);
+
+	printk("%s:%d - 0x%p 0x%x: 0x%x\n", __func__, __LINE__, addr, offset, ret);
+	mstar_musb_writew(addr, offset, 0);
+
+	return ret;
 }
 
 /*
@@ -109,15 +171,24 @@ static const struct musb_platform_ops mstar_musb_ops = {
 	.quirks		= MUSB_DMA_INVENTRA | MUSB_INDEXED_EP,
 	.fifo_mode	= 2,
 	.init		= mstar_musb_init,
+
+	/* io */
+	.readb		= mstar_musb_readb,
+	.writeb		= mstar_musb_writeb,
+	.clearb		= mstar_musb_clearb,
+	.readw		= mstar_musb_readw,
+	.writew		= mstar_musb_writew,
+	.clearw		= mstar_musb_clearw,
 };
 
 static int mstar_probe(struct platform_device *pdev)
 {
-	struct musb_hdrc_platform_data	*pdata = &mstar_musb_platform_data;
-	struct platform_device		*musb;
-	struct mstar_glue		*glue;
-	struct clk                      *clk;
-	int				ret;
+	struct musb_hdrc_platform_data *pdata = &mstar_musb_platform_data;
+	struct device *dev = &pdev->dev;
+	struct platform_device *musb;
+	struct mstar_glue *glue;
+	struct clk *clk;
+	int ret;
 
 	glue = devm_kzalloc(&pdev->dev, sizeof(*glue), GFP_KERNEL);
 	if (!glue)
@@ -129,8 +200,8 @@ static int mstar_probe(struct platform_device *pdev)
 
 	dev_info(&pdev->dev, "Enabling OTG registers..\n");
 	regmap_update_bits(glue->usbc, MSTAR_USBC_REG_RSTCTRL,
-			MSTAR_RSTCTRL_REG_SUSPEND | MSTAR_RSTCTRL_OTG_XIU,
-			MSTAR_RSTCTRL_REG_SUSPEND | MSTAR_RSTCTRL_OTG_XIU);
+			   MSTAR_RSTCTRL_REG_SUSPEND | MSTAR_RSTCTRL_OTG_XIU,
+			   MSTAR_RSTCTRL_REG_SUSPEND | MSTAR_RSTCTRL_OTG_XIU);
 
 	musb = platform_device_alloc("musb-hdrc", PLATFORM_DEVID_AUTO);
 	if (!musb) {
@@ -138,26 +209,20 @@ static int mstar_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
-	clk = devm_clk_get(&pdev->dev, "udc");
+	clk = devm_clk_get_enabled(&pdev->dev, "udc");
 	if (IS_ERR(clk)) {
 		dev_err(&pdev->dev, "failed to get clock\n");
 		ret = PTR_ERR(clk);
 		goto err_platform_device_put;
 	}
 
-	ret = clk_prepare_enable(clk);
-	if (ret) {
-		dev_err(&pdev->dev, "failed to enable clock\n");
-		goto err_platform_device_put;
-	}
+	musb->dev.parent	= &pdev->dev;
+	device_set_of_node_from_dev(&musb->dev, dev);
 
-	musb->dev.parent		= &pdev->dev;
+	glue->pdev		= musb;
+	glue->clk		= clk;
 
-	glue->dev			= &pdev->dev;
-	glue->musb			= musb;
-	glue->clk			= clk;
-
-	pdata->platform_ops		= &mstar_musb_ops;
+	pdata->platform_ops	= &mstar_musb_ops;
 
 	platform_set_drvdata(pdev, glue);
 
@@ -165,25 +230,23 @@ static int mstar_probe(struct platform_device *pdev)
 					    pdev->num_resources);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to add resources\n");
-		goto err_clk_disable;
+		goto err_platform_device_put;
 	}
 
 	ret = platform_device_add_data(musb, pdata, sizeof(*pdata));
 	if (ret) {
 		dev_err(&pdev->dev, "failed to add platform_data\n");
-		goto err_clk_disable;
+		goto err_platform_device_put;
 	}
 
 	ret = platform_device_add(musb);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register musb device\n");
-		goto err_clk_disable;
+		goto err_platform_device_put;
 	}
 
 	return 0;
 
-err_clk_disable:
-	clk_disable_unprepare(clk);
 err_platform_device_put:
 	platform_device_put(musb);
 	return ret;
@@ -191,10 +254,9 @@ err_platform_device_put:
 
 static int mstar_remove(struct platform_device *pdev)
 {
-	struct mstar_glue	*glue = platform_get_drvdata(pdev);
+	struct mstar_glue *glue = platform_get_drvdata(pdev);
 
-	platform_device_unregister(glue->musb);
-	clk_disable_unprepare(glue->clk);
+	platform_device_unregister(glue->pdev);
 
 	return 0;
 }
