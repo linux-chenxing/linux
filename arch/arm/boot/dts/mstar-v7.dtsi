@@ -995,7 +995,7 @@
 				compatible = "mstar,msc313-ehci", "faraday,fusbh200";
 				reg = <0x284800 0x200>;
 				interrupts-extended = <&intc_irq GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-				phys = <&usbphy0 0>;
+				phys = <&usbphy0>;
 				phy-names = "usb";
 				mstar,usbc = <&usbc0>;
 				interconnect-names = "dma-mem";
@@ -1029,7 +1029,7 @@
 				compatible = "mstar,msc313-ehci", "faraday,fusbh200";
 				reg = <0x286400 0x200>;
 				interrupts-extended = <&intc_irq GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
-				phys = <&usbphy1 0>;
+				phys = <&usbphy1>;
 				phy-names = "usb";
 				mstar,usbc = <&usbc1>;
 				interconnect-names = "dma-mem";
@@ -1089,23 +1089,26 @@
 #endif
 
 		usbphy0: usb@0 {
-			#phy-cells = <1>;
+			#phy-cells = <0>;
 			compatible = "mstar,msc313-usb-phy";
 			clocks = <&xtal_div2>;
 			mstar,utmi = <&utmi0>;
 			mstar,usbc = <&usbc0>;
+			mstar,bc = <&bc0>;
 			interrupts-extended = <&intc_irq GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
 			/*pinctrl-names = "default";
 			pinctrl-0 = <&usb_pins>;*/
+			dr_mode = "host";
 			status = "disabled";
 		};
 
 		usbphy1: usbphy@1 {
-			#phy-cells = <1>;
+			#phy-cells = <0>;
 			compatible = "mstar,msc313-usb-phy";
 			clocks = <&xtal_div2>;
 			mstar,utmi = <&utmi1>;
 			mstar,usbc = <&usbc1>;
+			dr_mode = "host";
 			status = "disabled";
 		};
 
