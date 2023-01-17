@@ -115,12 +115,6 @@
 	emmc: emmc@1f280400 {
 		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
 	};
-
-	fakephy0: fakephy@0 {
-		compatible = "usb-nop-xceiv";
-		#phy-cells = <0>;
-	};
-
 	otg0: otg@1f284a00 {
 		compatible = "mstar,msc313-musb";
 		reg = <0x1f284a00 0x200>;
