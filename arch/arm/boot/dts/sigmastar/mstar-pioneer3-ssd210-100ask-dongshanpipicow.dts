@@ -56,6 +56,11 @@
 		regulator-max-microvolt = <3300000>;
 		regulator-boot-on;
 	};
+
+	extcon_usb: extcon_iddig {
+		compatible = "linux,extcon-usb-gpio";
+		id-gpio = <&sar 2 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &cpu0 {
@@ -137,4 +142,9 @@
 	vmmc-supply = <&reg_3v3>;
 	vqmmc-supply = <&reg_3v3>;
 	//status = "okay";
+};
+
+&otg0 {
+	//extcon = <&extcon_usb>;
+	status = "okay";
 };
