@@ -1102,7 +1102,7 @@
 		#thermal-sensor-cells = <0>;
 		io-channels = <&sar 4>;
 		io-channel-names = "sensor-channel";
-    };
+	};
 
 	thermal-zones {
 		cpu0-thermal {
