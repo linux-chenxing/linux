@@ -262,6 +262,10 @@
 	};
 };
 
+&bach {
+	compatible = "mstar,ssd210-bach";
+};
+
 &clkgen {
 	compatible = "sstar,ssd20xd-clkgen";
 };
