@@ -41,6 +41,22 @@ static const struct pinctrl_pin_desc ssd210_pins[] = {
 	SSD210_COMMON_PIN(TTL21),
 };
 
+/* ej - jtag */
+static const int ssd210_jtag_mode2_pins[] = {
+	PIN_SSD210_SR_GPIO0,
+	PIN_SSD210_SR_GPIO1,
+	PIN_SSD210_SR_GPIO2,
+	PIN_SSD210_SR_GPIO3,
+};
+
+static const char * const ssd210_jtag_groups[] = {
+	GROUPNAME_JTAG_MODE2,
+};
+
+static const u16 ssd210_jtag_values[] = {
+	SSD210_MODE(JTAG, 2),
+};
+
 /* pwm0 */
 static const int ssd210_pwm0_mode1_pins[] = {
 	PIN_SSD210_SR_GPIO0,
@@ -345,6 +361,8 @@ static const u16 ssd210_i2c1_values[] = {
 };
 
 static const struct msc313_pinctrl_group ssd210_pinctrl_groups[] = {
+	/* ej */
+	SSD210_PINCTRL_GROUP(JTAG_MODE2, jtag_mode2),
 	/* pwm0 */
 	SSD210_PINCTRL_GROUP(PWM0_MODE1, pwm0_mode1),
 	SSD210_PINCTRL_GROUP(PWM0_MODE2, pwm0_mode2),
@@ -392,6 +410,7 @@ static const struct msc313_pinctrl_group ssd210_pinctrl_groups[] = {
 };
 
 static const struct msc313_pinctrl_function ssd210_pinctrl_functions[] = {
+	SSD210_FUNCTION(JTAG, jtag),
 	SSD210_FUNCTION(PWM0, pwm0),
 	SSD210_FUNCTION(PWM1, pwm1),
 	SSD210_FUNCTION(PWM2, pwm2),
