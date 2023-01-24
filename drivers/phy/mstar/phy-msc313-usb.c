@@ -133,8 +133,10 @@ static int msc313_usb_phy_probe(struct platform_device *pdev)
 		msc313_usb_phy->bc = NULL;
 	}
 
-	//msc313_usb_phy->dr_mode = usb_get_dr_mode(dev);
-	msc313_usb_phy->dr_mode = USB_DR_MODE_HOST;
+	msc313_usb_phy->dr_mode = usb_get_dr_mode(dev);
+	/* for now start with host mode if we couldn't work out what is wanted */
+	if (msc313_usb_phy->dr_mode == USB_DR_MODE_UNKNOWN)
+		msc313_usb_phy->dr_mode = USB_DR_MODE_HOST;
 
 	irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
 	if (!irq){
