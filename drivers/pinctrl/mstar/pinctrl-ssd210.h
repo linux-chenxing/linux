@@ -5,6 +5,11 @@
 #define DRIVERS_PINCTRL_MSTAR_PINCTRL_SSD210_H_
 
 /* register offsets, shifts, widths and masks.. */
+#define REG_SSD210_JTAG		0x180
+#define SHIFT_SSD210_JTAG	8
+#define WIDTH_SSD210_JTAG	3
+#define MASK_SSD210_JTAG	MAKEMASK(SSD210_JTAG)
+
 #define REG_SSD210_PWM0		0x194
 #define SHIFT_SSD210_PWM0	0
 #define WIDTH_SSD210_PWM0	4

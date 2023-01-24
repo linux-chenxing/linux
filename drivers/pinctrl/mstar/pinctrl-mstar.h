@@ -250,6 +250,7 @@
 #define GROUPNAME_SPI0_MODE6		"spi0_mode6"
 #define GROUPNAME_SPI1_MODE3		"spi1_mode3"
 #define GROUPNAME_JTAG_MODE1		"jtag_mode1"
+#define GROUPNAME_JTAG_MODE2		"jtag_mode2"
 #define GROUPNAME_TX_MIPI_MODE1		"tx_mipi_mode1"
 #define GROUPNAME_TX_MIPI_MODE2		"tx_mipi_mode2"
 
