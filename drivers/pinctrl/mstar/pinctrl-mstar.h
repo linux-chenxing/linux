@@ -206,6 +206,8 @@
 #define GROUPNAME_UART1_MODE2_RXONLY	"uart1_mode2_rxonly"
 #define GROUPNAME_UART1_MODE3		"uart1_mode3"
 #define GROUPNAME_UART1_MODE4		"uart1_mode4"
+#define GROUPNAME_UART1_MODE5		"uart1_mode5"
+#define GROUPNAME_UART2_MODE3		"uart2_mode3"
 #define GROUPNAME_ETH_MODE1		"eth_mode1"
 #define GROUPNAME_ETH_MODE7		"eth_mode7"
 #define GROUPNAME_ETH_MODE8		"eth_mode8"
