@@ -413,6 +413,7 @@
 
 			sar: sar@2800 {
 				#gpio-cells = <2>;
+				gpio-controller;
 				#io-channel-cells = <1>;
 				reg = <0x2800 0x200>;
 				interrupts-extended = <&intc_irq GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>,
@@ -856,7 +857,7 @@
 				status = "disabled";
 			};
 
-			uart1: uart@221200 {
+			uart1: serial@221200 {
 				compatible = "mstar,msc313-uart", "snps,dw-apb-uart";
 				reg = <0x221200 0x100>;
 				reg-shift = <3>;
@@ -1045,7 +1046,7 @@
 			bach: bach@2a0400 {
 				compatible = "mstar,msc313-bach";
 				reg = <0x2a0400 0x600>;
-				clocks = <&clkgen MSC313_CLKGEN_GATES 0 0>;
+				clocks = <&clkgen MSC313_CLKGEN_GATES MSC313_CLKGEN_GATE_0 0>;
 				interrupt-parent = <&intc_irq>;
 				interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
 				interconnect-names = "dma-mem";
