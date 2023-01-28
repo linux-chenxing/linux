@@ -92,6 +92,10 @@
 	};
 };
 
+&bach {
+	status = "okay";
+};
+
 &miu {
 	ddr-supply = <&reg_ddr>;
 };
@@ -109,9 +113,10 @@
 	muxctrl {
 		gpio-hog;
 		/* low to enable WiFi */
-		gpios = <&sar 2 GPIO_ACTIVE_LOW>;
+		gpios = <2 GPIO_ACTIVE_LOW>;
 		/* enable WiFi */
-		output-high;
+		//output-high;
+		output-low;
 	};
 };
 
@@ -132,8 +137,8 @@
 };
 
 &pwm {
-	pinctrl-names = "default";
-	pinctrl-0 = <&ssd210_pwm0_mode1_pins>;
+	//pinctrl-names = "default";
+	//pinctrl-0 = <&ssd210_pwm0_mode1_pins>;
 };
 
 &sdio {
