@@ -38,8 +38,8 @@
 };
 
 &i2c0 {
-	//pinctrl-names = "default";
-	//pinctrl-0 = <&i2c0_mode1_pins>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&ssd210_i2c0_mode1_pins>;
 	status = "okay";
 	ea3056@35 {
 		compatible = "everanalog,ea3056";
@@ -84,6 +84,12 @@
 };
 
 &pm_uart {
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ssd210_uart1_mode5_pins>;
 	status = "okay";
 };
 
