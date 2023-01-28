@@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-mercury5-ssc8336n-midrived08.dtb \
 	mstar-pioneer3-ssd210-kiipii.dtb \
 	mstar-pioneer3-ssd210-predita.dtb \
+	mstar-pioneer3-ssd210-predita-ili9341.dtbo \
 	mstar-pioneer3-ssd210-100ask-dongshanpipicow.dtb \
 	mstar-pioneer3-ssd210-qfn68demo.dtb \
 	mstar-pioneer3-ssd212-sv50pd.dtb
