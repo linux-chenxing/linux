@@ -187,6 +187,10 @@
 			function = "i2c0";
 			groups = "i2c0_mode1";
 		};
+		ssd210_i2c0_mode8_pins: ssd210_i2c0_mode8_pins {
+			function = "i2c0";
+			groups = "i2c0_mode8";
+		};
 		ssd210_pwm0_mode1_pins: ssd210_pwm0_mode1_pins {
 			function = "pwm0";
 			groups = "pwm0_mode1";
