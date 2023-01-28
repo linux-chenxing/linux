@@ -241,6 +241,34 @@ static const u16 ssd210_sdio_values[] = {
 	SSD210_MODE(SDIO, 2),
 };
 
+/* uart 1 */
+static const int ssd210_uart1_mode5_pins[] = {
+	PIN_SSD210_TTL8,
+	PIN_SSD210_TTL11,
+};
+
+static const char * const ssd210_uart1_groups[] = {
+	GROUPNAME_UART1_MODE5,
+};
+
+static const u16 ssd210_uart1_values[] = {
+	SSD210_MODE(UART1, 5),
+};
+
+/* uart 2 */
+static const int ssd210_uart2_mode3_pins[] = {
+	PIN_SSD210_TTL12,
+	PIN_SSD210_TTL13,
+};
+
+static const char * const ssd210_uart2_groups[] = {
+	GROUPNAME_UART2_MODE3,
+};
+
+static const u16 ssd210_uart2_values[] = {
+	SSD210_MODE(UART2, 3),
+};
+
 /* eth */
 static const int ssd210_eth_mode7_pins[] = {
 	PIN_SSD210_TTL12,
@@ -360,6 +388,40 @@ static const u16 ssd210_i2c1_values[] = {
 	SSD210_MODE(I2C1, 7),
 };
 
+/* spi0 */
+static const int ssd210_spi0_mode2_pins[] = {
+	PIN_SSD210_SR_GPIO0,
+	PIN_SSD210_SR_GPIO1,
+	PIN_SSD210_SR_GPIO2,
+	PIN_SSD210_SR_GPIO3,
+};
+
+static const int ssd210_spi0_mode3_pins[] = {
+	PIN_SSD210_TTL18,
+	PIN_SSD210_TTL19,
+	PIN_SSD210_TTL20,
+	PIN_SSD210_TTL21,
+};
+
+static const int ssd210_spi0_mode5_pins[] = {
+	PIN_SSD210_TTL4,
+	PIN_SSD210_TTL5,
+	PIN_SSD210_TTL6,
+	PIN_SSD210_TTL7,
+};
+
+static const char * const ssd210_spi0_groups[] = {
+	GROUPNAME_SPI0_MODE2,
+	GROUPNAME_SPI0_MODE3,
+	GROUPNAME_SPI0_MODE5,
+};
+
+static const u16 ssd210_spi0_values[] = {
+	SSD210_MODE(SPI0, 2),
+	SSD210_MODE(SPI0, 3),
+	SSD210_MODE(SPI0, 5),
+};
+
 static const struct msc313_pinctrl_group ssd210_pinctrl_groups[] = {
 	/* ej */
 	SSD210_PINCTRL_GROUP(JTAG_MODE2, jtag_mode2),
@@ -392,6 +454,14 @@ static const struct msc313_pinctrl_group ssd210_pinctrl_groups[] = {
 	SSD210_PINCTRL_GROUP(PWM3_MODE6, pwm3_mode6),
 	/* sdio */
 	SSD210_PINCTRL_GROUP(SDIO_MODE2, sdio_mode2),
+	/* spi0 */
+	SSD210_PINCTRL_GROUP(SPI0_MODE2, spi0_mode2),
+	SSD210_PINCTRL_GROUP(SPI0_MODE3, spi0_mode3),
+	SSD210_PINCTRL_GROUP(SPI0_MODE5, spi0_mode5),
+	/* uart1 */
+	SSD210_PINCTRL_GROUP(UART1_MODE5, uart1_mode5),
+	/* uart2 */
+	SSD210_PINCTRL_GROUP(UART2_MODE3, uart2_mode3),
 	/* eth */
 	SSD210_PINCTRL_GROUP(ETH_MODE7, eth_mode7),
 	SSD210_PINCTRL_GROUP(ETH_MODE8, eth_mode8),
@@ -416,6 +486,9 @@ static const struct msc313_pinctrl_function ssd210_pinctrl_functions[] = {
 	SSD210_FUNCTION(PWM2, pwm2),
 	SSD210_FUNCTION(PWM3, pwm3),
 	SSD210_FUNCTION(SDIO, sdio),
+	SSD210_FUNCTION(SPI0, spi0),
+	SSD210_FUNCTION(UART1, uart1),
+	SSD210_FUNCTION(UART2, uart2),
 	SSD210_FUNCTION(ETH, eth),
 	SSD210_FUNCTION(I2C0, i2c0),
 	SSD210_FUNCTION(I2C1, i2c1),
