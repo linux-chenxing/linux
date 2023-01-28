@@ -25,6 +25,8 @@
 #define REG_ENABLED	0x1c
 #define REG_EN_PWRDN	0x1c
 
+
+/* based on the comments from the upll powerdown code in the i2m sdk kernel */
 static const struct reg_field pd_field = REG_FIELD(REG_MAGIC, 1, 1);
 static const struct reg_field enddisc_field = REG_FIELD(REG_MAGIC, 4, 4);
 static const struct reg_field enfrun_field = REG_FIELD(REG_MAGIC, 5, 5);
@@ -34,11 +36,11 @@ static const struct reg_field upll_en_prdt2 = REG_FIELD(REG_EN_PWRDN, 1, 1);
 static const struct reg_field en_clk_upll_192m_field = REG_FIELD(REG_EN_PWRDN, 2, 2);
 static const struct reg_field ctrl_pd_clk0_audio_field = REG_FIELD(REG_EN_PWRDN, 3, 3);
 
-static char* msc313_upll_outputs[] = {
+static const char* msc313_upll_outputs[] = {
 	"384",
 	"320",
 };
-static u32 msc313_upll_output_rates[] = {
+static const u32 msc313_upll_output_rates[] = {
 	384000000,
 	320000000,
 };
