@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2023 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/gpio/msc313-gpio.h>
+
+&i2c0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ssd210_i2c0_mode8_pins>;
+	status = "okay";
+};
