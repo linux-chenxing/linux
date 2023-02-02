@@ -14,4 +14,5 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&ssd210_i2c0_mode8_pins>;
 	status = "okay";
+	clock-frequency = "1000000";
 };
