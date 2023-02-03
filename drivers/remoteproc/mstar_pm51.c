@@ -188,7 +188,6 @@ static int mstar_pm51_load(struct rproc *rproc, const struct firmware *fw)
 	pm51->dma_done = false;
 	config.direction = DMA_MEM_TO_DEV;
 	config.dst_addr = 0;
-	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
 	dmaengine_slave_config(bdma, &config);
 	dmadesc = dmaengine_prep_slave_single(bdma, dmaaddr, len, DMA_MEM_TO_DEV, 0);
 	if(dmadesc){
