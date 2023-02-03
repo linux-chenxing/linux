@@ -333,8 +333,10 @@
 	clocks = <&clk_timer>;
 };
 
-/* todo mspi can use bdma? */
 &mspi0 {
+	compatible = "sstar,ssd210-spi", "mstar,msc313-spi";
+	dma-names = "bdma";
+	dmas = <&bdma 1 MSC313_BDMA_P3_SLAVE_MSPI0 16>;
 	interconnects = <&miu 0>;
 	interconnect-names = "dma-mem";
 };
