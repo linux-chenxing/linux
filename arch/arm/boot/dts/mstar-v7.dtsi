@@ -747,7 +747,7 @@
 				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_BDMA 0>;
 				dma-channels = <2>;
 				status = "okay";
-				#dma-cells = <2>;
+				#dma-cells = <3>;
 			};
 
 			mailbox: mailbox@200800 {
