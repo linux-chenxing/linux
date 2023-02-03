@@ -179,6 +179,18 @@
 		status = "okay";
 	};
 
+	bdma2: bdma@201a00 {
+		compatible = "sstar,ssd210-bdma";
+		dma-channels = <4>;
+		#dma-cells = <3>;
+		reg = <0x201a00 0x200>;
+		interrupt-parent = <&intc_irq>;
+		interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
+		/* Wrong clock */
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_BDMA 0>;
+		status = "okay";
+	};
+
 	smpctrl: smpctrl@204000 {
 		compatible = "sstar,ssd201-smpctrl", "mstar,smpctrl";
 		reg = <0x204000 0x200>;
