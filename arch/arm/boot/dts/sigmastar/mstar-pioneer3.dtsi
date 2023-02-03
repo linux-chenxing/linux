@@ -167,6 +167,9 @@
 		clocks = <&xtal_div2>;
 	};
 
+	bdmaselwtf@200E50 {
+	};
+
 	bdma1: bdma@201800 {
 		compatible = "sstar,ssd210-bdma";
 		dma-channels = <4>;
