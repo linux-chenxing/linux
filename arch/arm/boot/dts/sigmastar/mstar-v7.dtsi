@@ -249,7 +249,7 @@
 					 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MCU 0>,
 					 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SPI 0>;
 			interrupts-extended = <&intc_irq GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
-			dmas = <&bdma 0 MSC313_BDMA_SLAVE_QSPI>;
+			dmas = <&bdma 0 MSC313_BDMA_SLAVE_QSPI 8>;
 			dma-names = "qspi";
 			pinctrl-names = "default";
 			pinctrl-0 = <&pm_spi_pins>;
