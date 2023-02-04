@@ -10,7 +10,7 @@
 #define MSC313_BDMA_SLAVE_PM51	0x6
 
 // For the main bdma
-#define MSC313_BDMA_P3_SLAVE_MSPI0 0x8
+#define MSC313_BDMA_P3_SLAVE_MSPI0 0x7
 #define MSC313_BDMA_P3_SLAVE_MSPI1 0x10
 // For the pspi bdmas?
 #define MSC313_BDMA_P3_SLAVE_PSPI 0x9
