@@ -353,4 +353,5 @@
 	dmas = <&bdma 2 MSC313_BDMA_P3_SLAVE_MSPI1 16>;
 	interconnects = <&miu 0>;
 	interconnect-names = "dma-mem";
+	mstar,bdmaselwtf = <&bdmaselwtf>;
 };
