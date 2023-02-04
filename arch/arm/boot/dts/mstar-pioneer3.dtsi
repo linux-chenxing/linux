@@ -167,7 +167,9 @@
 		clocks = <&xtal_div2>;
 	};
 
-	bdmaselwtf@200E50 {
+	bdmaselwtf: bdmaselwtf@200e50 {
+		compatible = "mstar,bdmaselwtf", "syscon";
+		reg = <0x200e50 0x4>;
 	};
 
 	bdma1: bdma@201800 {
