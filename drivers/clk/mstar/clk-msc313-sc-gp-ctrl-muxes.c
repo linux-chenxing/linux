@@ -39,11 +39,13 @@ static const struct clk_parent_data emac_rxtx_ref_parents[] = {
 	MSC313_MUX_CLK_PARENT_DATA(MSC313_SC_GP_EMAC_TX, "emac_tx", emac_rxtx_parents, 0x8c, 0, 2, 1, -1), \
 	MSC313_MUX_CLK_PARENT_DATA(MSC313_SC_GP_EMAC_TX_REF, "emac_tx_ref", emac_rxtx_ref_parents, 0x8c, 8, 10, 1, -1)
 
+#ifdef CONFIG_MACH_INFINITY
 static const struct msc313_mux_data msc313_muxes[] = {
 	EMAC_MUXES,
 };
 
 static const struct msc313_muxes_data msc313_data = MSC313_MUXES_DATA(msc313_muxes);
+#endif
 
 static const struct clk_parent_data sdio_parents[] = {
 	/*
@@ -102,10 +104,12 @@ static const struct msc313_mux_data ssd210_muxes[] = {
 static const struct msc313_muxes_data ssd210_data = MSC313_MUXES_DATA(ssd210_muxes);
 
 static const struct of_device_id msc313e_sc_gp_ctrl_muxes_of_match[] = {
-	{
+#ifdef CONFIG_MACH_INFINITY
+{
 		.compatible = "mstar,msc313-sc-gp-ctrl-muxes",
 		.data = &msc313_data,
 	},
+#endif
 	{
 		.compatible = "sstar,ssd20xd-sc-gp-ctrl-muxes",
 		.data = &ssd20xd_data,
@@ -136,7 +140,7 @@ static int msc313e_clkgen_mux_probe(struct platform_device *pdev)
 
 	muxes = msc313_mux_register_muxes(dev, regmap, muxes_data, NULL, NULL);
 
-        return devm_of_clk_add_hw_provider(dev, msc313_mux_xlate, muxes);
+	return devm_of_clk_add_hw_provider(dev, msc313_mux_xlate, muxes);
 }
 
 static struct platform_driver msc313_sc_gp_ctrl_muxes_driver = {
