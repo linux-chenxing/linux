@@ -257,6 +257,9 @@
 	};
 
 	pspi0: spi@222400 {
+		compatible = "sstar,ssd210-pspi";
+		reg = <0x222400 0x200>;
+		status = "disabled";
 	};
 
 	pspi1: spi@222600 {
