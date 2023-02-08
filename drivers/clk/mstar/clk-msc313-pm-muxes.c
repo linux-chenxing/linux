@@ -150,7 +150,7 @@ static int msc313_pm_muxes_probe(struct platform_device *pdev)
 
 	muxes = msc313_mux_register_muxes(dev, regmap, muxes_data, NULL, NULL);
 
-        return devm_of_clk_add_hw_provider(dev, msc313_mux_xlate, muxes);
+	return devm_of_clk_add_hw_provider(dev, msc313_mux_xlate, muxes);
 }
 
 static struct platform_driver msc313_pm_muxes_driver = {
