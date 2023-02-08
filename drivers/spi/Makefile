@@ -149,6 +149,7 @@ obj-$(CONFIG_SPI_ZYNQMP_GQSPI)		+= spi-zynqmp-gqspi.o
 obj-$(CONFIG_SPI_AMD)			+= spi-amd.o
 obj-$(CONFIG_SPI_MSC313)		+= spi-msc313.o
 obj-$(CONFIG_SPI_MSC313_ISP)	+= spi-msc313-isp.o
+obj-$(CONFIG_SPI_SSD210_PSPI)	+= spi-ssd210-pspi.o
 
 # SPI slave protocol handlers
 obj-$(CONFIG_SPI_SLAVE_TIME)		+= spi-slave-time.o

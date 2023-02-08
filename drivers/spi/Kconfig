@@ -1149,6 +1149,13 @@ config SPI_MSC313
 	help
 	  Enables MStar MSC313 SPI controller driver.
 
+config SPI_SSD210_PSPI
+	tristate "SigmaStar SSD210 PSPI controller"
+	select REGMAP_MMIO
+	depends on ARCH_MSTARV7 && SPI_MASTER
+	help
+	  Enables SigmaStar SSD210 PSPI controller driver.
+
 #
 # Add new SPI master controllers in alphabetical order above this line
 #
