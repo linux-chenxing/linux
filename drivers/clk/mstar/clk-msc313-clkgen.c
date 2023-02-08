@@ -742,14 +742,22 @@ static const struct msc313_mux_data ssd20xd_muxes[] = {
 static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
 
 static const struct of_device_id msc313_clkgen_ids[] = {
+#ifdef CONFIG_MACH_INFINITY
 	{
 		.compatible = "mstar,msc313-clkgen",
 		.data = &msc313_data,
 	},
+#endif
 	{
 		.compatible = "sstar,ssd20xd-clkgen",
 		.data = &ssd20xd_data,
 	},
+#ifdef CONFIG_MACH_PIONEER3
+	{
+		.compatible = "sstar,ssd210-clkgen",
+		.data = &ssd20xd_data,
+	},
+#endif
 	{}
 };
 
@@ -893,7 +901,7 @@ no_dividers:
 	clkgen->muxes = msc313_mux_register_muxes(dev, regmap, match_data,
 			msc313_clkgen_fill_mux_clk_parent_data, clkgen);
 
-        return devm_of_clk_add_hw_provider(dev, msc313_clkgen_xlate, clkgen);
+	return devm_of_clk_add_hw_provider(dev, msc313_clkgen_xlate, clkgen);
 }
 
 static struct platform_driver msc313_clkgen_driver = {
