@@ -316,7 +316,7 @@
 };
 
 &clkgen {
-	compatible = "sstar,ssd20xd-clkgen";
+	compatible = "sstar,ssd210-clkgen";
 };
 
 &sc_gp_ctrl_muxes {
