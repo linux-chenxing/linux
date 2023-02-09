@@ -52,6 +52,11 @@
  *                                                        | 12 - wait
  *                                                        | 13,14,15 - stop
  *
+ * 0x18 : Raw pad status
+ *
+ *     4       |     1      |     0
+ * SCLO (out?) | SDAI (in?) | SCLI (in?)
+ *
  * The below registers are apparently for the number of clocks per state
  * 0x20: stp_cnt (stop clock count?)
  * 0x24: ckh_cnt (clock high count?)
@@ -74,6 +79,7 @@
 #define REG_RDATA		0x0c
 #define REG_INT_CTRL 		0x10
 #define REG_INT_STAT		0x14
+#define REG_PAD			0x18
 #define REG_STOP_CNT		0x20
 #define REG_CKH_CNT		0x24
 #define REG_CKL_CNT		0x28
@@ -102,6 +108,8 @@ static const struct reg_field ctrl_endma_field = REG_FIELD(REG_CTRL, 1, 1);
 static const struct reg_field ctrl_enint_field = REG_FIELD(REG_CTRL, 2, 2);
 /* This causes a flag to be set for clock stretching each time the hardware is triggered.. */
 static const struct reg_field ctrl_enclkstr_field = REG_FIELD(REG_CTRL, 3, 3);
+static const struct reg_field ctrl_pushpullen_field = REG_FIELD(REG_CTRL, 6, 6);
+
 static const struct reg_field startstop_start_field = REG_FIELD(REG_STARTSTOP, 0, 0);
 static const struct reg_field startstop_stop_field = REG_FIELD(REG_STARTSTOP, 8, 8);
 
@@ -130,6 +138,11 @@ static const struct reg_field status_int_field = REG_FIELD(REG_INT_STAT, 8, 13);
 #define INT_STAT_CLKSTR		BIT(4)
 #define INT_STAT_SCL_ERR	BIT(5)
 #define INT_STAT_TIMEOUT	BIT(6)
+
+/* raw pad status */
+static const struct reg_field scli_field = REG_FIELD(REG_PAD, 0, 0);
+static const struct reg_field sdai_field = REG_FIELD(REG_PAD, 1, 1);
+static const struct reg_field sclo_field = REG_FIELD(REG_PAD, 4, 4);
 
 /* timing */
 static const struct reg_field stopcnt_field = REG_FIELD(REG_STOP_CNT, 0, 15);
@@ -179,6 +192,7 @@ struct msc313e_i2c {
 	struct regmap_field *rst;
 	struct regmap_field *endma;
 	struct regmap_field *enint;
+	struct regmap_field *pushpullen;
 	struct regmap_field *start;
 
 	/* rx data fields */
@@ -225,6 +239,11 @@ struct msc313e_i2c {
 	/* irq stuff */
 	wait_queue_head_t wait;
 	struct regmap_field *intstat;
+
+	/* bus recovery bits */
+	struct regmap_field *scli;
+	struct regmap_field *sclo;
+	struct regmap_field *sdai;
 
 	spinlock_t lock;
 	unsigned int int_status;
@@ -417,6 +436,8 @@ static int msc313_i2c_xfer_pio(struct msc313e_i2c *i2c, struct i2c_msg *msg, boo
 	unsigned long flags;
 	int i, ret = 0;
 
+	regmap_field_write(i2c->endma, 0);
+
 	spin_lock_irqsave(&i2c->lock, flags);
 	i2c->waiting = true;
 	i2c->done = false;
@@ -432,9 +453,8 @@ static int msc313_i2c_xfer_pio(struct msc313e_i2c *i2c, struct i2c_msg *msg, boo
 	regmap_field_force_write(i2c->start, 1);
 	spin_unlock_irqrestore(&i2c->lock, flags);
 	/*
-	 * We get the  flag here on
-	 * the first start and the nothing on repeated
-	 * starts.
+	 * We get the flag here on the first start and then nothing
+	 * on repeated starts.
 	 */
 	ret = msc313e_i2c_waitforidle(i2c, INT_STAT_START_DET);
 	if (ret) {
@@ -445,11 +465,11 @@ static int msc313_i2c_xfer_pio(struct msc313e_i2c *i2c, struct i2c_msg *msg, boo
 	ret = msc313_i2c_txbyte(i2c, (msg->addr << 1) | (read ? 1 : 0));
 	if (ret) {
 		/* Making this an error makes i2cdetect very noisy */
-		dev_dbg(&i2c->i2c.dev, "Failed to send address\n");
+		dev_err(&i2c->i2c.dev, "Failed to send address\n");
 		goto error;
 	}
 	for (i = 0; i < msg->len; i++) {
-		if (read){
+		if (read) {
 			int b = msc313_i2c_rxbyte(i2c, i + 1 == msg->len);
 			if(b < 0) {
 				ret = b;
@@ -478,9 +498,25 @@ error:
 	return ret;
 }
 
-//#define DISABLE_DMA
+#define DISABLE_DMA
 
 #define DMA_THRESHOLD 8
+
+static void msc313_fixstuckbus(struct msc313e_i2c *bus)
+{
+	unsigned int sdai;
+
+	/* Check if the bus is stuck */
+	regmap_field_write(bus->pushpullen, 1);
+	udelay(100);
+	regmap_field_read(bus->sdai, &sdai);
+	if (!sdai) {
+		dev_info(bus->dev, "sda is low, bus is probably stuck\n");
+	}
+	else
+		dev_info(bus->dev, "sda is good, woot\n");
+	regmap_field_write(bus->pushpullen, 0);
+}
 
 static int msc313_i2c_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg msgs[],
 			   int num)
@@ -495,7 +531,7 @@ static int msc313_i2c_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg msgs[],
 		return ret;
 	}
 
-	regmap_field_write(bus->endma, 0);
+	//msc313_fixstuckbus(bus);
 
 	for (i = 0; i < num; i++) {
 		struct i2c_msg *msg = &msgs[i];
@@ -617,6 +653,7 @@ static int msc313e_i2c_probe(struct platform_device *pdev)
 	msc313ei2c->rst = devm_regmap_field_alloc(&pdev->dev, msc313ei2c->regmap, ctrl_rst_field);
 	msc313ei2c->endma = devm_regmap_field_alloc(&pdev->dev, msc313ei2c->regmap, ctrl_endma_field);
 	msc313ei2c->enint = devm_regmap_field_alloc(&pdev->dev, msc313ei2c->regmap, ctrl_enint_field);
+	msc313ei2c->pushpullen = devm_regmap_field_alloc(&pdev->dev, msc313ei2c->regmap, ctrl_pushpullen_field);
 	msc313ei2c->start = devm_regmap_field_alloc(&pdev->dev, msc313ei2c->regmap, startstop_start_field);
 	msc313ei2c->stop = devm_regmap_field_alloc(&pdev->dev, msc313ei2c->regmap, startstop_stop_field);
 
@@ -660,7 +697,8 @@ static int msc313e_i2c_probe(struct platform_device *pdev)
 	msc313ei2c->dma_retrigger =  devm_regmap_field_alloc(dev, msc313ei2c->regmap, dma_retrig_field);
 	msc313ei2c->dma_state =  devm_regmap_field_alloc(dev, msc313ei2c->regmap, dma_state_field);
 
-	regmap_field_write(msc313ei2c->enint, 1);
+	/* bus recovery */
+	msc313ei2c->sdai =  devm_regmap_field_alloc(dev, msc313ei2c->regmap, sdai_field);
 
 	irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
 	if (!irq)
@@ -713,6 +751,7 @@ static int __maybe_unused msc313_i2c_runtime_suspend(struct device *dev)
 {
 	struct msc313e_i2c *i2c = dev_get_drvdata(dev);
 
+	regmap_field_force_write(i2c->enint, 0);
 	regmap_field_force_write(i2c->dma_miurst, 1);
 	regmap_field_force_write(i2c->dma_reset, 1);
 	regmap_field_force_write(i2c->rst, 1);
@@ -747,6 +786,7 @@ static int __maybe_unused msc313_i2c_runtime_resume(struct device *dev)
 	regmap_field_force_write(i2c->dma_miurst, 0);
 	mdelay(10);
 
+	regmap_field_write(i2c->enint, 1);
 	regmap_field_write(i2c->dma_inten, 1);
 
 	return 0;
