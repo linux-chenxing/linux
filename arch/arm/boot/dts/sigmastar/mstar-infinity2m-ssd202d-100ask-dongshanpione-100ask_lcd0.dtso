@@ -40,7 +40,7 @@
 
 /* allocate enough CMA for framebuffers for the display */
 &cma {
-	size = <0xc00000>;
+	size = <0x1000000>;
 };
 
 &display {
