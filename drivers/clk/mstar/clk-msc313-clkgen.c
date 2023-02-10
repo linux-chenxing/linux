@@ -310,6 +310,7 @@ struct msc313_clkgen_gate {
 #define to_gate(_hw) container_of(_hw, struct msc313_clkgen_gate, clk_hw)
 
 struct msc313_clkgen {
+	struct device *dev;
 	struct msc313_muxes *muxes;
 	struct msc313_clkgen_gate gates[];
 };
@@ -424,160 +425,15 @@ clkgen_mux_bist_sc_gp: clkgen_mux@1f20700c {
 };
 #endif
 
-static const struct msc313_clkgen_parent_data mcu_ssd20xd_parents[] = {
-	PARENT_GATE(9),
-	PARENT_GATE(10),
-	PARENT_DIVIDER(8, 2),
-	PARENT_DIVIDER(9, 2), // wrong?
-	PARENT_GATE(6),
-	PARENT_GATE(0),
-	PARENT_GATE(1),
-	PARENT_OF("unknown"),
-};
-#define MCU_SSD20XD	MSC313_MUX_PARENT_DATA("mcu", mcu_ssd20xd_parents, 0x4, 0, 2, 3, 5)
-
-static const struct msc313_clkgen_parent_data mcu_msc313_parents[] = {
-	PARENT_GATE(9),
-	PARENT_GATE(10),
-	PARENT_DIVIDER(8, 2),
-	PARENT_DIVIDER(9, 2),
-};
-#define MCU_MSC313		MSC313_MUX_PARENT_DATA("mcu", mcu_msc313_parents, 0x4, 0, 2, 2, 4)
-
-static const struct msc313_clkgen_parent_data riubrdg_parents[] = {
-	PARENT_OF("unknown"),
-};
-#define RIUBRDG		MSC313_MUX_PARENT_DATA("riubrdg", riubrdg_parents, 0x4, 8, 10, 2, -1)
-
-static const struct msc313_clkgen_parent_data miu_parents[] = {
-	PARENT_OF("ddrpll"),
-	PARENT_OF("unknown"),
-	PARENT_OF("miupll"),
-	PARENT_GATE(9),
-};
-#define MIU		MSC313_MUX_PARENT_DATA("miu", miu_parents, 0x5c, 0, 2, 2, 4)
-
-static const struct msc313_clkgen_parent_data ddr_syn_parents[] = {
-	PARENT_GATE(6),
-	PARENT_GATE(9),
-	PARENT_OF("xtal_div2"),
-};
-
-#define DDR_SYN		MSC313_MUX_PARENT_DATA("ddr_syn", ddr_syn_parents, 0x64, 0, 2, 2, 0)
-
-static const struct msc313_clkgen_parent_data uart_parents[] = {
-	PARENT_GATE(10),
-	PARENT_DIVIDER(8, 2),
-	PARENT_OF("xtal_div2"),
-};
-
-#define UART0		MSC313_MUX_PARENT_DATA("uart0", uart_parents, 0xc4, 0, 2, 2, -1)
-#define UART1		MSC313_MUX_PARENT_DATA("uart1", uart_parents, 0xc4, 8, 10, 2, -1)
-
-static const struct msc313_clkgen_parent_data spi_msc313_parents[] = {
-	PARENT_GATE(9),
-	PARENT_DIVIDER(9, 2),
-	PARENT_GATE(14),
-	PARENT_DIVIDER(8, 4),
-};
-
-#define	SPI_MSC313	MSC313_MUX_PARENT_DATA("spi", spi_msc313_parents, 0xc8, 0, 2, 2, 4)
-
-static const struct msc313_clkgen_parent_data spi_ssd20xd_parents[] = {
-	PARENT_GATE(9),
-	PARENT_DIVIDER(9, 2),
-	PARENT_GATE(14),
-	PARENT_DIVIDER(8, 4),
-	/* This is MIU, datasheet says "must select this one" :) */
-	PARENT_OF("unknown"),
-};
-
-#define	SPI_SSD20XD	MSC313_MUX_PARENT_DATA("spi", spi_ssd20xd_parents, 0xc8, 0, 2, 3, 5)
-
-static const struct msc313_clkgen_parent_data mspi_parents[] = {
-	PARENT_DIVIDER(9, 2),
-	PARENT_DIVIDER(9, 4),
-	PARENT_OF("xtal_div2"),
-};
-
-#define MSPI0		MSC313_MUX_PARENT_DATA("mspi0", mspi_parents, 0xcc, 0, 2, 2, -1)
-#define MSPI1		MSC313_MUX_PARENT_DATA("mspi1", mspi_parents, 0xcc, 8, 10, 2, -1)
-#define MSPI_MOVEDMA	MSC313_MUX_PARENT_DATA("mspi_movedma", mspi_parents, 0xcc, 12, 14, 2, -1)
-
-static const struct msc313_clkgen_parent_data fuart0_synth_in_parents[] = {
-	PARENT_GATE(6),
-	PARENT_GATE(9),
-};
-
-static const struct msc313_clkgen_parent_data fuart_parents[] = {
-	PARENT_GATE(10),
-	PARENT_DIVIDER(9, 2),
-	PARENT_OF("xtal_div2"),
-	PARENT_MUX(MSC313_CLKGEN_FUART0_SYNTH_IN),
-};
-
-#define FUART0_SYNTH_IN	MSC313_MUX_PARENT_DATA("fuart0_synth_in", fuart0_synth_in_parents, 0xd0, 4, 6, 2, -1)
-#define FUART		MSC313_MUX_PARENT_DATA("fuart", fuart_parents, 0xd0, 0, 2, 2, -1)
-
-/* Same for i3 and i2m */
-static const struct msc313_clkgen_parent_data miic_parents[] = {
-	PARENT_DIVIDER(8, 4),
-	PARENT_DIVIDER(9, 4),
-	PARENT_OF("xtal_div2"),
-};
-
-#define MIIC0		MSC313_MUX_PARENT_DATA("miic0", miic_parents, 0xdc, 0, 2, 2, -1)
-#define MIIC1		MSC313_MUX_PARENT_DATA("miic1", miic_parents, 0xdc, 8, 10, 2, -1)
-
-static const struct msc313_clkgen_parent_data emac_ahb_parents[] = {
-	PARENT_DIVIDER(8, 2),
-	PARENT_GATE(12),
-	PARENT_GATE(14),
-};
-#define EMAC_AHB	MSC313_MUX_PARENT_DATA_FLAGS("emac_ahb", emac_ahb_parents, 0x108, 0, 2, 2, -1, CLK_IS_CRITICAL, 0)
-
-/* same for i3 and i2m */
-static const struct msc313_clkgen_parent_data sdio_parents[] = {
-	PARENT_DIVIDER(3, 4),
-	PARENT_DIVIDER(14, 2),
-	PARENT_DIVIDER(2, 4),
-	PARENT_DIVIDER(8, 8),
-	PARENT_DIVIDER(2, 5),
-	PARENT_DIVIDER(2, 8),
-	PARENT_OF("xtal_div2"),
-	/* undocumented but exists */
-	PARENT_OF("xtal_div2_div40"),
-};
-#define SDIO	MSC313_MUX_PARENT_DATA("sdio", sdio_parents, 0x114, 0, 2, 3, -1)
-
-/* ssd20xd only? */
-static const struct msc313_clkgen_parent_data ge_parents[] = {
-	/* miu, 240MHz */
-	PARENT_MUX(MSC313_CLKGEN_MIU),
-	/* 216MHz */
-	PARENT_GATE(9),
-	/* 172MHz */
-	PARENT_GATE(10),
-	/* 144MHz */
-	PARENT_DIVIDER(8, 2),
-	// upll 320
-	PARENT_GATE(1),
-	// upll 384
-	PARENT_GATE(0),
-	// mpll 432
-	PARENT_GATE(6),
-};
-#define GE	MSC313_MUX_PARENT_DATA("ge", ge_parents, 0x144, 0, 2, 3, -1)
-
 static const struct msc313_clkgen_parent_data disp_432_parents[] = {
 	PARENT_GATE(6),
 };
-#define DISP_432	MSC313_MUX_PARENT_DATA("disp_432", disp_432_parents, 0x14c, 0, 2, 2, -1)
+#define DISP_432	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_DISP_432, "disp_432", disp_432_parents, 0x14c, 0, 2, 2, -1)
 
 static const struct msc313_clkgen_parent_data disp_216_parents[] = {
 	PARENT_GATE(9),
 };
-#define DISP_216	MSC313_MUX_PARENT_DATA("disp_216", disp_216_parents, 0x14c, 8, 10, 2, -1)
+#define DISP_216	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_DISP_216, "disp_216", disp_216_parents, 0x14c, 8, 10, 2, -1)
 
 /* ssd20xd only? */
 static const struct msc313_clkgen_parent_data mop_parents[] = {
@@ -586,7 +442,7 @@ static const struct msc313_clkgen_parent_data mop_parents[] = {
 	PARENT_GATE(8),
 	PARENT_MUX(MSC313_CLKGEN_MIU),
 };
-#define MOP	MSC313_MUX_PARENT_DATA("mop", mop_parents, 0x150, 0, 2, 2, -1)
+#define MOP	MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MOP, "mop", mop_parents, 0x150, 0, 2, 2, -1)
 
 /* DEC PCLK */
 static const struct msc313_clkgen_parent_data dec_pclk_parents[] = {
@@ -594,7 +450,7 @@ static const struct msc313_clkgen_parent_data dec_pclk_parents[] = {
 	PARENT_DIVIDER(8, 2),
 	PARENT_DIVIDER(9, 2),
 };
-#define DEC_PCLK	MSC313_MUX_PARENT_DATA("dec_pclk", dec_pclk_parents, 0x154, 0, 2, 2, -1)
+#define DEC_PCLK	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_DEC_PCLK, "dec_pclk", dec_pclk_parents, 0x154, 0, 2, 2, -1)
 
 /* DEC ACLK */
 static const struct msc313_clkgen_parent_data dec_aclk_parents[] = {
@@ -603,40 +459,19 @@ static const struct msc313_clkgen_parent_data dec_aclk_parents[] = {
 	PARENT_GATE(8),
 	PARENT_GATE(9),
 };
-#define DEC_ACLK	MSC313_MUX_PARENT_DATA("dec_aclk", dec_aclk_parents, 0x154, 8, 10, 2, -1)
+#define DEC_ACLK	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_DEC_ACLK, "dec_aclk", dec_aclk_parents, 0x154, 8, 10, 2, -1)
 
 /* DEC BCLK */
 static const struct msc313_clkgen_parent_data dec_bclk_parents[] = {
 	PARENT_GATE(8),
 };
-#define DEC_BCLK	MSC313_MUX_PARENT_DATA("dec_bclk", dec_bclk_parents, 0x1f8, 0, 2, 3, -1)
+#define DEC_BCLK	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_DEC_BCLK, "dec_bclk", dec_bclk_parents, 0x1f8, 0, 2, 3, -1)
 
 /* DEC CCLK */
 static const struct msc313_clkgen_parent_data dec_cclk_parents[] = {
 	PARENT_GATE(0),
 };
-#define DEC_CCLK	MSC313_MUX_PARENT_DATA("dec_cclk", dec_cclk_parents, 0x1f8, 8, 10, 3, -1)
-
-static const struct msc313_clkgen_parent_data bdma_parents[] = {
-	PARENT_MUX(MSC313_CLKGEN_MIU),
-	PARENT_OF("xtal_div2_div40"),
-};
-#define BDMA	MSC313_MUX_PARENT_DATA("bdma", bdma_parents, 0x180, 0, 2, 2, 4)
-
-static const struct msc313_clkgen_parent_data aesdma_parents[] = {
-	PARENT_GATE(14),
-	PARENT_GATE(10),
-};
-#define AESDMA	MSC313_MUX_PARENT_DATA("aesdma", aesdma_parents, 0x184, 0, 2, 2, 4)
-
-/* i/i3 only? */
-static const struct msc313_clkgen_parent_data isp_parents[] = {
-	PARENT_GATE(12),
-	PARENT_GATE(14),
-	PARENT_DIVIDER(8, 4),
-	PARENT_DIVIDER(9, 4),
-};
-#define ISP	MSC313_MUX_PARENT_DATA("isp", isp_parents, 0x184, 8, 10, 2, 12)
+#define DEC_CCLK	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_DEC_CCLK, "dec_cclk", dec_cclk_parents, 0x1f8, 8, 10, 3, -1)
 
 static const struct msc313_clkgen_parent_data sc_pixel_parents[] = {
 	PARENT_GATE(9), // WRONG!! should be 240MHz -- utmi 240
@@ -651,7 +486,7 @@ static const struct msc313_clkgen_parent_data sc_pixel_parents[] = {
 	PARENT_DIVIDER(9, 4),
 	PARENT_OF("lpll"),
 };
-#define SC_PIXEL MSC313_MUX_PARENT_DATA("sc_pixel", sc_pixel_parents, 0x18c, 0, 2, 4, -1)
+#define SC_PIXEL MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_SC_PIXEL, "sc_pixel", sc_pixel_parents, 0x18c, 0, 2, 4, -1)
 
 static const struct msc313_clkgen_parent_data jpe_parents[] = {
 	PARENT_GATE(8),
@@ -659,25 +494,14 @@ static const struct msc313_clkgen_parent_data jpe_parents[] = {
 	PARENT_DIVIDER(8, 4),
 	PARENT_DIVIDER(9, 4),
 };
-#define JPE	MSC313_MUX_PARENT_DATA("jpe", jpe_parents, 0x1a8, 0, 2, 2, -1)
+#define JPE	MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_JPE, "jpe", jpe_parents, 0x1a8, 0, 2, 2, -1)
 
 /* SATA */
 static const struct msc313_clkgen_parent_data sata_parents[] = {
 	PARENT_GATE(9), // incorrect, should be utmi 240m
 	PARENT_GATE(8),
 };
-#define SATA	MSC313_MUX_PARENT_DATA("sata", sata_parents, 0x1b8, 0, 2, 2, -1)
-
-/* MIPI TX */
-static const struct msc313_clkgen_parent_data mipi_tx_parents[] = {
-	PARENT_OF("lpll"),
-	PARENT_GATE(2),
-	PARENT_DIVIDER(8, 2),
-	PARENT_DIVIDER(9, 2),
-	PARENT_GATE(9),
-	PARENT_GATE(4),
-};
-#define MIPI_TX_DSI	MSC313_MUX_PARENT_DATA("mipi_tx_dsi", mipi_tx_parents, 0x1bc, 0, 2, 3, -1)
+#define SATA	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_SATA, "sata", sata_parents, 0x1b8, 0, 2, 2, -1)
 
 /*
  * These are the common muxes that all chips have. These must come first in the
@@ -697,49 +521,9 @@ static const struct msc313_clkgen_parent_data mipi_tx_parents[] = {
 	MSPI0,		\
 	MSPI1
 
-static const struct msc313_mux_data msc313_muxes[] = {
-	COMMON(MSC313),
-	FUART0_SYNTH_IN,
-	FUART,
-	MIIC0,
-	MIIC1,
-	EMAC_AHB,
-	SDIO,
-	BDMA,
-	AESDMA,
-	ISP,
-	JPE,
-};
-
-static const struct msc313_muxes_data msc313_data = MSC313_MUXES_DATA(msc313_muxes);
-
-static const struct msc313_mux_data ssd20xd_muxes[] = {
-	COMMON(SSD20XD),
-	FUART0_SYNTH_IN,
-	FUART,
-	MIIC0,
-	MIIC1,
-	EMAC_AHB,
-	SDIO,
-	BDMA,
-	AESDMA,
-	MSC313_MUX_GAP(),
-	JPE,
-	GE,
-	MOP,
-	SATA,
-	DEC_PCLK,
-	DEC_ACLK,
-	DEC_BCLK,
-	DEC_CCLK,
-	SC_PIXEL,
-	DISP_432,
-	DISP_216,
-	MIPI_TX_DSI,
-	MSPI_MOVEDMA,
-};
-
-static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_muxes);
+#include "clk-msc313-clkgen-msc313.h"
+#include "clk-msc313-clkgen-ssd20xd.h"
+#include "clk-msc313-clkgen-ssd210.h"
 
 static const struct of_device_id msc313_clkgen_ids[] = {
 #ifdef CONFIG_MACH_INFINITY
@@ -755,7 +539,7 @@ static const struct of_device_id msc313_clkgen_ids[] = {
 #ifdef CONFIG_MACH_PIONEER3
 	{
 		.compatible = "sstar,ssd210-clkgen",
-		.data = &ssd20xd_data,
+		.data = &ssd210_data,
 	},
 #endif
 	{}
@@ -767,18 +551,38 @@ static const struct regmap_config msc313_clkgen_regmap_config = {
 	.reg_stride = 4,
 };
 
+static struct msc313_mux *msc313_clkgen_xlate_idx_to_mux(struct msc313_clkgen *clkgen, unsigned int idx)
+{
+	const int nummuxes = clkgen->muxes->muxes_data->num_muxes;
+
+	/*
+	 * Find the array offset for the mux that has the desired index
+	 * then use the index to return the allocated mux structure.
+	 */
+	for (int i = 0; i < nummuxes; i++)
+		if (clkgen->muxes->muxes_data->muxes[i].index == idx)
+			return clkgen->muxes->muxes + i;
+
+	dev_err(clkgen->dev, "Index %d does not map to a mux\n", idx);
+
+	return NULL;
+}
+
 static struct clk_hw *msc313_clkgen_xlate(struct of_phandle_args *clkspec, void *data)
 {
 	struct msc313_clkgen *clkgen = data;
 	unsigned int area = clkspec->args[0];
 	unsigned int idx = clkspec->args[1];
 	unsigned int divider;
+	struct msc313_mux *mux;
 
 	switch(area){
 	case MSC313_CLKGEN_MUXES:
-		return &clkgen->muxes->muxes[idx].mux_hw;
+		mux = msc313_clkgen_xlate_idx_to_mux(clkgen, idx);
+		return &mux->mux_hw;
 	case MSC313_CLKGEN_DEGLITCHES:
-		return &clkgen->muxes->muxes[idx].deglitch_hw;
+		mux = msc313_clkgen_xlate_idx_to_mux(clkgen, idx);
+		return &mux->deglitch_hw;
 	case MSC313_CLKGEN_GATES:
 		return &clkgen->gates[idx].clk_hw;
 	case MSC313_CLKGEN_DIVIDERS:
@@ -846,6 +650,8 @@ static int msc313_clkgen_probe(struct platform_device *pdev)
 			ARRAY_SIZE(gates_data)), GFP_KERNEL);
 	if (!clkgen)
 		return -ENOMEM;
+
+	clkgen->dev = dev;
 
 	/* Clear the force on register so we can actually control the gates */
 	regmap_write(regmap, REG_FORCEON, 0x0);

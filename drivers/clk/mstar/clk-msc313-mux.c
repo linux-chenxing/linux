@@ -153,11 +153,11 @@ struct msc313_muxes *msc313_mux_register_muxes(struct device *dev,
 		return ERR_PTR(-EINVAL);
 
 	muxes = devm_kzalloc(dev, struct_size(muxes, muxes, muxes_data->num_muxes), GFP_KERNEL);
-        if (!muxes)
+	if (!muxes)
 		return ERR_PTR(-ENOMEM);
 
 	muxes->muxes_data = muxes_data;
-        mux = muxes->muxes;
+	mux = muxes->muxes;
 
 	for (i = 0; i < muxes_data->num_muxes; i++, mux++, mux_data++) {
 		const struct reg_field gate_field = REG_FIELD(mux_data->offset,

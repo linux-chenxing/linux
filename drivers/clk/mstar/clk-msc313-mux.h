@@ -13,6 +13,8 @@ struct msc313_muxes {
 };
 
 struct msc313_mux_data {
+	/* index to match the DT bindings */
+	int index;
 	const char *name;
 	union {
 		const void *parent_data;
@@ -32,8 +34,9 @@ struct msc313_mux_data {
  * For defining parent data for muxes that need the
  * clk_parent_data filled at runtime.
  */
-#define MSC313_MUX_PARENT_DATA_FLAGS(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, _flags, _mux_flags) \
+#define MSC313_MUX_PARENT_DATA_FLAGS(_index, _name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, _flags, _mux_flags) \
 	{						\
+		.index = _index,			\
 		.name = _name,				\
 		.parent_data = _parents,		\
 		.num_parents = ARRAY_SIZE(_parents),	\
@@ -46,15 +49,16 @@ struct msc313_mux_data {
 		.mux_flags = _mux_flags,		\
 	}
 
-#define MSC313_MUX_PARENT_DATA(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift) \
-		MSC313_MUX_PARENT_DATA_FLAGS(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, 0, 0)
+#define MSC313_MUX_PARENT_DATA(_index, _name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift) \
+		MSC313_MUX_PARENT_DATA_FLAGS(_index, _name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, 0, 0)
 
 /*
  * For defining parent data that is static so clk_parent_data
  * can be used directly.
  */
-#define MSC313_MUX_CLK_PARENT_DATA_FLAGS(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, _flags, _mux_flags) \
+#define MSC313_MUX_CLK_PARENT_DATA_FLAGS(_index, _name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, _flags, _mux_flags) \
 	{						\
+		.index = _index,			\
 		.name = _name,				\
 		.clk_parent_data = _parents,		\
 		.num_parents = ARRAY_SIZE(_parents),	\
@@ -67,12 +71,8 @@ struct msc313_mux_data {
 		.mux_flags = _mux_flags,		\
 	}
 
-#define MSC313_MUX_CLK_PARENT_DATA(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift) \
-	MSC313_MUX_CLK_PARENT_DATA_FLAGS(_name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, 0, 0)
-
-#define MSC313_MUX_GAP() \
-		{ \
-		}
+#define MSC313_MUX_CLK_PARENT_DATA(_index, _name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift) \
+	MSC313_MUX_CLK_PARENT_DATA_FLAGS(_index, _name, _parents, _offset, _gate_shift, _mux_shift, _mux_width, _deglitch_shift, 0, 0)
 
 struct msc313_muxes_data {
 	unsigned int num_muxes;
