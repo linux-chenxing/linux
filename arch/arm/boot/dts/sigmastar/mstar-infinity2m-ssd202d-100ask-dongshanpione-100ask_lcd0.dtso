@@ -38,6 +38,11 @@
 	};
 };
 
+/* allocate enough CMA for framebuffers for the display */
+&cma {
+	size = <0xc00000>;
+};
+
 &display {
 	ports = <&mopg>,<&mops>,<&gop0>,<&gop1>,<&op2>,<&displaytop>;
 };
