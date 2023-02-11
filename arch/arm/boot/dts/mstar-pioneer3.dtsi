@@ -259,6 +259,8 @@
 	pspi0: spi@222400 {
 		compatible = "sstar,ssd210-pspi";
 		reg = <0x222400 0x200>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_PSPI0 0>;
+		interrupts-extended = <&intc_irq GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
 		status = "disabled";
 	};
 
