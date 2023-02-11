@@ -124,6 +124,34 @@
 		};
 #endif
 	};
+
+	ge_opp_table: ge_opp_table {
+		compatible = "operating-points-v2";
+		opp-144000000 {
+			opp-hz = /bits/ 64 <144000000>;
+			clock-latency-ns = <300000>;
+		};
+		opp-172000000 {
+			opp-hz = /bits/ 64 <172000000>;
+			clock-latency-ns = <300000>;
+		};
+		opp-216000000 {
+			opp-hz = /bits/ 64 <216000000>;
+			clock-latency-ns = <300000>;
+		};
+		opp-320000000 {
+			opp-hz = /bits/ 64 <320000000>;
+			clock-latency-ns = <300000>;
+		};
+		opp-384000000 {
+			opp-hz = /bits/ 64 <384000000>;
+			clock-latency-ns = <300000>;
+		};
+		opp-432000000 {
+			opp-hz = /bits/ 64 <432000000>;
+			clock-latency-ns = <300000>;
+		};
+	};
 };
 
 &bdma {
@@ -270,6 +298,24 @@
 		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_PSPI1 0>;
 		interrupts-extended = <&intc_irq GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
 		//status = "disabled";
+	};
+
+	ge: ge@281200 {
+			compatible = "sstar,ssd20xd-ge";
+			reg = <0x281200 0x200>;
+			clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_GE 0>;
+			clock-names = "ge";
+			/* 
+			 * Set the clock to the highest frequency, it's doesn't seem to make
+			 * much difference over using the MIU source.
+			 */
+			assigned-clocks = <&clkgen MSC313_CLKGEN_MUXES MSC313_CLKGEN_GE 0>;
+			assigned-clock-parents = <&clkgen MSC313_CLKGEN_GATES MSC313_CLKGEN_GATE_6 0>;
+			//assigned-clock-parents = <&clkgen MSC313_CLKGEN_MUXES MSC313_CLKGEN_MIU 0>;
+			interrupts-extended = <&intc_irq GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+			interconnects = <&miu 0>;
+			interconnect-names = "dma-mem";
+			operating-points-v2 = <&ge_opp_table>;
 	};
 
 	sdio: sdio@282000 {
