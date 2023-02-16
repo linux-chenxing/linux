@@ -55,8 +55,8 @@ static const struct msc313_clkgen_parent_data mspi_parents[] = {
 	PARENT_DIVIDER(9, 4),
 	PARENT_OF("xtal_div2"),
 };
-#define MSPI0 MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MSPI0, "mspi0", mspi_parents, 0xcc, 0, 2, 2, -1)
-#define MSPI1 MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MSPI1, "mspi1", mspi_parents, 0xcc, 8, 10, 2, -1)
+#define MSPI0_MSC313 MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MSPI0, "mspi0", mspi_parents, 0xcc, 0, 2, 2, -1)
+#define MSPI1_MSC313 MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MSPI1, "mspi1", mspi_parents, 0xcc, 8, 10, 2, -1)
 
 static const struct msc313_clkgen_parent_data fuart0_synth_in_parents[] = {
 	PARENT_GATE(6),
