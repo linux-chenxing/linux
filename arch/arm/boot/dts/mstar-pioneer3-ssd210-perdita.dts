@@ -75,7 +75,6 @@
 			};
 			ldo {
 				regulator-name = "vcc_aux";
-				regulator-boot-on;
 				regulator-vset = <0>, <0>;
 				vin-supply = <&reg_vcc>;
 			};
