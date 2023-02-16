@@ -518,8 +518,8 @@ static const struct msc313_clkgen_parent_data sata_parents[] = {
 	UART0,		\
 	UART1,		\
 	SPI_##_chip,	\
-	MSPI0,		\
-	MSPI1
+	MSPI0_##_chip,	\
+	MSPI1_##_chip
 
 #include "clk-msc313-clkgen-msc313.h"
 #include "clk-msc313-clkgen-ssd20xd.h"
