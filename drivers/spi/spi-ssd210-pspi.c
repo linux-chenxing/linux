@@ -19,9 +19,16 @@
 
 #define DRIVER_NAME "spi_ssd210_pspi"
 
+#define REG_DIV	0x4
+
 struct ssd210_pspi_spi {
 	struct device *dev;
 	struct spi_master *master;
+
+	/* for divider clock */
+	spinlock_t lock;
+	struct clk *clk;
+	struct clk_hw *divider;
 };
 
 static const struct regmap_config ssd210_pspi_spi_regmap_config = {
@@ -58,9 +65,20 @@ static irqreturn_t ssd210_pspi_spi_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+static const struct clk_div_table div_table[] = {
+	{0, 2},
+	{1, 4},
+	{2, 8},
+	{3, 16},
+	{4, 32},
+	{5, 64},
+	{6, 128},
+	{7, 256},
+	{ 0 },
+};
+
 static int ssd210_pspi_spi_probe(struct platform_device *pdev)
 {
-	const struct ssd210_pspi_spi_data *match_data;
 	struct device *dev = &pdev->dev;
 	struct spi_master *master;
 	int ret, irq, numparents;
@@ -68,11 +86,7 @@ static int ssd210_pspi_spi_probe(struct platform_device *pdev)
 	const char *parents[1];
 	void __iomem *base;
 	char *sclk_name;
-	struct clk *sclk;
-
-	match_data = of_device_get_match_data(dev);
-	if (!match_data)
-		return -EINVAL;
+	//struct clk *sclk;
 
 	numparents = of_clk_parent_fill(pdev->dev.of_node, parents, ARRAY_SIZE(parents));
 	if (numparents != 1)
@@ -91,9 +105,23 @@ static int ssd210_pspi_spi_probe(struct platform_device *pdev)
 	if (IS_ERR(base))
 		return PTR_ERR(base);
 
-	ret = clk_prepare_enable(sclk);
-	if (ret)
-		dev_err(&pdev->dev, "clk enable failed: %d\n", ret);
+	spi->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+		if (IS_ERR(spi->clk))
+			return PTR_ERR(spi->clk);
+
+	spin_lock_init(&spi->lock);
+	//sclk_name = devm_kasprintf(dev, GFP_KERNEL, "%s_sclk", dev_name(dev));
+	//spi->divider = devm_clk_hw_register_divider_table(dev, sclk_name, parents[0], 0,
+	//		base + REG_DIV, 0, 7,
+	//		0, div_table, &spi->lock);
+	//if (IS_ERR(spi->divider))
+	//	return PTR_ERR(spi->divider);
+
+	//sclk = spi->divider->clk;
+
+	//ret = clk_prepare_enable(sclk);
+	//if (ret)
+	//	dev_err(&pdev->dev, "clk enable failed: %d\n", ret);
 
 	irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
 	if (!irq)
@@ -106,8 +134,8 @@ static int ssd210_pspi_spi_probe(struct platform_device *pdev)
 	master->bus_num = pdev->id;
 	master->num_chipselect = 1;
 	master->mode_bits = SPI_CPHA | SPI_CPOL;
-	master->max_speed_hz = clk_round_rate(sclk, ~0);
-	master->min_speed_hz = clk_round_rate(sclk, 0);
+	master->max_speed_hz = 1000000;
+	master->min_speed_hz = 1000000;
 	master->setup = ssd210_pspi_spi_setup;
 	master->set_cs = ssd210_pspi_spi_set_cs;
 	master->transfer_one = ssd210_pspi_spi_transfer_one;
