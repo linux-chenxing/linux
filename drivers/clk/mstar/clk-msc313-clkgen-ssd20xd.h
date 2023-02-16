@@ -27,6 +27,9 @@ static const struct msc313_clkgen_parent_data spi_ssd20xd_parents[] = {
 };
 #define	SPI_SSD20XD MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_SPI, "spi", spi_ssd20xd_parents, 0xc8, 0, 2, 3, 5)
 
+#define MSPI0_SSD20XD MSPI0_MSC313
+#define MSPI1_SSD20XD MSPI1_MSC313
+
 #define MSPI_MOVEDMA	MSC313_MUX_PARENT_DATA(SSD20XD_CLKGEN_MSPI_MOVEDMA, "mspi_movedma", mspi_parents, 0xcc, 12, 14, 2, -1)
 
 /* ssd20xd only? */
