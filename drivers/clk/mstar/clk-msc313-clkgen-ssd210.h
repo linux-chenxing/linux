@@ -5,6 +5,18 @@
 #ifndef DRIVERS_CLK_MSTAR_CLK_MSC313_CLKGEN_SSD210_H_
 #define DRIVERS_CLK_MSTAR_CLK_MSC313_CLKGEN_SSD210_H_
 
+#define SPI_SSD210 SPI_SSD20XD
+#define MCU_SSD210 MCU_SSD20XD
+
+static const struct msc313_clkgen_parent_data ssd210_mspi_parents[] = {
+	PARENT_DIVIDER(9, 2),
+	PARENT_OF("unknown"),
+	PARENT_OF("xtal_div2"),
+	PARENT_DIVIDER(8, 2),
+};
+#define MSPI0_SSD210 MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MSPI0, "mspi0", ssd210_mspi_parents, 0xcc, 0, 2, 2, -1)
+#define MSPI1_SSD210 MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MSPI1, "mspi1", ssd210_mspi_parents, 0xcc, 8, 10, 2, -1)
+
 static const struct msc313_clkgen_parent_data ssd210_pspi_parents[] = {
 	PARENT_OF("unknown"),
 	PARENT_OF("unknown"),
@@ -23,7 +35,7 @@ static const struct msc313_clkgen_parent_data ssd210_pspi_parents[] = {
 #define SSD210_BDMA3	MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_BDMA3, "bdma3", bdma_parents, 0x180, 12, 14, 2, -1)
 
 static const struct msc313_mux_data ssd210_muxes[] = {
-	COMMON(SSD20XD),
+	COMMON(SSD210),
 	FUART0_SYNTH_IN,
 	FUART,
 	MIIC0,
