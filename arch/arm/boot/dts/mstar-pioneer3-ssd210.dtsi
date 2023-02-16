@@ -42,12 +42,12 @@
 			 <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX>,
 			 <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_TX_REF>,
 			 <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_RX_REF>;
-		assigned-clocks = <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX_MUX>,
-						  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_RX_REF_MUX>,
-						  <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_TX_MUX>,
-						  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_TX_REF_MUX>;
-		assigned-clock-parents = <&rmii_buf>,
-								 <&rmii_buf>,
-								 <&rmii_buf>,
-								 <&rmii_buf>;
+	assigned-clocks = <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_RX_MUX>,
+					  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_RX_REF_MUX>,
+					  <&sc_gp_ctrl_muxes MSC313_SC_GP_EMAC_TX_MUX>,
+					  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_EMAC_TX_REF_MUX>;
+	assigned-clock-parents = <&rmii_buf>,
+							 <&rmii_buf>,
+							 <&rmii_buf>,
+							 <&rmii_buf>;
 };
