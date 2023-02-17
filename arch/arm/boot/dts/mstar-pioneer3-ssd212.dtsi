@@ -25,3 +25,8 @@
 &pinctrl_pm {
 	compatible = "sstar,ssd212-pm-pinctrl";
 };
+
+&sar {
+	compatible = "sstar,ssd212-sar";
+	status = "okay";
+};
