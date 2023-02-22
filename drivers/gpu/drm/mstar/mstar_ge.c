@@ -554,7 +554,7 @@ static int mstar_ge_do_strblt(struct mstar_ge *ge, unsigned int width,
 	int dx = (srcw * frac) / dstw;
 	int dy = (srch * frac) / dsth;
 
-	dev_info(ge->dev, "src %d x %d, dst %d x %d ini %d (%08x), %d (%08x), d %d (%08x) %d (%08x)",
+	dev_dbg(ge->dev, "src %d x %d, dst %d x %d ini %d (%08x), %d (%08x), d %d (%08x) %d (%08x)",
 		srcw, srch, dstw, dsth, inidx, inidx, inidy, inidy, dx, dx, dy, dy);
 
 	regmap_field_write(ge->stbb_ini_dx, inidx);
@@ -989,7 +989,7 @@ static int mstar_ge_validate_op(const struct mstar_ge *ge,
 				op->rectfill.x1, op->rectfill.y1);
 		break;
 	case MSTAR_GE_OP_BITBLT:
-		dev_info(ge->dev, "op %d: BITBLT %d,%d -> %d:%d,%d:%d"
+		dev_dbg(ge->dev, "op %d: BITBLT %d,%d -> %d:%d,%d:%d"
 				  "(flags 0x%x, src_v_flip %d, dst_h_flip %d, dst_v_flip %d, rot %d)\n",
 				  number,
 				  op->bitblt.src_x0, op->bitblt.src_y0,
