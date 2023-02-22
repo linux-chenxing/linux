@@ -212,7 +212,6 @@ static void msc313_spi_set_cs(struct spi_device *spi, bool enable)
 	struct msc313_spi *mspi = spi_master_get_devdata(spi->master);
 
 	regmap_field_write(mspi->cs, enable ? 1 : 0);
-
 }
 
 static void msc313_spi_dma_callback(void *dma_async_param,
