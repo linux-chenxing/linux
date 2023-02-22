@@ -35,6 +35,7 @@
 /* The amount to shift depends on the IP version.. */
 #define TO_MIUSIZE(_bach, _x) (_x >> _bach->data->addr_sz_shift)
 #define FROM_MIUSIZE(_bach,_x) (_x <<  _bach->data->addr_sz_shift)
+#define MAX_PERIODS 128
 
 #define MSC313_BACH_DMA_SUB_CHANNEL_EN			0
 #define MSC313_BACH_DMA_SUB_CHANNEL_ADDR		0x4
@@ -407,10 +408,10 @@ static const struct snd_pcm_hardware msc313_bach_pcm_playback_hardware =
 	.channels_max		= 2,
 	/* The buffer level only has 16 bits */
 	.buffer_bytes_max	= (SZ_64K - 1),
-	.period_bytes_min	= 8 * 1024,
-	.period_bytes_max	= 24 * 1024,
+	.period_bytes_min	= 512,
+	.period_bytes_max	= 24 * SZ_1K,
 	.periods_min		= 2,
-	.periods_max		= 2,
+	.periods_max		= MAX_PERIODS,
 	.fifo_size		= 32,
 };
 
@@ -427,10 +428,10 @@ static const struct snd_pcm_hardware msc313_bach_pcm_capture_hardware =
 	.channels_max		= 2,
 	/* The buffer level only has 16 bits */
 	.buffer_bytes_max	= (SZ_64K - 1),
-	.period_bytes_min	= 1 * 1024,
-	.period_bytes_max	= 10 * 1024,
+	.period_bytes_min	= 512,
+	.period_bytes_max	= 10 * SZ_1K,  MSC313_BACH_ALIGNMENT,
 	.periods_min		= 2,
-	.periods_max		= 2,
+	.periods_max		= 128,
 	.fifo_size		= 32,
 };
 
@@ -824,8 +825,6 @@ static int msc313_bach_pcm_prepare(struct snd_soc_component *component,
 	unsigned mono = runtime->channels == 1 ? 1 : 0;
 	int i, ret;
 
-	dev_info(dev, "%s:%d\n", __func__, __LINE__);
-
 	if ((runtime->dma_addr % MSC313_BACH_ALIGNMENT) ||
 			(runtime->dma_bytes & MSC313_BACH_ALIGNMENT)) {
 		dev_err(dev, "dma_addr and/or dma_bytes not aligned\n");
@@ -844,18 +843,18 @@ static int msc313_bach_pcm_prepare(struct snd_soc_component *component,
 
 	miu_buffer_size = TO_MIUSIZE(bach, runtime->dma_bytes);
 	miu_addr = TO_MIUSIZE(bach, runtime->dma_addr);
-	bach_runtime->max_level = TO_MIUSIZE(bach, bach_runtime->period_bytes * 2);
+	bach_runtime->max_level = TO_MIUSIZE(bach, bach_runtime->period_bytes * MAX_PERIODS);
 
 	/* This is needed to reset the buffer level */
 	regmap_field_force_write(sub_channel->trigger, 0);
 	regmap_field_force_write(sub_channel->init, 1);
 	regmap_field_force_write(sub_channel->init, 0);
 
-	dev_info(dev, "sample rate: %d\n", substream->runtime->rate);
-	dev_info(dev, "period %d, (%d bytes)\n", runtime->period_size,
-			bach_runtime->period_bytes);
-	dev_info(dev, "dma addr %08x, size %zu\n",
-			(unsigned) runtime->dma_addr, runtime->dma_bytes);
+	//dev_dbg(dev, "sample rate: %d\n", substream->runtime->rate);
+	//dev_dbg(dev, "period %d, (%d bytes)\n", runtime->period_size,
+	//		bach_runtime->period_bytes);
+	//dev_dbg(dev, "dma addr %08x, size %zu\n",
+	//		(unsigned) runtime->dma_addr, runtime->dma_bytes);
 
 	regmap_field_write(sub_channel->addr_hi, miu_addr >> 12);
 	regmap_field_write(sub_channel->addr_lo, miu_addr);
