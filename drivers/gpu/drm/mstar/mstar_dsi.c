@@ -978,11 +978,11 @@ static int mstar_dsi_encoder_init(struct drm_device *drm, struct mstar_dsi *dsi)
 		goto err_cleanup_encoder;
 	}
 
-	ret = drm_connector_init_panel_orientation_property(dsi->connector);
-	if (ret) {
-		DRM_ERROR("Unable to init panel orientation\n");
-		goto err_cleanup_encoder;
-	}
+//	ret = drm_connector_init_panel_orientation_property(dsi->connector);
+//	if (ret) {
+//		DRM_ERROR("Unable to init panel orientation\n");
+//		goto err_cleanup_encoder;
+//	}
 
 	drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
 
