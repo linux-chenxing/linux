@@ -34,10 +34,10 @@ static const struct clk_parent_data emac_rxtx_ref_parents[] = {
 };
 
 #define EMAC_MUXES \
-	MSC313_MUX_CLK_PARENT_DATA("emac_rx", emac_rxtx_parents, 0x88, 0, 2, 1, -1), \
-	MSC313_MUX_CLK_PARENT_DATA("emac_rx_ref", emac_rxtx_ref_parents, 0x88, 8, 10, 1, -1), \
-	MSC313_MUX_CLK_PARENT_DATA("emac_tx", emac_rxtx_parents, 0x8c, 0, 2, 1, -1), \
-	MSC313_MUX_CLK_PARENT_DATA("emac_tx_ref", emac_rxtx_ref_parents, 0x8c, 8, 10, 1, -1)
+	MSC313_MUX_CLK_PARENT_DATA(MSC313_SC_GP_EMAC_RX, "emac_rx", emac_rxtx_parents, 0x88, 0, 2, 1, -1), \
+	MSC313_MUX_CLK_PARENT_DATA(MSC313_SC_GP_EMAC_RX_REF, "emac_rx_ref", emac_rxtx_ref_parents, 0x88, 8, 10, 1, -1), \
+	MSC313_MUX_CLK_PARENT_DATA(MSC313_SC_GP_EMAC_TX, "emac_tx", emac_rxtx_parents, 0x8c, 0, 2, 1, -1), \
+	MSC313_MUX_CLK_PARENT_DATA(MSC313_SC_GP_EMAC_TX_REF, "emac_tx_ref", emac_rxtx_ref_parents, 0x8c, 8, 10, 1, -1)
 
 static const struct msc313_mux_data msc313_muxes[] = {
 	EMAC_MUXES,
@@ -65,27 +65,27 @@ static const struct clk_parent_data hdmi_parents[] = {
 	{ .fw_name = "sc_pixel" },
 };
 #define SSD20XD_HDMI_MUX	0xd4
-#define SSD20XD_HDMI MSC313_MUX_CLK_PARENT_DATA("hdmi", hdmi_parents, SSD20XD_HDMI_MUX, 0, 2, 2, -1)
+#define SSD20XD_HDMI MSC313_MUX_CLK_PARENT_DATA(SSD20XD_SC_GP_HDMI_GATE, "hdmi", hdmi_parents, SSD20XD_HDMI_MUX, 0, 2, 2, -1)
 
 static const struct clk_parent_data mipi_tx_dsi_apb_parents[] = {
 	{ .fw_name = "xtal_div2" }, // incorrect, should be mcu
 	{ .fw_name = "xtal_div2" }, // incorrect, should be mipi_tx_dsi
 };
 #define SSD20XD_MIPI_TX_DSI_APB_MUX	0xdc
-#define SSD20XD_MIPI_TX_DSI_APB MSC313_MUX_CLK_PARENT_DATA("mipi_tx_dsi_apb", mipi_tx_dsi_apb_parents, SSD20XD_MIPI_TX_DSI_APB_MUX, 0, 2, 2, -1)
+#define SSD20XD_MIPI_TX_DSI_APB MSC313_MUX_CLK_PARENT_DATA(SSD20XD_SC_GP_MIPI_TX_DSI_APB, "mipi_tx_dsi_apb", mipi_tx_dsi_apb_parents, SSD20XD_MIPI_TX_DSI_APB_MUX, 0, 2, 2, -1)
 
 static const struct msc313_mux_data ssd20xd_muxes[] = {
 	EMAC_MUXES,
-	MSC313_MUX_CLK_PARENT_DATA("emac1_rx", emac_rxtx_parents, 0xcc, 0, 2, 1, -1),
-	MSC313_MUX_CLK_PARENT_DATA("emac1_rx_ref", emac_rxtx_ref_parents, 0xcc, 8, 10, 1, -1),
-	MSC313_MUX_CLK_PARENT_DATA("emac1_tx", emac_rxtx_parents, 0xd0, 0, 2, 1, -1),
-	MSC313_MUX_CLK_PARENT_DATA("emac1_tx_ref", emac_rxtx_ref_parents, 0xd0, 8, 10, 1, -1),
+	MSC313_MUX_CLK_PARENT_DATA(SSD20XD_SC_GP_EMAC1_RX, "emac1_rx", emac_rxtx_parents, 0xcc, 0, 2, 1, -1),
+	MSC313_MUX_CLK_PARENT_DATA(SSD20XD_SC_GP_EMAC1_RX_REF, "emac1_rx_ref", emac_rxtx_ref_parents, 0xcc, 8, 10, 1, -1),
+	MSC313_MUX_CLK_PARENT_DATA(SSD20XD_SC_GP_EMAC1_TX, "emac1_tx", emac_rxtx_parents, 0xd0, 0, 2, 1, -1),
+	MSC313_MUX_CLK_PARENT_DATA(SSD20XD_SC_GP_EMAC1_TX_REF, "emac1_tx_ref", emac_rxtx_ref_parents, 0xd0, 8, 10, 1, -1),
 	/*
 	 * I guess this is really a "deglitch", but the logic is inverted
 	 * (1 for the normal clock instead of 0) so it's modelled
 	 * as a single bit mux.
 	 */
-	MSC313_MUX_CLK_PARENT_DATA_FLAGS("sdio_gate", sdio_parents, SSD20XD_SDIO_BOOT_MUX,
+	MSC313_MUX_CLK_PARENT_DATA_FLAGS(SSD20XD_SC_GP_SDIO_GATE, "sdio_gate", sdio_parents, SSD20XD_SDIO_BOOT_MUX,
 			-1, 3, 1, -1, 0, CLK_SET_RATE_PARENT),
 	SSD20XD_HDMI,
 	SSD20XD_MIPI_TX_DSI_APB,
@@ -96,7 +96,7 @@ static const struct msc313_muxes_data ssd20xd_data = MSC313_MUXES_DATA(ssd20xd_m
 static const struct msc313_mux_data ssd210_muxes[] = {
 	EMAC_MUXES,
 	/* same as ssd20xd above */
-	MSC313_MUX_CLK_PARENT_DATA_FLAGS("sdio_gate", sdio_parents, SSD20XD_SDIO_BOOT_MUX,
+	MSC313_MUX_CLK_PARENT_DATA_FLAGS(SSD20XD_SC_GP_SDIO_GATE, "sdio_gate", sdio_parents, SSD20XD_SDIO_BOOT_MUX,
 			-1, 3, 1, -1, 0, CLK_SET_RATE_PARENT),
 };
 static const struct msc313_muxes_data ssd210_data = MSC313_MUXES_DATA(ssd210_muxes);
