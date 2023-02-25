@@ -183,6 +183,10 @@
 	pinctrl2: pinctrl@207800 {
 		compatible = "sstar,ssd210-pinctrl";
 		reg = <0x207800 0x200>;
+		ssd210_i2c0_mode1_pins: ssd210_i2c0_mode1_pins {
+			function = "i2c0";
+			groups = "i2c0_mode1";
+		};
 		ssd210_pwm0_mode1_pins: ssd210_pwm0_mode1_pins {
 			function = "pwm0";
 			groups = "pwm0_mode1";
@@ -190,6 +194,14 @@
 		ssd210_sdio_mode2_pins: ssd210_sdio_mode2_pins {
 			function = "sdio";
 			groups = "sdio_mode2";
+		};
+		ssd210_spi0_mode3_pins: ssd210_spi0_mode3_pins {
+			function = "spi0";
+			groups = "spi0_mode3";
+		};
+		ssd210_uart1_mode5_pins: ssd210_uart1_mode5_pins {
+			function = "uart1";
+			groups = "uart1_mode5";
 		};
 		eth_mode8_pins: eth_mode8_pins {
 			function = "eth";
