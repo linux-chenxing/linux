@@ -223,6 +223,16 @@
 	compatible = "sstar,ssd20xd-clkgen";
 };
 
+&sc_gp_ctrl_muxes {
+	compatible = "sstar,ssd210-sc-gp-ctrl-muxes";
+	clock-names = "eth_buf", "rmii_buf","xtal_div2", "sdio_clkgen", "sc_pixel";
+	clocks = <&eth_buf>,
+		 <&rmii_buf>,
+		 <&xtal_div2>,
+		 <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_SDIO 0>,
+		 <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SC_PIXEL 0>;
+};
+
 &timer0 {
 	compatible = "sstar,ssd20xd-timer";
 	clocks = <&clk_timer>;
