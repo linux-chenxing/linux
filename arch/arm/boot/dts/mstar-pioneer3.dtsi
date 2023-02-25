@@ -219,6 +219,10 @@
 		interrupt-parent = <&gpi>;
 	};
 
+	// todo maybe same as i2m?
+	uart2: serial@221400 {
+	};
+
 	pspi0: spi@222400 {
 		compatible = "sstar,ssd210-pspi";
 		reg = <0x222400 0x200>;
