@@ -170,6 +170,14 @@
 		interrupts-extended = <&intc_irq GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
 		status = "disabled";
 	};
+
+	pspi1: spi@222600 {
+		compatible = "sstar,ssd210-pspi";
+		reg = <0x222600 0x200>;
+		clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_PSPI1 0>;
+		interrupts-extended = <&intc_irq GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
+		//status = "disabled";
+	};
 };
 
 &clkgen {
