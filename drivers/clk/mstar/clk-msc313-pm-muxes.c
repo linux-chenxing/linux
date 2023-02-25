@@ -8,6 +8,8 @@
 #include <linux/of_device.h>
 #include <linux/platform_device.h>
 
+#include <dt-bindings/clock/mstar-msc313-pm-muxes.h>
+
 #include "clk-msc313-mux.h"
 
 #if 0
@@ -60,8 +62,8 @@ static const struct clk_parent_data spi_pm_parents[] = {
 	{ .fw_name = "rtc_xtal" },
 };
 
-#define MCU_PM MSC313_MUX_CLK_PARENT_DATA("mcu_pm", mcu_pm_parents, 0x80, 0, 2, 4, 7)
-#define SPI_PM MSC313_MUX_CLK_PARENT_DATA("spi_pm", spi_pm_parents, 0x80, 8, 10, 4, 14)
+#define MCU_PM MSC313_MUX_CLK_PARENT_DATA(MSC313_PM_MUXES_MCU_PM, "mcu_pm", mcu_pm_parents, 0x80, 0, 2, 4, 7)
+#define SPI_PM MSC313_MUX_CLK_PARENT_DATA(MSC313_PM_MUXES_SPI_PM, "spi_pm", spi_pm_parents, 0x80, 8, 10, 4, 14)
 
 static const struct clk_parent_data ir_parents[] = {
 	{ .fw_name = "xtal_div2" },
@@ -74,7 +76,7 @@ static const struct clk_parent_data ir_parents[] = {
 	{ .fw_name = "xtal_div2_div4" },
 };
 
-#define IR MSC313_MUX_CLK_PARENT_DATA("ir", ir_parents, 0x84, 5, 7, 3, -1)
+#define IR MSC313_MUX_CLK_PARENT_DATA(MSC313_PM_MUXES_IR, "ir", ir_parents, 0x84, 5, 7, 3, -1)
 
 static const struct clk_parent_data rtc_parents[] = {
 	{ .fw_name = "xtal_div2" },
@@ -92,9 +94,9 @@ static const struct clk_parent_data sar_pm_sleep_parents[] = {
 	{ .fw_name = "xtal_div2_div4" },
 };
 
-#define RTC		MSC313_MUX_CLK_PARENT_DATA("rtc", rtc_parents, 0x88, 0, 2, 2, -1)
-#define SAR		MSC313_MUX_CLK_PARENT_DATA("sar", sar_pm_sleep_parents, 0x88, 5, 7, 3, -1)
-#define PM_SLEEP	MSC313_MUX_CLK_PARENT_DATA("pm_sleep", sar_pm_sleep_parents, 0x88, 10, 12, 3, -1)
+#define RTC		MSC313_MUX_CLK_PARENT_DATA(MSC313_PM_MUXES_RTC, "rtc", rtc_parents, 0x88, 0, 2, 2, -1)
+#define SAR		MSC313_MUX_CLK_PARENT_DATA(MSC313_PM_MUXES_SAR, "sar", sar_pm_sleep_parents, 0x88, 5, 7, 3, -1)
+#define PM_SLEEP	MSC313_MUX_CLK_PARENT_DATA(MSC313_PM_MUXES_PM_SLEEP, "pm_sleep", sar_pm_sleep_parents, 0x88, 10, 12, 3, -1)
 
 static const struct msc313_mux_data msc313_muxes[] = {
 	MCU_PM,
