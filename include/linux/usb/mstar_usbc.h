@@ -45,6 +45,10 @@
  */
 
 #define MSTAR_USBC_REG_RSTCTRL	0x00
+
+static const struct reg_field usbc_vbus_sel_field = REG_FIELD(MSTAR_USBC_REG_RSTCTRL, 8, 8);
+static const struct reg_field usbc_reg_vbusvalid_field = REG_FIELD(MSTAR_USBC_REG_RSTCTRL, 9, 9);
+
 #define MSTAR_USBC_REG_PRTCTRL	0x04
 #define MSTAR_USBC_REG_INTEN	0x08
 #define MSTAR_USBC_REG_INTSTS	0x0c
