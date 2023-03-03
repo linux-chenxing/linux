@@ -456,7 +456,7 @@ static inline int musb_read_fifosize(struct musb *musb,
 	u8 reg = 0;
 
 	/* read from core using indexed model */
-	reg = musb_readb(mbase, musb->io.ep_offset(epnum, MUSB_FIFOSIZE));
+	reg = musb_readb(mbase + musb->io.ep_offset(epnum, 0), MUSB_FIFOSIZE);
 	/* 0's returned when no more endpoints */
 	if (!reg)
 		return -ENODEV;
