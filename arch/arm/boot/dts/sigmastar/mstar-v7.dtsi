@@ -1019,13 +1019,15 @@
 
 			otg0: otg@284a00 {
 				compatible = "mstar,msc313-musb";
-				reg = <0x284a00 0x200>;
+				reg = <0x284a00 0x400>;
 				interrupt-names = "mc";
 				interrupts-extended = <&intc_irq GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
 				phys = <&usbphy0>;
 				mstar,usbc = <&usbc0>;
 				clock-names = "udc";
 				clocks = <&xtal_div2>;
+				interconnect-names = "dma-mem";
+				interconnects = <&miu 0>;
 				status = "disabled";
 			};
 
