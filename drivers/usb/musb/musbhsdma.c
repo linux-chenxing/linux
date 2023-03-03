@@ -222,34 +222,28 @@ static int dma_channel_abort(struct dma_channel *channel)
 	struct musb_dma_channel *musb_channel = channel->private_data;
 	void __iomem *mbase = musb_channel->controller->base;
 	struct musb *musb = musb_channel->controller->private_data;
+	void __iomem *ep = mbase + musb->io.ep_offset(musb_channel->epnum, 0);
 
 	u8 bchannel = musb_channel->idx;
-	int offset;
 	u16 csr;
 
 	if (channel->status == MUSB_DMA_STATUS_BUSY) {
 		if (musb_channel->transmit) {
-			offset = musb->io.ep_offset(musb_channel->epnum,
-						MUSB_TXCSR);
-
 			/*
 			 * The programming guide says that we must clear
 			 * the DMAENAB bit before the DMAMODE bit...
 			 */
-			csr = musb_readw(mbase, offset);
+			csr = musb_readw(ep, MUSB_TXCSR);
 			csr &= ~(MUSB_TXCSR_AUTOSET | MUSB_TXCSR_DMAENAB);
-			musb_writew(mbase, offset, csr);
+			musb_writew(ep, MUSB_TXCSR, csr);
 			csr &= ~MUSB_TXCSR_DMAMODE;
-			musb_writew(mbase, offset, csr);
+			musb_writew(ep, MUSB_TXCSR, csr);
 		} else {
-			offset = musb->io.ep_offset(musb_channel->epnum,
-						MUSB_RXCSR);
-
-			csr = musb_readw(mbase, offset);
+			csr = musb_readw(ep, MUSB_RXCSR);
 			csr &= ~(MUSB_RXCSR_AUTOCLEAR |
 				 MUSB_RXCSR_DMAENAB |
 				 MUSB_RXCSR_DMAMODE);
-			musb_writew(mbase, offset, csr);
+			musb_writew(ep, MUSB_RXCSR, csr);
 		}
 
 		musb_writew(mbase,
@@ -342,8 +336,7 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
 					(channel->actual_len %
 					    musb_channel->max_packet_sz))) {
 					u8  epnum  = musb_channel->epnum;
-					int offset = musb->io.ep_offset(epnum,
-								    MUSB_TXCSR);
+					void __iomem *ep = mbase + musb->io.ep_offset(epnum, 0);
 					u16 txcsr;
 
 					/*
@@ -351,17 +344,17 @@ irqreturn_t dma_controller_irq(int irq, void *private_data)
 					 * must clear DMAENAB before DMAMODE.
 					 */
 					musb_ep_select(mbase, epnum);
-					txcsr = musb_readw(mbase, offset);
+					txcsr = musb_readw(ep, MUSB_TXCSR);
 					if (channel->desired_mode == 1) {
 						txcsr &= ~(MUSB_TXCSR_DMAENAB
 							| MUSB_TXCSR_AUTOSET);
-						musb_writew(mbase, offset, txcsr);
+						musb_writew(ep, MUSB_TXCSR, txcsr);
 						/* Send out the packet */
 						txcsr &= ~MUSB_TXCSR_DMAMODE;
 						txcsr |= MUSB_TXCSR_DMAENAB;
 					}
 					txcsr |=  MUSB_TXCSR_TXPKTRDY;
-					musb_writew(mbase, offset, txcsr);
+					musb_writew(ep, MUSB_TXCSR, txcsr);
 				}
 				musb_dma_completion(musb, musb_channel->epnum,
 						    musb_channel->transmit);
