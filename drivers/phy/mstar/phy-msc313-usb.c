@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 #include <dt-bindings/phy/phy.h>
+#include <linux/gpio/consumer.h>
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/interrupt.h>
@@ -23,6 +24,7 @@ struct msc313_usb_phy {
 	struct regmap *bc;
 
 	enum usb_dr_mode dr_mode;
+	struct gpio_desc *id_gpiod;
 
 	struct regulator *vbus;
 };
@@ -55,14 +57,30 @@ static irqreturn_t msc313_usb_phy_irq(int irq, void *data)
 
 static void msc313_usb_phy_switch_port(struct msc313_usb_phy *phy)
 {
+	enum usb_dr_mode dr_mode = phy->dr_mode;
+	int id;
+
 	regmap_update_bits(phy->usbc, MSTAR_USBC_REG_PRTCTRL,
 				MSTAR_PRTCTRL_OTG | MSTAR_PRTCTRL_UHC, 0);
 
-	switch(phy->dr_mode){
+	if (phy->vbus)
+		regulator_disable(phy->vbus);
+
+	if (dr_mode == USB_DR_MODE_OTG) {
+		id = phy->id_gpiod ? gpiod_get_value_cansleep(phy->id_gpiod) : 0;
+		dr_mode = id ? USB_DR_MODE_HOST : USB_DR_MODE_PERIPHERAL;
+	}
+
+	switch(dr_mode){
 	case USB_DR_MODE_HOST:
 		dev_info(phy->dev, "Switching port to UHC\n");
 		regmap_update_bits(phy->usbc, MSTAR_USBC_REG_PRTCTRL,
 					      MSTAR_PRTCTRL_UHC, MSTAR_PRTCTRL_UHC);
+
+		/* Enable vbus */
+		if (phy->vbus)
+			regulator_enable(phy->vbus);
+
 		break;
 	case USB_DR_MODE_PERIPHERAL:
 		dev_info(phy->dev, "Switching port to OTG\n");
@@ -139,9 +157,15 @@ static int msc313_usb_phy_probe(struct platform_device *pdev)
 		msc313_usb_phy->dr_mode = USB_DR_MODE_HOST;
 
 	irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
-	if (!irq){
+	if (!irq) {
 		dev_warn(&pdev->dev, "no interrupt provided");
 	}
+
+	if (msc313_usb_phy->dr_mode == USB_DR_MODE_OTG) {
+		msc313_usb_phy->id_gpiod = devm_gpiod_get_optional(&pdev->dev, "id", GPIOD_IN);
+	}
+
+	msc313_usb_phy->vbus = devm_regulator_get(dev, "vbus");
 
 	// hack for m5, these seem to be the reset values for i3
 	regmap_write(msc313_usb_phy->usbc, MSTAR_USBC_REG_RSTCTRL,
@@ -206,9 +230,6 @@ static int msc313_usb_phy_probe(struct platform_device *pdev)
 	if (IS_ERR(phy))
 		return PTR_ERR(phy);
 	phy_set_drvdata(phy, msc313_usb_phy);
-
-	msc313_usb_phy->vbus = devm_regulator_get(dev, "vbus");
-	regulator_enable(msc313_usb_phy->vbus);
 
 	dev_set_drvdata(dev, msc313_usb_phy);
 
