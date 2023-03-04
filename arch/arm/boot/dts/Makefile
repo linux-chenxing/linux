@@ -39,6 +39,8 @@ subdir-y += unisoc
 subdir-y += vt8500
 subdir-y += xen
 subdir-y += xilinx
+
+mstar-pioneer3-ssd210-perdita-rescue-dtbs := mstar-pioneer3-ssd210-perdita.dtb mstar-pioneer3-ssd210-perdita-usbotg.dtbo
 dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-infinity-msc313-breadbee_crust.dtb \
 	mstar-infinity2m-ssd201-wirelesstag-ido-som2d01.dtb \
@@ -68,6 +70,7 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-pioneer3-ssd210-perdita.dtb \
 	mstar-pioneer3-ssd210-perdita-ili9341.dtbo \
 	mstar-pioneer3-ssd210-perdita-usbotg.dtbo \
+	mstar-pioneer3-ssd210-perdita-rescue.dtb \
 	mstar-pioneer3-ssd210-100ask-dongshanpipicow.dtb \
 	mstar-pioneer3-ssd210-100ask-dongshanpipicow-snander.dtb \
 	mstar-pioneer3-ssd210-qfn68demo.dtb \
