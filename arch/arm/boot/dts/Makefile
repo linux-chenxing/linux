@@ -67,6 +67,7 @@ dtb-$(CONFIG_ARCH_MSTARV7) += \
 	mstar-pioneer3-ssd210-kiipii.dtb \
 	mstar-pioneer3-ssd210-perdita.dtb \
 	mstar-pioneer3-ssd210-perdita-ili9341.dtbo \
+	mstar-pioneer3-ssd210-perdita-usbotg.dtbo \
 	mstar-pioneer3-ssd210-100ask-dongshanpipicow.dtb \
 	mstar-pioneer3-ssd210-100ask-dongshanpipicow-snander.dtb \
 	mstar-pioneer3-ssd210-qfn68demo.dtb \

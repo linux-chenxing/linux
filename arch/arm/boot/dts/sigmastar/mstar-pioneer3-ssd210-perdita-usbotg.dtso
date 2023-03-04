@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2023 thingy.jp.
+ * Author: Daniel Palmer <daniel@thingy.jp>
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+&{/} {
+	reg_vusbout: regulator_vbusout {
+		compatible = "regulator-fixed";
+		regulator-name = "vbusout";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&sar 0 0>;
+		enable-active-high;
+	};
+};
+
+&usbphy0 {
+	dr_mode = "otg";
+	vbus-supply = <&reg_vusbout>;
+	id-gpio = <&sar 1 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+
+&uhc0 {
+	status = "okay";
+};
+
+&otg0 {
+	status = "okay";
+};
