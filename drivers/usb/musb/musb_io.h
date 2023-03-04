@@ -43,7 +43,7 @@ extern u8 (*musb_clearb)(void __iomem *addr, u32 offset);
 extern u16 (*musb_readw)(void __iomem *addr, u32 offset);
 extern void (*musb_writew)(void __iomem *addr, u32 offset, u16 data);
 extern u16 (*musb_clearw)(void __iomem *addr, u32 offset);
-extern u32 musb_readl(void __iomem *addr, u32 offset);
-extern void musb_writel(void __iomem *addr, u32 offset, u32 data);
+extern u32 (*musb_readl)(void __iomem *addr, u32 offset);
+extern void (*musb_writel)(void __iomem *addr, u32 offset, u32 data);
 
 #endif
