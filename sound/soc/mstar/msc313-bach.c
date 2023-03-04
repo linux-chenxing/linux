@@ -429,7 +429,7 @@ static const struct snd_pcm_hardware msc313_bach_pcm_capture_hardware =
 	/* The buffer level only has 16 bits */
 	.buffer_bytes_max	= (SZ_64K - 1),
 	.period_bytes_min	= 512,
-	.period_bytes_max	= 10 * SZ_1K,  MSC313_BACH_ALIGNMENT,
+	.period_bytes_max	= 10 * SZ_1K,
 	.periods_min		= 2,
 	.periods_max		= 128,
 	.fifo_size		= 32,
@@ -785,7 +785,7 @@ static snd_pcm_uframes_t msc313_bach_pcm_pointer(struct snd_soc_component *compo
 
 	dev_dbg(dev, "stream position is %lu frames.\n"
 		      "total %zu bytes, processed %zu, bytes, pending bytes %zu,\n"
-		      "inflight %zu, done %lu bytes, infifo %d bytes\n",
+		      "inflight %zu, done %zu bytes, infifo %d bytes\n",
 		      pos,
 		      bach_runtime->total_bytes,
 		      bach_runtime->processed_bytes,
@@ -1488,11 +1488,6 @@ static int msc313_bach_probe(struct platform_device *pdev)
 	struct msc313_bach_data *match_data;
 	void __iomem *base;
 	int i, j, ret, irq;
-
-	match_data = device_get_match_data(dev);
-	if (!match_data)
-		return -EINVAL;
-
 	/*
 	 * Arrays for per-channel controls that are embedded in registers with
 	 * controls for other channels.
@@ -1505,6 +1500,10 @@ static int msc313_bach_probe(struct platform_device *pdev)
 	const struct reg_field dma1_wr_mono_field = REG_FIELD(MSC313_BACH_DMA_TEST_CTRL7, 14, 14);
 	const struct reg_field dma1_rd_mono_copy_field = REG_FIELD(MSC313_BACH_DMA_TEST_CTRL7, 13, 13);
 	const struct reg_field dma_int_en_field = REG_FIELD(REG_DMA_INT, 1, 1);
+
+	match_data = device_get_match_data(dev);
+	if (!match_data)
+		return -EINVAL;
 
 	/* Get the resources we need to probe the components */
 	bach = devm_kzalloc(dev, sizeof(*bach), GFP_KERNEL);
