@@ -172,6 +172,8 @@ struct musb_platform_ops {
 	u16	(*readw)(void __iomem *addr, u32 offset);
 	void	(*writew)(void __iomem *addr, u32 offset, u16 data);
 	u16	(*clearw)(void __iomem *addr, u32 offset);
+	u32	(*readl)(void __iomem *addr, u32 offset);
+	void	(*writel)(void __iomem *addr, u32 offset, u32 data);
 	void	(*read_fifo)(struct musb_hw_ep *hw_ep, u16 len, u8 *buf);
 	void	(*write_fifo)(struct musb_hw_ep *hw_ep, u16 len, const u8 *buf);
 	u16	(*get_toggle)(struct musb_qh *qh, int is_out);

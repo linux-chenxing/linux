@@ -275,6 +275,20 @@ static void musb_default_writew(void __iomem *addr, u32 offset, u16 data)
 	__raw_writew(data, addr + offset);
 }
 
+static u32 musb_default_readl(void __iomem *addr, u32 offset)
+{
+	u32 data = __raw_readl(addr + offset);
+
+	trace_musb_readl(__builtin_return_address(0), addr, offset, data);
+	return data;
+}
+
+static void musb_default_writel(void __iomem *addr, u32 offset, u32 data)
+{
+	trace_musb_writel(__builtin_return_address(0), addr, offset, data);
+	__raw_writel(data, addr + offset);
+}
+
 static u16 musb_default_get_toggle(struct musb_qh *qh, int is_out)
 {
 	void __iomem *epio = qh->hw_ep->regs;
@@ -415,20 +429,10 @@ EXPORT_SYMBOL_GPL(musb_writew);
 u16 (*musb_clearw)(void __iomem *addr, u32 offset);
 EXPORT_SYMBOL_GPL(musb_clearw);
 
-u32 musb_readl(void __iomem *addr, u32 offset)
-{
-	u32 data = __raw_readl(addr + offset);
-
-	trace_musb_readl(__builtin_return_address(0), addr, offset, data);
-	return data;
-}
+u32 (*musb_readl)(void __iomem *addr, u32 offset);
 EXPORT_SYMBOL_GPL(musb_readl);
 
-void musb_writel(void __iomem *addr, u32 offset, u32 data)
-{
-	trace_musb_writel(__builtin_return_address(0), addr, offset, data);
-	__raw_writel(data, addr + offset);
-}
+void (*musb_writel)(void __iomem *addr, u32 offset, u32 data);
 EXPORT_SYMBOL_GPL(musb_writel);
 
 #ifndef CONFIG_MUSB_PIO_ONLY
@@ -2343,6 +2347,9 @@ musb_init_controller(struct device *dev, int nIrq, void __iomem *ctrl)
 	musb_writeb = musb_default_writeb;
 	musb_readw = musb_default_readw;
 	musb_writew = musb_default_writew;
+	musb_readl = musb_default_readl;
+	musb_writel = musb_default_writel;
+
 
 	/* The musb_platform_init() call:
 	 *   - adjusts musb->mregs
@@ -2416,6 +2423,11 @@ musb_init_controller(struct device *dev, int nIrq, void __iomem *ctrl)
 		musb_clearw = musb->ops->clearw;
 	else
 		musb_clearw = musb_readw;
+
+	if (musb->ops->readl)
+		musb_readl = musb->ops->readl;
+	if (musb->ops->writel)
+		musb_writel = musb->ops->writel;
 
 #ifndef CONFIG_MUSB_PIO_ONLY
 	if (!musb->ops->dma_init || !musb->ops->dma_exit) {
