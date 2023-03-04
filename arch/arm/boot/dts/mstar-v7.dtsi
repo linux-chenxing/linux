@@ -1019,7 +1019,7 @@
 
 			otg0: otg@284a00 {
 				compatible = "mstar,msc313-musb";
-				reg = <0x284a00 0x400>;
+				reg = <0x284a00 0x600>;
 				interrupt-names = "mc";
 				interrupts-extended = <&intc_irq GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
 				phys = <&usbphy0>;
