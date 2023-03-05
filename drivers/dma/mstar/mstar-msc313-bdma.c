@@ -524,6 +524,39 @@ static void msc313_bdma_watchdog(struct timer_list *t)
 	tasklet_schedule(&chan->tasklet);
 }
 
+static int msc313_bdma_suspend(struct device *dev)
+{
+	struct msc313_bdma *bdma = dev_get_drvdata(dev);
+	int i;
+
+	for (i = 0; i < bdma->info->channels; i++)
+		regmap_field_write(bdma->chans[i].int_en, 0);
+
+	clk_disable_unprepare(bdma->clk);
+
+	return 0;
+}
+
+static int msc313_bdma_resume(struct device *dev)
+{
+	struct msc313_bdma *bdma = dev_get_drvdata(dev);
+	int i, ret;
+
+	ret = clk_prepare_enable(bdma->clk);
+	if (ret)
+		return ret;
+
+	for (i = 0; i < bdma->info->channels; i++)
+		regmap_field_write(bdma->chans[i].int_en, 1);
+
+	return 0;
+}
+
+static UNIVERSAL_DEV_PM_OPS(msc313_bdma_pm_ops,
+			    msc313_bdma_suspend,
+			    msc313_bdma_resume,
+			    NULL);
+
 static int msc313_bdma_probe(struct platform_device *pdev)
 {
 	const struct msc313_bdma_info *match_data;
@@ -725,12 +758,18 @@ static int msc313_bdma_probe(struct platform_device *pdev)
 	if(ret)
 		return ret;
 
+#ifdef CONFIG_PM
 	pm_runtime_irq_safe(dev);
 	pm_runtime_set_autosuspend_delay(dev, BDMA_AUTOSUSPEND_DELAY);
 	pm_runtime_use_autosuspend(dev);
 	pm_runtime_mark_last_busy(dev);
 	pm_runtime_set_active(dev);
 	pm_runtime_enable(dev);
+#else
+	ret = msc313_bdma_resume(dev);
+	if (ret)
+		return ret;
+#endif
 
 	return of_dma_controller_register(pdev->dev.of_node,
 			msc313_bdma_of_xlate, &bdma->dma_device);
@@ -739,7 +778,8 @@ static int msc313_bdma_probe(struct platform_device *pdev)
 static int msc313_bdma_remove(struct platform_device *pdev)
 {
 	struct msc313_bdma *bdma = platform_get_drvdata(pdev);
-	int i;
+	struct device *dev = &pdev->dev;
+	int ret, i;
 
 	of_dma_controller_free(dev->of_node);
 
@@ -748,41 +788,14 @@ static int msc313_bdma_remove(struct platform_device *pdev)
 		tasklet_kill(&chan[i].tasklet);
 	}
 
-	return 0;
-}
-
-static int __maybe_unused msc313_bdma_suspend(struct device *dev)
-{
-	struct msc313_bdma *bdma = dev_get_drvdata(dev);
-	int i;
-
-	for (i = 0; i < bdma->info->channels; i++)
-		regmap_field_write(bdma->chans[i].int_en, 0);
-
-	clk_disable_unprepare(bdma->clk);
-
-	return 0;
-}
-
-static int __maybe_unused msc313_bdma_resume(struct device *dev)
-{
-	struct msc313_bdma *bdma = dev_get_drvdata(dev);
-	int i, ret;
-
-	ret = clk_prepare_enable(bdma->clk);
+#ifndef CONFIG_PM
+	ret = msc313_bdma_suspend(dev);
 	if (ret)
 		return ret;
-
-	for (i = 0; i < bdma->info->channels; i++)
-		regmap_field_write(bdma->chans[i].int_en, 1);
+#endif
 
 	return 0;
 }
-
-static UNIVERSAL_DEV_PM_OPS(msc313_bdma_pm_ops,
-			    msc313_bdma_suspend,
-			    msc313_bdma_resume,
-			    NULL);
 
 static const struct msc313_bdma_info msc313_info = {
 	.channels = 2,
