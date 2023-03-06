@@ -13,3 +13,4 @@ config CRYPTO_DEV_MSC313_AESDMA
 config CRYPTO_DEV_MSC313_RSA
 	tristate "Support for MSC313 RSA unit"
 	depends on ARCH_MSTARV7
+	select CRYPTO_RSA
