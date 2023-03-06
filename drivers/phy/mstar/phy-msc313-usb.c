@@ -26,6 +26,7 @@ struct msc313_usb_phy {
 	enum usb_dr_mode dr_mode;
 	struct gpio_desc *id_gpiod;
 
+	bool vbus_on;
 	struct regulator *vbus;
 };
 
@@ -58,13 +59,11 @@ static irqreturn_t msc313_usb_phy_irq(int irq, void *data)
 static void msc313_usb_phy_switch_port(struct msc313_usb_phy *phy)
 {
 	enum usb_dr_mode dr_mode = phy->dr_mode;
+	struct device *dev = phy->dev;
 	int id;
 
 	regmap_update_bits(phy->usbc, MSTAR_USBC_REG_PRTCTRL,
 				MSTAR_PRTCTRL_OTG | MSTAR_PRTCTRL_UHC, 0);
-
-	if (phy->vbus)
-		regulator_disable(phy->vbus);
 
 	if (dr_mode == USB_DR_MODE_OTG) {
 		id = phy->id_gpiod ? gpiod_get_value_cansleep(phy->id_gpiod) : 0;
@@ -78,11 +77,20 @@ static void msc313_usb_phy_switch_port(struct msc313_usb_phy *phy)
 					      MSTAR_PRTCTRL_UHC, MSTAR_PRTCTRL_UHC);
 
 		/* Enable vbus */
-		if (phy->vbus)
+		if (phy->vbus && !phy->vbus_on) {
+			dev_info(dev, "Enabling VBUS\n");
 			regulator_enable(phy->vbus);
+			phy->vbus_on = true;
+		}
 
 		break;
 	case USB_DR_MODE_PERIPHERAL:
+		if (phy->vbus && phy->vbus_on) {
+			dev_info(dev, "Disabling VBUS\n");
+			regulator_disable(phy->vbus);
+			phy->vbus_on = false;
+		}
+
 		dev_info(phy->dev, "Switching port to OTG\n");
 		regmap_update_bits(phy->usbc, MSTAR_USBC_REG_PRTCTRL,
 					      MSTAR_PRTCTRL_OTG, MSTAR_PRTCTRL_OTG);
