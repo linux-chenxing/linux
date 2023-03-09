@@ -172,6 +172,32 @@ struct reg_sequence {
 })
 
 /**
+ * regmap_field_read_poll_timeout_atomic - Poll until a condition is met or timeout
+ *
+ * @field: Regmap field to read from
+ * @val: Unsigned integer variable to read the value into
+ * @cond: Break condition (usually involving @val)
+ * @delay_us: Maximum time to sleep between reads in us (0
+ *            tight-loops).  Should be less than ~20ms since usleep_range
+ *            is used (see Documentation/timers/timers-howto.rst).
+ * @timeout_us: Timeout in us, 0 means never timeout
+ *
+ * Returns 0 on success and -ETIMEDOUT upon a timeout or the regmap_field_read
+ * error return value in case of a error read. In the two former cases,
+ * the last read value at @addr is stored in @val. Must not be called
+ * from atomic context if sleep_us or timeout_us are used.
+ *
+ * This is modelled after the readx_poll_timeout macros in linux/iopoll.h.
+ */
+#define regmap_field_read_poll_timeout_atomic(field, val, cond, delay_us, timeout_us) \
+({ \
+	int __ret, __tmp; \
+	__tmp = read_poll_timeout_atomic(regmap_field_read, __ret, __ret || (cond), \
+			delay_us, timeout_us, false, (field), &(val)); \
+	__ret ?: __tmp; \
+})
+
+/**
  * regmap_field_read_poll_timeout - Poll until a condition is met or timeout
  *
  * @field: Regmap field to read from
