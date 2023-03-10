@@ -532,7 +532,7 @@ static int msc313_bdma_suspend(struct device *dev)
 	for (i = 0; i < bdma->info->channels; i++)
 		regmap_field_write(bdma->chans[i].int_en, 0);
 
-	clk_disable_unprepare(bdma->clk);
+	clk_disable(bdma->clk);
 
 	return 0;
 }
@@ -542,7 +542,7 @@ static int msc313_bdma_resume(struct device *dev)
 	struct msc313_bdma *bdma = dev_get_drvdata(dev);
 	int i, ret;
 
-	ret = clk_prepare_enable(bdma->clk);
+	ret = clk_enable(bdma->clk);
 	if (ret)
 		return ret;
 
@@ -588,7 +588,7 @@ static int msc313_bdma_probe(struct platform_device *pdev)
 	if(IS_ERR(regmap))
 		return PTR_ERR(regmap);
 
-	bdma->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+	bdma->clk = devm_clk_get_prepared(&pdev->dev, NULL);
 	if (IS_ERR(bdma->clk))
 		return PTR_ERR(bdma->clk);
 
@@ -759,6 +759,12 @@ static int msc313_bdma_probe(struct platform_device *pdev)
 		return ret;
 
 #ifdef CONFIG_PM
+	/*
+	 * balance the clock, suspend will get called and call clk_disable()
+	 * the clk needs to be enabled before that happens to avoid warnings.
+	 */
+	clk_enable(bdma->clk);
+
 	pm_runtime_irq_safe(dev);
 	pm_runtime_set_autosuspend_delay(dev, BDMA_AUTOSUSPEND_DELAY);
 	pm_runtime_use_autosuspend(dev);
