@@ -549,6 +549,7 @@ static const struct regmap_config msc313_clkgen_regmap_config = {
 	.reg_bits = 16,
 	.val_bits = 16,
 	.reg_stride = 4,
+	.fast_io = true,
 };
 
 static struct msc313_mux *msc313_clkgen_xlate_idx_to_mux(struct msc313_clkgen *clkgen, unsigned int idx)
