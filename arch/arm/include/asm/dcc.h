@@ -31,3 +31,11 @@ static inline void __dcc_putchar(char c)
 		: "r" (c));
 	isb();
 }
+
+static inline void __dcc_writel(u32 v)
+{
+	asm volatile("mcr p14, 0, %0, c0, c5, 0	@ write a long"
+		: /* no output register */
+		: "r" (v));
+	isb();
+}
