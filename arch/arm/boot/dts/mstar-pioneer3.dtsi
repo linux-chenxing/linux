@@ -175,10 +175,6 @@
 	};
 };
 
-&pinctrl {
-	compatible = "sstar,ssd20xd-pinctrl";
-};
-
 &pmu {
 	interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
 		     <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
@@ -187,6 +183,11 @@
 
 &riu {
 	/delete-node/ gpio@207800;
+	/*
+	 * There are apparently registers in this area
+	 * still but pinctrl is handled somewhere else now
+	 */
+	/delete-node/ pinctrl@203c00;
 
 	pwm: pwm@3400 {
 		compatible = "mstar,msc313e-pwm";
