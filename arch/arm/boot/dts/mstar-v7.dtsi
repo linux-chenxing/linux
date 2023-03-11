@@ -920,8 +920,8 @@
 				#size-cells = <0>;
 				clock-names = "i2c_clk";
 				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_MIIC1 0>;
-				pinctrl-names = "default";
-				pinctrl-0 = <&i2c1_pins>;
+				//pinctrl-names = "default";
+				//pinctrl-0 = <&i2c1_pins>;
 				interconnect-names = "dma-mem";
 				interconnects = <&miu 0>;
 				status = "disabled";
