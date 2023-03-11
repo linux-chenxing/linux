@@ -335,8 +335,8 @@
 		no-1-8-v;
 		cap-sd-highspeed;
 		bus-width = <4>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&sdio_pins>;
+		//pinctrl-names = "default";
+		//pinctrl-0 = <&sdio_pins>;
 		//broken-cd;
 		cd-gpios = <&gpio_pm 1 GPIO_ACTIVE_LOW>;
 		interconnects = <&miu 0>;
