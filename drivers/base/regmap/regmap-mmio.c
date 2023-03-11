@@ -14,7 +14,10 @@
 
 #include "internal.h"
 
+#include <asm/dcc.h>
+
 struct regmap_mmio_context {
+	u32 magicnum;
 	void __iomem *regs;
 	unsigned int val_bytes;
 	bool big_endian;
@@ -248,9 +251,11 @@ static unsigned int regmap_mmio_ioread8(struct regmap_mmio_context *ctx,
 	return ioread8(ctx->regs + reg);
 }
 
+
 static unsigned int regmap_mmio_read16le(struct regmap_mmio_context *ctx,
 				         unsigned int reg)
 {
+	__dcc_writel(ctx->magicnum);
 	return readw(ctx->regs + reg);
 }
 
@@ -434,6 +439,7 @@ static struct regmap_mmio_context *regmap_mmio_gen_context(struct device *dev,
 	if (!ctx)
 		return ERR_PTR(-ENOMEM);
 
+	ctx->magicnum = dev ? (u32) dev->driver : 0xf00ff00f;
 	ctx->regs = regs;
 	ctx->val_bytes = config->val_bits / 8;
 	ctx->clk = ERR_PTR(-ENODEV);
