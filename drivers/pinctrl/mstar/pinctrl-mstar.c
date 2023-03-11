@@ -96,10 +96,13 @@ int mstar_pinctrl_parse_functions(struct msc313_pinctrl *pinctrl)
 	for (i = 0; i < pinctrl->info->nfunctions; i++) {
 		const struct msc313_pinctrl_function *func =  &pinctrl->info->functions[i];
 
-		// clear any existing value for the function
+		/* clear any existing value for the function */
 		if (func->reg >= 0) {
-			regmap_update_bits(pinctrl->regmap, func->reg,
-					func->mask, 0);
+			if (strcmp(func->name, "jtag") == 0)
+				dev_info(pinctrl->dev, "bootloader seems to have left JTAG enabled\n");
+			else
+				regmap_update_bits(pinctrl->regmap, func->reg,
+						func->mask, 0);
 		}
 
 		ret = pinmux_generic_add_function(pinctrl->pctl, func->name,
