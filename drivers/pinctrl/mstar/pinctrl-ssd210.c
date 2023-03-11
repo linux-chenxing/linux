@@ -24,6 +24,7 @@ static const struct regmap_config ssd210_pinctrl_regmap_config = {
 	.reg_bits = 16,
 	.val_bits = 16,
 	.reg_stride = 4,
+	.fast_io = true,
 };
 
 /* chip data tables .. */
