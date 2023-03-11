@@ -847,8 +847,8 @@
 				interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
 				reg-shift = <3>;
 				clocks = <&clkgen MSC313_CLKGEN_DEGLITCHES MSC313_CLKGEN_FUART 0>;
-				pinctrl-names = "default";
-				pinctrl-0 = <&fuart_pins>;
+				//pinctrl-names = "default";
+				//pinctrl-0 = <&fuart_pins>;
 				status = "disabled";
 			};
 
