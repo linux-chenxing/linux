@@ -82,9 +82,6 @@ static int ssd210_pinctrl_probe(struct platform_device *pdev)
 	if (ret)
 		dev_err(pinctrl->dev, "failed to enable pinctrl\n");
 
-	// hack for i2c0 mode 0
-	regmap_write(pinctrl->regmap, REG_SSD210_I2C0, 0x61);
-
 	return 0;
 }
 
