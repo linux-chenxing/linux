@@ -48,7 +48,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 	struct syscon *syscon;
 	struct regmap *regmap;
 	void __iomem *base;
-	u32 reg_io_width;
+	u32 reg_io_width, val_bits;
 	int ret;
 	struct regmap_config syscon_config = syscon_regmap_config;
 	struct resource res;
@@ -86,6 +86,11 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 	if (ret)
 		reg_io_width = 4;
 
+	/* Sometimes we have only a certain number of bits */
+	ret = of_property_read_u32(np, "val-bits", &val_bits);
+	if (ret)
+		val_bits = reg_io_width * 8;
+
 	ret = of_hwspin_lock_get_id(np, 0);
 	if (ret > 0 || (IS_ENABLED(CONFIG_HWSPINLOCK) && ret == 0)) {
 		syscon_config.use_hwlock = true;
@@ -106,7 +111,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 
 	syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@%pa", np, &res.start);
 	syscon_config.reg_stride = reg_io_width;
-	syscon_config.val_bits = reg_io_width * 8;
+	syscon_config.val_bits = val_bits;
 	syscon_config.max_register = resource_size(&res) - reg_io_width;
 	syscon_config.use_raw_spinlock = of_property_read_bool(np, "use-raw-spinlock");
 
