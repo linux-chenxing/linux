@@ -24,7 +24,7 @@ static const struct msc313_clkgen_parent_data miu_parents[] = {
 	PARENT_OF("miupll"),
 	PARENT_GATE(9),
 };
-#define MIU MSC313_MUX_PARENT_DATA(MSC313_CLKGEN_MIU, "miu", miu_parents, 0x5c, 0, 2, 2, 4)
+#define MIU MSC313_MUX_PARENT_DATA_FLAGS(MSC313_CLKGEN_MIU, "miu", miu_parents, 0x5c, 0, 2, 2, 4, CLK_IS_CRITICAL, 0)
 
 static const struct msc313_clkgen_parent_data ddr_syn_parents[] = {
 	PARENT_GATE(6),
