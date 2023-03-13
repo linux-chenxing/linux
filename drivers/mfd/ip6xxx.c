@@ -47,8 +47,7 @@ static const struct regmap_config ip6xxx_regmap_config = {
 	.val_bits = 8,
 };
 
-static int ip6xxx_i2c_probe(struct i2c_client *i2c,
-			    const struct i2c_device_id *id)
+static int ip6xxx_i2c_probe(struct i2c_client *i2c)
 {
 	struct ip6xxx *ip6xxx;
 	const struct ip6xxx_data *match_data;
