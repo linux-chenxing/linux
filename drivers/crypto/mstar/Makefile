@@ -1,2 +1,3 @@
 obj-$(CONFIG_CRYPTO_DEV_MSC313_SHA) += msc313-sha.o
 obj-$(CONFIG_CRYPTO_DEV_MSC313_AESDMA) +=msc313-aesdma.o
+obj-$(CONFIG_CRYPTO_DEV_MSC313_RSA) +=msc313-rsa.o
