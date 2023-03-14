@@ -9,3 +9,7 @@ config CRYPTO_DEV_MSC313_AESDMA
 	tristate "Support for MSC313 AESDMA unit"
 	depends on ARCH_MSTARV7
 	depends on HAS_DMA
+
+config CRYPTO_DEV_MSC313_RSA
+	tristate "Support for MSC313 RSA unit"
+	depends on ARCH_MSTARV7
