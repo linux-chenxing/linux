@@ -225,6 +225,9 @@
 		status = "okay";
 	};
 
+	keypad: keypad@201c00 {
+	};
+
 	smpctrl: smpctrl@204000 {
 		compatible = "sstar,ssd201-smpctrl", "mstar,smpctrl";
 		reg = <0x204000 0x200>;
