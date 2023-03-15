@@ -550,6 +550,14 @@
 			did: did@7000 {
 				compatible = "mstar,msc313-did";
 				reg = <0x7000 0x8>;
+				#address-cells = <1>;
+				#size-cells = <1>;
+				deviceid: deviceid@0 {
+					reg = <0x0 0x6>;
+				};
+				bootmedia: bootmedia@e0 {
+					reg = <0xe0 0x2>;
+				};
 			};
 
 			intc_fiq: interrupt-controller@201310 {
