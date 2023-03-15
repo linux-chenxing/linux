@@ -226,6 +226,8 @@
 	};
 
 	keypad: keypad@201c00 {
+		reg = <0x201c00 0x200>;
+		interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
 	smpctrl: smpctrl@204000 {
