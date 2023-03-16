@@ -271,11 +271,6 @@
 			interconnect-names = "dma-mem";
 		};
 
-		efuse: efuse@1f004000 {
-			compatible = "mstar,msc313-efuse";
-			reg = <0x1f004000 0x8>;
-		};
-
 		ir: ir@1f007a00 {
 		 // maybe
 			interrupts-extended = <&intc_fiq GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
@@ -465,6 +460,11 @@
 					function = "sar3";
 					groups = "sar_gpio3";
 				};
+			};
+
+			efuse: efuse@4000 {
+				compatible = "mstar,msc313-efuse";
+				reg = <0x4000 0x8>;
 			};
 
 			watchdog@6000 {
