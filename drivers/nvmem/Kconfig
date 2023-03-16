@@ -198,6 +198,13 @@ config NVMEM_MSC313_DID
 	help
 	  Access chip id and boot media
 
+config NVMEM_MSC313_EFUSE
+	tristate "MSC313 EFUSE"
+	depends on ARCH_MSTARV7 || COMPILE_TEST
+	depends on HAS_IOMEM
+	help
+	  Access mstar efuse
+
 config NVMEM_MXS_OCOTP
 	tristate "Freescale MXS On-Chip OTP Memory Support"
 	depends on ARCH_MXS || COMPILE_TEST
