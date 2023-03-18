@@ -781,7 +781,7 @@ static int msc313_bdma_remove(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	int ret, i;
 
-	of_dma_controller_free(pdev->dev.of_node);
+	of_dma_controller_free(dev->of_node);
 
 	for (i = 0; i < bdma->info->channels; i++){
 		struct msc313_bdma_chan *chan = &bdma->chans[i];
