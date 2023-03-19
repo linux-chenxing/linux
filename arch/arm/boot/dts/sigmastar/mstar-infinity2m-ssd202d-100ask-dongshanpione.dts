@@ -14,7 +14,6 @@
 	compatible = "100ask,dongshanpione", "mstar,infinity2m";
 
 	aliases {
-		serial0 = &pm_uart;
 		rtc0 = &rtcpwc;
 		rtc1 = &rtc;
 	};
