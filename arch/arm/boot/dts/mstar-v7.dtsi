@@ -17,6 +17,11 @@
 	#size-cells = <1>;
 	interrupt-parent = <&gic>;
 
+	aliases {
+		serial0 = &pm_uart;
+		serial1 = &fuart;
+	};
+
 	reserved-memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
