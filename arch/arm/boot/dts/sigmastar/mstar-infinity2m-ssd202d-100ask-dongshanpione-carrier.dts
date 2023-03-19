@@ -42,3 +42,7 @@
 &bach {
 	status = "okay";
 };
+
+&fuart {
+	status = "okay";
+};
