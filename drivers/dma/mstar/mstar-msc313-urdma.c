@@ -16,19 +16,21 @@
 #define DRIVER_NAME		"msc313-urdma"
 #define CHANNELS		2
 #define AUTOSUSPEND_DELAY	100
+#define BUFFSZ			PAGE_SIZE
+#define TIMEOUTMS		5000
 
 #define REG_CTRL 0x0
-static const struct reg_field ctrl_sw_rst = REG_FIELD(REG_CTRL, 0, 0);
-static const struct reg_field ctrl_urdma_mode = REG_FIELD(REG_CTRL, 1, 1);
-static const struct reg_field ctrl_tx_urdma_en = REG_FIELD(REG_CTRL, 2, 2);
-static const struct reg_field ctrl_rx_urdma_en = REG_FIELD(REG_CTRL, 3, 3);
-static const struct reg_field ctrl_tx_endian = REG_FIELD(REG_CTRL, 4, 4);
-static const struct reg_field ctrl_rx_endian = REG_FIELD(REG_CTRL, 5, 5);
-static const struct reg_field ctrl_tx_sw_rst = REG_FIELD(REG_CTRL, 6, 6);
-static const struct reg_field ctrl_rx_sw_rst = REG_FIELD(REG_CTRL, 7, 7);
-static const struct reg_field ctrl_rx_op_mode = REG_FIELD(REG_CTRL, 11, 11);
-static const struct reg_field ctrl_tx_busy = REG_FIELD(REG_CTRL, 12, 12);
-static const struct reg_field ctrl_rx_busy = REG_FIELD(REG_CTRL, 13, 13);
+static const struct reg_field ctrl_sw_rst	= REG_FIELD(REG_CTRL, 0, 0);
+static const struct reg_field ctrl_urdma_mode	= REG_FIELD(REG_CTRL, 1, 1);
+static const struct reg_field ctrl_tx_urdma_en	= REG_FIELD(REG_CTRL, 2, 2);
+static const struct reg_field ctrl_rx_urdma_en	= REG_FIELD(REG_CTRL, 3, 3);
+static const struct reg_field ctrl_tx_endian	= REG_FIELD(REG_CTRL, 4, 4);
+static const struct reg_field ctrl_rx_endian	= REG_FIELD(REG_CTRL, 5, 5);
+static const struct reg_field ctrl_tx_sw_rst	= REG_FIELD(REG_CTRL, 6, 6);
+static const struct reg_field ctrl_rx_sw_rst	= REG_FIELD(REG_CTRL, 7, 7);
+static const struct reg_field ctrl_rx_op_mode	= REG_FIELD(REG_CTRL, 11, 11);
+static const struct reg_field ctrl_tx_busy	= REG_FIELD(REG_CTRL, 12, 12);
+static const struct reg_field ctrl_rx_busy	= REG_FIELD(REG_CTRL, 13, 13);
 
 #define REG_INTR_THRESHOLD 0x4
 
@@ -45,11 +47,11 @@ static const struct reg_field tx_buf_wptr_field	= REG_FIELD(REG_TX_BUF_WPTR, 0, 
 #define REG_TX_TIMEOUT 0x1c
 
 #define REG_RX_BUF_BASE_H 0x20
-static const struct reg_field rx_buf_h_field = REG_FIELD(REG_RX_BUF_BASE_H, 0, 11);
+static const struct reg_field rx_buf_h_field	= REG_FIELD(REG_RX_BUF_BASE_H, 0, 11);
 #define REG_RX_BUF_BASE_L 0x24
-static const struct reg_field rx_buf_l_field = REG_FIELD(REG_RX_BUF_BASE_L, 0, 15);
+static const struct reg_field rx_buf_l_field	= REG_FIELD(REG_RX_BUF_BASE_L, 0, 15);
 #define REG_RX_BUF_SIZE 0x28
-static const struct reg_field rx_buf_sz_field = REG_FIELD(REG_RX_BUF_SIZE, 0, 15);
+static const struct reg_field rx_buf_sz_field	= REG_FIELD(REG_RX_BUF_SIZE, 0, 15);
 #define REG_RX_BUF_WPTR 0x2c
 #define REG_RX_TIMEOUT 0x30
 
@@ -72,7 +74,9 @@ static const struct regmap_config msc313_urdma_regmap_config = {
 
 struct msc313_urdma_desc {
 	struct dma_async_tx_descriptor tx;
+	struct dmaengine_result result;
 	dma_addr_t buf;
+	int rptr, wptr;
 	size_t len;
 	struct list_head queue_node;
 };
@@ -112,8 +116,8 @@ struct msc313_urdma_chan {
 	struct regmap_field *buf_h, *buf_l, *buf_sz;
 	struct regmap_field *rptr, *wptr;
 
-	size_t kern_buff_size;
-	dma_addr_t kern_buff_addr;
+	/* Just in case we get stuck */
+	struct timer_list watchdog;
 };
 
 struct msc313_urdma {
@@ -126,6 +130,7 @@ struct msc313_urdma {
 	/* global regfields */
 	struct regmap_field *sw_rst;
 	struct regmap_field *urdma_mode;
+	int enrefcount;
 
 	struct msc313_urdma_chan chans[CHANNELS];
 };
@@ -137,20 +142,70 @@ static const struct of_device_id msc313_urdma_of_match[] = {
 	{},
 };
 
+static void msc313_urdma_finish_inflight(struct msc313_urdma_chan *chan,
+		enum dmaengine_tx_result result)
+{
+	struct msc313_urdma *urdma = chan->urdma;
+	struct msc313_urdma_desc *inflight;
+	unsigned long flags;
+
+	spin_lock_irqsave(&chan->lock, flags);
+	regmap_field_write(chan->en, 0);
+	inflight = chan->inflight;
+	chan->inflight = NULL;
+
+	/* potentially terminating when not running.. */
+	if (!inflight)
+		goto unlock;
+
+	/*
+	 * if we are coming from the irq or terminate all
+	 * then the watchdog could still be configured.
+	 */
+	del_timer(&chan->watchdog);
+
+	// debug!
+	{
+		unsigned int rptr = ~0, wptr = ~0;
+		if (chan->rptr)
+			regmap_field_read(chan->rptr, &rptr);
+		if (chan->wptr)
+			regmap_field_read(chan->wptr, &wptr);
+		printk("%s:%d - rptr %d, wptr %d, desc rptr %d, desc wptr %d\n", __func__, __LINE__,
+				rptr, wptr, inflight->rptr, inflight->wptr);
+	}
+
+	inflight->result.result = result;
+	inflight->result.residue = 0;
+
+	/* move the descriptor to the done list */
+	list_move_tail(&inflight->queue_node, &chan->complete);
+
+	/*
+	 * decrement the counter for global enable
+	 * and disable if there are no more users.
+	 */
+	spin_lock_irqsave(&urdma->lock, flags);
+	urdma->enrefcount--;
+	if (!urdma->enrefcount)
+		regmap_field_write(urdma->urdma_mode, 0);
+	spin_unlock_irqrestore(&urdma->lock, flags);
+
+unlock:
+	spin_unlock_irqrestore(&chan->lock, flags);
+
+	tasklet_schedule(&chan->tasklet);
+}
+
 static irqreturn_t msc313_urdma_irq(int irq, void *data)
 {
 	struct msc313_urdma *urdma = data;
 
-	printk("%s:%d\n", __func__, __LINE__);
+	//printk("%s:%d\n", __func__, __LINE__);
 
 	for (int i = 0; i < CHANNELS; i++) {
 		unsigned int mcu = 0, int1 = 0, int2 = 0;
 		struct msc313_urdma_chan *chan = &urdma->chans[i];
-		struct msc313_urdma_desc *inflight;
-		unsigned long flags;
-		bool schedule = false;
-
-		spin_lock_irqsave(&chan->lock, flags);
 
 		if (chan->rxchan) {
 			regmap_field_read(chan->int1, &int1);
@@ -159,37 +214,14 @@ static irqreturn_t msc313_urdma_irq(int irq, void *data)
 		regmap_field_read(chan->mcu_int, &mcu);
 
 		printk("%s:%d - %d int1: %d, int2: %d, mcu: %d\n", __func__, __LINE__, i, int1, int2, mcu);
-		{
-			unsigned int rptr = ~0, wptr = ~0;
-			if (chan->rptr)
-				regmap_field_read(chan->rptr, &rptr);
-			if (chan->wptr)
-				regmap_field_read(chan->wptr, &wptr);
-			printk("%s:%d - rptr %d, wptr %d\n", __func__, __LINE__, rptr, wptr);
-		}
+
 		if (!mcu)
-			goto unlock;
+			continue;
 
 		regmap_field_force_write(chan->int_clr, 1);
 		regmap_field_write(chan->en, 0);
 
-		/* move the descriptor to the done list */
-		inflight = chan->inflight;
-		chan->inflight = NULL;
-		if (inflight) {
-			list_move_tail(&inflight->queue_node, &chan->complete);
-			schedule = true;
-			regmap_field_write(urdma->urdma_mode, 0);
-		}
-unlock:
-		spin_unlock_irqrestore(&chan->lock, flags);
-
-		spin_lock_irqsave(&urdma->lock, flags);
-		regmap_field_write(urdma->urdma_mode, 0);
-		spin_unlock_irqrestore(&urdma->lock, flags);
-
-		if (schedule)
-			tasklet_schedule(&chan->tasklet);
+		msc313_urdma_finish_inflight(chan, DMA_TRANS_NOERROR);
 	}
 
 	return IRQ_HANDLED;
@@ -203,32 +235,110 @@ static enum dma_status msc313_urdma_tx_status(struct dma_chan *chan,
 	return DMA_ERROR;
 }
 
-static void msc313_urdma_do_single(struct msc313_urdma_chan *chan, struct msc313_urdma_desc *desc)
+static void msc313_urdma_dump_state(struct msc313_urdma_chan *chan)
+{
+	unsigned int rptr0 = -1, wptr0 = -1;
+
+	if (chan->rptr)
+		regmap_field_read(chan->rptr, &rptr0);
+	if (chan->wptr)
+		regmap_field_read(chan->wptr, &wptr0);
+
+	printk("%s:%d - rptr0 %d, wptr0 %d\n", __func__, __LINE__,
+				rptr0, wptr0);
+}
+
+static int msc313_urdma_chan_reset(struct msc313_urdma_chan *chan)
+{
+	unsigned int busy;
+	unsigned int rptr0 = -1, wptr0 = -1, rptr1 = -1, wptr1 = -1;
+	int ret;
+
+	if (chan->rptr)
+		regmap_field_read(chan->rptr, &rptr0);
+	if (chan->wptr)
+		regmap_field_read(chan->wptr, &wptr0);
+
+	/* reset channel */
+	regmap_field_write(chan->sw_rst, 1);
+	ret = regmap_field_read_poll_timeout(chan->busy, busy, !busy, 1000, 1000000);
+	if (ret) {
+		printk("timeout doing channel reset \n");
+		return ret;
+	}
+	regmap_field_write(chan->sw_rst, 0);
+
+	if (chan->wptr)
+		regmap_field_force_write(chan->wptr, 0);
+
+	if (chan->rptr)
+		regmap_field_read(chan->rptr, &rptr1);
+	if (chan->wptr)
+		regmap_field_read(chan->wptr, &wptr1);
+
+	printk("%s:%d - rptr0 %d, wptr0 %d, rptr1 %d, wptr1 %d\n", __func__, __LINE__,
+			rptr0, wptr0, rptr1, wptr1);
+
+	regmap_field_write(chan->buf_sz, BUFFSZ / 8);
+
+	return 0;
+}
+
+static void msc313_urdma_terminate_inflight(struct msc313_urdma_chan *chan)
+{
+	msc313_urdma_finish_inflight(chan, DMA_TRANS_ABORTED);
+}
+
+static void msc313_urdma_watchdog(struct timer_list *t)
+{
+	struct msc313_urdma_chan *chan = from_timer(chan, t, watchdog);
+
+	printk("%s:%d\n", __func__, __LINE__);
+	msc313_urdma_dump_state(chan);
+
+	msc313_urdma_terminate_inflight(chan);
+}
+
+static void msc313_urdma_do_single(struct msc313_urdma_chan *chan,
+		struct msc313_urdma_desc *desc)
 {
 	struct msc313_urdma *urdma = chan->urdma;
 	unsigned int rptr, wptr;
 	unsigned long flags;
-	unsigned int wtf = desc->buf % chan->kern_buff_size;
 
-	printk("%s:%d\n", __func__, __LINE__);
-
-	pm_runtime_get_sync(chan->chan.device->dev);
-
-	/* do it! */
 	chan->inflight = desc;
 
 	/* globally enable udma */
 	spin_lock_irqsave(&urdma->lock, flags);
 	regmap_field_write(chan->urdma->urdma_mode, 1);
+	urdma->enrefcount++;
 	spin_unlock_irqrestore(&urdma->lock, flags);
 
-	regmap_field_write(chan->en, 1);
-	regmap_field_read(chan->rptr, &rptr);
-	regmap_field_read(chan->wptr, &wptr);
-	wptr = (wptr + desc->len) % chan->kern_buff_size;
-	printk("%s:%d - wtf %d, rptr %d, wptr %d\n", __func__, __LINE__, wtf, rptr, wptr);
+	/* set the major part of the buffer address */
+	regmap_field_write(chan->buf_h, desc->buf >> 16);
+	regmap_field_write(chan->buf_l, desc->buf);
 
-	regmap_field_write(chan->wptr, wptr);
+	regmap_field_write(chan->en, 1);
+
+	regmap_field_read(chan->rptr, &rptr);
+	/* Make sure we agree on where we'll start reading */
+	/* The would need to be special cased for the initial state */
+	//WARN_ON(rptr != desc->rptr);
+
+	regmap_field_read(chan->wptr, &wptr);
+
+//
+//	printk("%s:%d - krptr %d, rptr %d, kwptr %d, wptr %d\n", __func__, __LINE__,
+//			desc->rptr, rptr, desc->wptr, wptr);
+
+	/* Arm the watchdog */
+	mod_timer(&chan->watchdog, jiffies + msecs_to_jiffies(TIMEOUTMS));
+
+	/*
+	 * writing a wptr that is bigger than the current rptr will start
+	 * the transfer..
+	 */
+	regmap_field_force_write(chan->wptr, desc->wptr);
 }
 
 static void msc313_urdma_issue_pending(struct dma_chan *chan)
@@ -250,42 +360,65 @@ static int msc313_urdma_chan_config(struct dma_chan *chan,
 				    struct dma_slave_config *config)
 {
 	struct msc313_urdma_chan *ch = to_chan(chan);
+	int ret;
 
-	switch(config->direction) {
-	case DMA_DEV_TO_MEM:
-		ch->kern_buff_addr = config->src_addr;
-		break;
-	case DMA_MEM_TO_DEV:
-		ch->kern_buff_addr = config->dst_addr;
-		break;
-	default:
-		return -EINVAL;
-	}
+	printk("%s:%d\n", __func__, __LINE__);
 
-	ch->kern_buff_size = PAGE_SIZE;
+	ret = msc313_urdma_chan_reset(ch);
+	if (ret)
+		return ret;
+
+	regmap_field_write(ch->int_en1, 1);
 
 	return 0;
 }
 
 static int msc313_urdma_chan_pause(struct dma_chan *chan)
 {
-	printk("%s:%d\n", __func__, __LINE__);
+	struct msc313_urdma_chan *ch = to_chan(chan);
+	struct msc313_urdma *urdma = ch->urdma;
+	unsigned long flags;
+
+	spin_lock_irqsave(&urdma->lock, flags);
+	if (urdma->enrefcount) {
+		printk("%s:%d - %d\n", __func__, __LINE__, urdma->enrefcount);
+		regmap_field_write(urdma->urdma_mode, 0);
+	}
+	spin_unlock_irqrestore(&urdma->lock, flags);
 
 	return -EINVAL;
 }
 
 static int msc313_urdma_chan_resume(struct dma_chan *chan)
 {
-	printk("%s:%d\n", __func__, __LINE__);
+	struct msc313_urdma_chan *ch = to_chan(chan);
+	struct msc313_urdma *urdma = ch->urdma;
+	unsigned long flags;
+
+	spin_lock_irqsave(&urdma->lock, flags);
+	if (urdma->enrefcount) {
+		printk("%s:%d - %d\n", __func__, __LINE__, urdma->enrefcount);
+		regmap_field_write(urdma->urdma_mode, 1);
+	}
+	spin_unlock_irqrestore(&urdma->lock, flags);
 
 	return -EINVAL;
 }
 
 static int msc313_urdma_terminate_all(struct dma_chan *chan)
 {
+	struct msc313_urdma_chan *ch = to_chan(chan);
+	struct msc313_urdma *urdma = ch->urdma;
+
 	printk("%s:%d\n", __func__, __LINE__);
 
-	return -EINVAL;
+	/* End the running job if there is one */
+	msc313_urdma_terminate_inflight(ch);
+
+	/* make sure the tasklet runs */
+	schedule();
+
+	return 0;
 }
 
 static dma_cookie_t msc313_urdma_tx_submit(struct dma_async_tx_descriptor *tx)
@@ -294,13 +427,9 @@ static dma_cookie_t msc313_urdma_tx_submit(struct dma_async_tx_descriptor *tx)
 	struct msc313_urdma_chan *chan = to_chan(tx->chan);
 	unsigned long flags;
 
-	printk("%s:%d\n", __func__, __LINE__);
-
 	spin_lock_irqsave(&chan->lock, flags);
 	list_add_tail(&desc->queue_node, &chan->queue);
 	spin_unlock_irqrestore(&chan->lock, flags);
-
-	printk("%s:%d %pX\n", __func__, __LINE__, desc);
 
 	return dma_cookie_assign(tx);
 }
@@ -319,11 +448,11 @@ static struct dma_async_tx_descriptor* msc313_urdma_prep_slave_sg(
 
 	if (ch->rxchan && direction != DMA_DEV_TO_MEM) {
 		dev_err(dev, "Wrong DMA direction for RX channel\n");
-		return -EINVAL;
+		return NULL;
 	}
 	else if (direction != DMA_MEM_TO_DEV) {
 		dev_err(dev, "Wrong DMA direction for TX channel\n");
-		return -EINVAL;
+		return NULL;
 	}
 
 	if (sg_len != 1) {
@@ -334,12 +463,19 @@ static struct dma_async_tx_descriptor* msc313_urdma_prep_slave_sg(
 	dmaaddr = sg_dma_address(sgl);
 	dmalen = sg_dma_len(sgl);
 
+	if (dmalen == 1) {
+		dev_err(dev, "Sorry, this hardware is a pos and cannot dma 1 byte.. expect lock up\n");
+		//return NULL;
+	}
+
 	desc = kzalloc(sizeof(*desc), GFP_NOWAIT);
 	if (!desc)
 		return NULL;
 
-	desc->buf = dmaaddr;
+	desc->buf = dmaaddr - (dmaaddr % BUFFSZ);
 	desc->len = dmalen;
+	desc->rptr = (dmaaddr % BUFFSZ) - 1;
+	desc->wptr = (desc->rptr + desc->len) % BUFFSZ;
 
 	dma_async_tx_descriptor_init(&desc->tx, chan);
 
@@ -352,7 +488,6 @@ static void msc313_urdma_tasklet(unsigned long data)
 {
 	struct msc313_urdma_chan *chan = (struct msc313_urdma_chan*) data;
 	struct device *dev = chan->chan.device->dev;
-	struct list_head *cur, *tmp;
 	unsigned long flags;
 
 	printk("%s:%d %d\n", __func__, __LINE__, chan->rxchan);
@@ -371,18 +506,36 @@ static void msc313_urdma_tasklet(unsigned long data)
 
 		dma_cookie_complete(&desc->tx);
 		dma_descriptor_unmap(&desc->tx);
-		printk("%s:%d\n", __func__, __LINE__);
-		//&desc->result
-		dmaengine_desc_get_callback_invoke(&desc->tx, NULL);
-		printk("%s:%d\n", __func__, __LINE__);
+		dmaengine_desc_get_callback_invoke(&desc->tx, &desc->result);
 		dma_run_dependencies(&desc->tx);
-		printk("%s:%d\n", __func__, __LINE__);
 		this_cpu_ptr(chan->chan.local)->bytes_transferred += desc->len;
 		kfree(desc);
-		printk("%s:%d\n", __func__, __LINE__);
 		pm_runtime_mark_last_busy(dev);
-		pm_runtime_put_autosuspend(dev);
 	}
+}
+
+static int msc313_urdma_alloc_chan_resources(struct dma_chan *chan)
+{
+	struct msc313_urdma_chan *ch = to_chan(chan);
+	struct device *dev = ch->chan.device->dev;
+
+	printk("%s:%d\n", __func__, __LINE__);
+
+	pm_runtime_get_sync(dev);
+
+	dma_cookie_init(&ch->chan);
+
+	return 0;
+}
+
+static void msc313_urdma_free_chan_resources(struct dma_chan *chan)
+{
+	struct msc313_urdma_chan *ch = to_chan(chan);
+	struct device *dev = ch->chan.device->dev;
+
+	printk("%s:%d\n", __func__, __LINE__);
+
+	pm_runtime_put_autosuspend(dev);
 }
 
 static int msc313_urdma_probe(struct platform_device *pdev)
@@ -420,6 +573,8 @@ static int msc313_urdma_probe(struct platform_device *pdev)
 	urdma->dma_device.device_issue_pending = msc313_urdma_issue_pending;
 	urdma->dma_device.device_prep_slave_sg = msc313_urdma_prep_slave_sg;
 	urdma->dma_device.device_terminate_all = msc313_urdma_terminate_all;
+	urdma->dma_device.device_alloc_chan_resources = msc313_urdma_alloc_chan_resources;
+	urdma->dma_device.device_free_chan_resources = msc313_urdma_free_chan_resources;
 	urdma->dma_device.device_config = msc313_urdma_chan_config;
 	urdma->dma_device.device_pause = msc313_urdma_chan_pause;
 	urdma->dma_device.device_resume = msc313_urdma_chan_resume;
@@ -489,6 +644,7 @@ static int msc313_urdma_probe(struct platform_device *pdev)
 			chan->rxchan = true;
 		}
 
+		timer_setup(&chan->watchdog, msc313_urdma_watchdog, 0);
 		list_add_tail(&chan->chan.device_node, &urdma->dma_device.channels);
 	}
 
@@ -512,7 +668,6 @@ static int msc313_urdma_suspend(struct device *dev)
 {
 	struct msc313_urdma *urdma = dev_get_drvdata(dev);
 
-	printk("%s:%d\n", __func__, __LINE__);
 	regmap_field_write(urdma->sw_rst, 1);
 
 	return 0;
@@ -522,27 +677,10 @@ static int msc313_urdma_resume(struct device *dev)
 {
 	struct msc313_urdma *urdma = dev_get_drvdata(dev);
 
-	printk("%s:%d\n", __func__, __LINE__);
-
 	/* global rst */
 	regmap_field_write(urdma->sw_rst, 1);
 	mdelay(10);
 	regmap_field_write(urdma->sw_rst, 0);
-
-	for (int i = 0; i < CHANNELS; i++) {
-		struct msc313_urdma_chan *chan = &urdma->chans[i];
-
-		/* reset channel */
-		regmap_field_write(chan->sw_rst, 1);
-		mdelay(10);
-		regmap_field_write(chan->sw_rst, 0);
-
-		regmap_field_write(chan->int_en1, 1);
-
-		regmap_field_write(chan->buf_h, chan->kern_buff_addr >> 16);
-		regmap_field_write(chan->buf_l, chan->kern_buff_addr);
-		regmap_field_write(chan->buf_sz, chan->kern_buff_size / 8);
-	}
 
 	return 0;
 }
