@@ -44,5 +44,7 @@
 };
 
 &fuart {
+	pinctrl-names = "default";
+	pinctrl-0 = <&fuart_mode1_pins>;
 	status = "okay";
 };
