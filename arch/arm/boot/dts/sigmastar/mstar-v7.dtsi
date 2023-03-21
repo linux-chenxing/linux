@@ -865,6 +865,8 @@
 				//pinctrl-0 = <&fuart_pins>;
 				dma-names = "tx", "rx";
 				dmas = <&urdma 0>, <&urdma 1>;
+				interconnect-names = "dma-mem";
+				interconnects = <&miu 0>;
 				status = "disabled";
 			};
 
