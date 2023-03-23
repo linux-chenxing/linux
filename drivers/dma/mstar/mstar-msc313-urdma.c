@@ -45,6 +45,7 @@ static const struct reg_field tx_buf_rptr_field	= REG_FIELD(REG_TX_BUF_RPTR, 0, 
 #define REG_TX_BUF_WPTR 0x18
 static const struct reg_field tx_buf_wptr_field	= REG_FIELD(REG_TX_BUF_WPTR, 0, 15);
 #define REG_TX_TIMEOUT 0x1c
+static const struct reg_field tx_timeout_field	= REG_FIELD(REG_TX_TIMEOUT, 0, 3);
 
 #define REG_RX_BUF_BASE_H 0x20
 static const struct reg_field rx_buf_h_field	= REG_FIELD(REG_RX_BUF_BASE_H, 0, 11);
@@ -79,6 +80,8 @@ struct msc313_urdma_desc {
 	int rptr, wptr;
 	size_t len;
 	struct list_head queue_node;
+
+	bool wptrhack;
 };
 
 #define to_desc(desc) container_of(desc, struct msc313_urdma_desc, tx);
@@ -115,9 +118,13 @@ struct msc313_urdma_chan {
 	/* buffer */
 	struct regmap_field *buf_h, *buf_l, *buf_sz;
 	struct regmap_field *rptr, *wptr;
+	struct regmap_field *timeout;
 
 	/* Just in case we get stuck */
 	struct timer_list watchdog;
+
+	bool empty;
+	bool borked;
 };
 
 struct msc313_urdma {
@@ -147,6 +154,7 @@ static void msc313_urdma_finish_inflight(struct msc313_urdma_chan *chan,
 {
 	struct msc313_urdma *urdma = chan->urdma;
 	struct msc313_urdma_desc *inflight;
+	unsigned int rptr = ~0;
 	unsigned long flags;
 
 	spin_lock_irqsave(&chan->lock, flags);
@@ -164,19 +172,24 @@ static void msc313_urdma_finish_inflight(struct msc313_urdma_chan *chan,
 	 */
 	del_timer(&chan->watchdog);
 
+	if (chan->rptr)
+		regmap_field_read(chan->rptr, &rptr);
 	// debug!
 	{
-		unsigned int rptr = ~0, wptr = ~0;
-		if (chan->rptr)
-			regmap_field_read(chan->rptr, &rptr);
+		unsigned int wptr = ~0;
+
 		if (chan->wptr)
 			regmap_field_read(chan->wptr, &wptr);
-		printk("%s:%d - rptr %d, wptr %d, desc rptr %d, desc wptr %d\n", __func__, __LINE__,
-				rptr, wptr, inflight->rptr, inflight->wptr);
+		printk("%s:%d - rptr %d, wptr %d, desc rptr %d, desc wptr %d - rx? %d\n", __func__, __LINE__,
+				rptr, wptr, inflight->rptr, inflight->wptr, chan->rxchan);
 	}
 
 	inflight->result.result = result;
 	inflight->result.residue = 0;
+
+	if (rptr != inflight->wptr) {
+		printk("premature termination\n");
+	}
 
 	/* move the descriptor to the done list */
 	list_move_tail(&inflight->queue_node, &chan->complete);
@@ -218,10 +231,9 @@ static irqreturn_t msc313_urdma_irq(int irq, void *data)
 		if (!mcu)
 			continue;
 
-		regmap_field_force_write(chan->int_clr, 1);
-		regmap_field_write(chan->en, 0);
-
 		msc313_urdma_finish_inflight(chan, DMA_TRANS_NOERROR);
+
+		regmap_field_force_write(chan->int_clr, 1);
 	}
 
 	return IRQ_HANDLED;
@@ -254,6 +266,9 @@ static int msc313_urdma_chan_reset(struct msc313_urdma_chan *chan)
 	unsigned int rptr0 = -1, wptr0 = -1, rptr1 = -1, wptr1 = -1;
 	int ret;
 
+	chan->empty = true;
+	chan->borked = false;
+
 	if (chan->rptr)
 		regmap_field_read(chan->rptr, &rptr0);
 	if (chan->wptr)
@@ -266,10 +281,13 @@ static int msc313_urdma_chan_reset(struct msc313_urdma_chan *chan)
 		printk("timeout doing channel reset \n");
 		return ret;
 	}
-	regmap_field_write(chan->sw_rst, 0);
 
-	if (chan->wptr)
-		regmap_field_force_write(chan->wptr, 0);
+	/* We track the wptr locally, we don't need to reset it here
+	 * if (chan->wptr)
+	 * regmap_field_force_write(chan->wptr, 0);
+	 */
+
+	regmap_field_write(chan->sw_rst, 0);
 
 	if (chan->rptr)
 		regmap_field_read(chan->rptr, &rptr1);
@@ -338,7 +356,12 @@ static void msc313_urdma_do_single(struct msc313_urdma_chan *chan,
 	 * writing a wptr that is bigger than the current rptr will start
 	 * the transfer..
 	 */
-	regmap_field_force_write(chan->wptr, desc->wptr);
+	//if (unlikely(desc->wptrhack)) {
+		//regmap_field_force_write(chan->wptr, 4096);
+	//	regmap_field_force_write(chan->wptr, 0);
+	//}
+	//else
+		regmap_field_force_write(chan->wptr, desc->wptr);
 }
 
 static void msc313_urdma_issue_pending(struct dma_chan *chan)
@@ -440,9 +463,10 @@ static struct dma_async_tx_descriptor* msc313_urdma_prep_slave_sg(
 		unsigned long flags, void *context)
 {
 	struct msc313_urdma_chan *ch = to_chan(chan);
-	struct msc313_urdma_desc *desc;
 	struct device *dev = chan->device->dev;
+	struct msc313_urdma_desc *desc;
 	u32 dmaaddr, dmalen;
+	unsigned krptr, rptr;
 
 	printk("%s:%d\n", __func__, __LINE__);
 
@@ -463,10 +487,22 @@ static struct dma_async_tx_descriptor* msc313_urdma_prep_slave_sg(
 	dmaaddr = sg_dma_address(sgl);
 	dmalen = sg_dma_len(sgl);
 
-	if (dmalen == 1) {
-		dev_err(dev, "Sorry, this hardware is a pos and cannot dma 1 byte.. expect lock up\n");
-		//return NULL;
+	if (ch->borked) {
+		dev_info(dev, "Channel is borked\n");
+		return NULL;
 	}
+
+	if (dmalen == 1 && ch->empty) {
+		dev_err(dev, "Sorry, this hardware is a pos and cannot dma 1 byte for the first tx\n");
+		ch->borked = true;
+		return NULL;
+	}
+
+	krptr =  (dmaaddr % BUFFSZ) - 1;
+	if (krptr < 0)
+		krptr = BUFFSZ - 1;
+
+	regmap_field_read(ch->rptr, &rptr);
 
 	desc = kzalloc(sizeof(*desc), GFP_NOWAIT);
 	if (!desc)
@@ -474,7 +510,7 @@ static struct dma_async_tx_descriptor* msc313_urdma_prep_slave_sg(
 
 	desc->buf = dmaaddr - (dmaaddr % BUFFSZ);
 	desc->len = dmalen;
-	desc->rptr = (dmaaddr % BUFFSZ) - 1;
+	desc->rptr = krptr;
 	desc->wptr = (desc->rptr + desc->len) % BUFFSZ;
 
 	dma_async_tx_descriptor_init(&desc->tx, chan);
@@ -623,6 +659,10 @@ static int msc313_urdma_probe(struct platform_device *pdev)
 			chan->buf_sz = devm_regmap_field_alloc(dev, regmap, tx_buf_sz_field);
 			chan->rptr = devm_regmap_field_alloc(dev, regmap, tx_buf_rptr_field);
 			chan->wptr = devm_regmap_field_alloc(dev, regmap, tx_buf_wptr_field);
+			chan->timeout = devm_regmap_field_alloc(dev, regmap, tx_timeout_field);
+
+			/* janky vendor code says this causes transmit to start right away */
+			regmap_field_write(chan->timeout, 1);
 		}
 		else {
 			chan->en = devm_regmap_field_alloc(dev, regmap, ctrl_rx_urdma_en);
