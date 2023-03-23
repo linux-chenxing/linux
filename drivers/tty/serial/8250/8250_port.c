@@ -289,6 +289,7 @@ static const struct serial8250_config uart_config[] = {
 				  UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT,
 		.flags		= UART_CAP_FIFO,
 	},
+#if 0
 	[PORT_NPCM] = {
 		.name		= "Nuvoton 16550",
 		.fifo_size	= 16,
@@ -298,6 +299,8 @@ static const struct serial8250_config uart_config[] = {
 		.rxtrig_bytes	= {1, 4, 8, 14},
 		.flags		= UART_CAP_FIFO,
 	},
+#endif
+#if 0
 	[PORT_SUNIX] = {
 		.name		= "Sunix",
 		.fifo_size	= 128,
@@ -306,6 +309,8 @@ static const struct serial8250_config uart_config[] = {
 		.rxtrig_bytes	= {1, 32, 64, 112},
 		.flags		= UART_CAP_FIFO | UART_CAP_SLEEP,
 	},
+#endif
+#ifdef CONFIG_SERIAL_8250_ASPEED_VUART
 	[PORT_ASPEED_VUART] = {
 		.name		= "ASPEED VUART",
 		.fifo_size	= 16,
@@ -314,6 +319,8 @@ static const struct serial8250_config uart_config[] = {
 		.rxtrig_bytes	= {1, 4, 8, 14},
 		.flags		= UART_CAP_FIFO,
 	},
+#endif
+#if 0
 	[PORT_MCHP16550A] = {
 		.name           = "MCHP16550A",
 		.fifo_size      = 256,
@@ -322,6 +329,7 @@ static const struct serial8250_config uart_config[] = {
 		.rxtrig_bytes   = {2, 66, 130, 194},
 		.flags          = UART_CAP_FIFO,
 	},
+#endif
 };
 
 /* Uart divisor latch read */
