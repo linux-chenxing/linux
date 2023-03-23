@@ -82,9 +82,9 @@ struct serial8250_config {
 #define UART_CAP_HFIFO	BIT(14)	/* UART has a "hidden" FIFO */
 #define UART_CAP_RPM	BIT(15)	/* Runtime PM is active while idle */
 #define UART_CAP_IRDA	BIT(16)	/* UART supports IrDA line discipline */
-#define UART_CAP_MINI	BIT(17)	/* Mini UART on BCM283X family lacks:
-					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
-					 */
+#define UART_CAP_MINI	(IS_ENABLED(CONFIG_SERIAL_BCM63XX) ? BIT(17) : 0) /* Mini UART on BCM283X family lacks:
+									   * STOP PARITY EPAR SPAR WLEN5 WLEN6
+									   */
 #define UART_CAP_NOTEMT	BIT(18)	/* UART without interrupt on TEMT available */
 
 #define UART_BUG_QUOT	BIT(0)	/* UART has buggy quot LSB */
@@ -92,7 +92,7 @@ struct serial8250_config {
 #define UART_BUG_NOMSR	BIT(2)	/* UART has buggy MSR status bits (Au1x00) */
 #define UART_BUG_THRE	BIT(3)	/* UART has buggy THRE reassertion */
 #define UART_BUG_PARITY	BIT(4)	/* UART mishandles parity if FIFO enabled */
-#define UART_BUG_TXRACE	BIT(5)	/* UART Tx fails to set remote DR */
+#define UART_BUG_TXRACE	(IS_ENABLED(CONFIG_SERIAL_8250_ASPEED_VUART) ? BIT(5) : 0) /* UART Tx fails to set remote DR */
 
 
 #ifdef CONFIG_SERIAL_8250_SHARE_IRQ
