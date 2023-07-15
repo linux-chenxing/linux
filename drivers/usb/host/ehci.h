@@ -774,9 +774,11 @@ static inline unsigned int ehci_readl(const struct ehci_hcd *ehci,
 		readl_be(regs) :
 		readl(regs);
 #else
+#ifdef CONFIG_HAVE_BROKEN_EHCI_HCD
 	if (ehci->ehci_readl)
 		return ehci->ehci_readl(ehci, regs);
 	else
+#endif
 		return readl(regs);
 #endif
 }
@@ -804,8 +806,10 @@ static inline void ehci_writel(const struct ehci_hcd *ehci,
 #else
 	if (ehci->imx28_write_fix)
 		imx28_ehci_writel(val, regs);
+#ifdef CONFIG_HAVE_BROKEN_EHCI_HCD
 	else if (ehci->ehci_writel)
 		ehci->ehci_writel(ehci, val, regs);
+#endif
 	else
 		writel(val, regs);
 #endif
