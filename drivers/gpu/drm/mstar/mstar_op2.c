@@ -244,7 +244,7 @@ static int mstar_op2_bind(struct device *dev, struct device *master,
 	struct drm_device *drm = data;
 	struct drm_plane *plane = NULL, *primary = NULL, *cursor = NULL;
 	int ret;
-	u8 output;
+	u32 output;
 
 	drm_for_each_plane(plane, drm) {
 		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
@@ -268,10 +268,13 @@ static int mstar_op2_bind(struct device *dev, struct device *master,
 	drm_crtc_helper_add(&op2->drm_crtc, &mstar_op2_helper_funcs);
 
 	/* Try to work out what is connected, default to TTL */
-	ret = of_property_read_u8(dev->of_node,"mstar,op2-output", &output);
-	if (!ret && output != 0)
+	ret = of_property_read_u32(dev->of_node,"mstar,op2-output", &output);
+	if (!ret && output != 0) {
+		dev_info(op2->dev, "Forcing output port to %d\n", output);
 		goto dsi_hdmi;
+	}
 
+	dev_info(op2->dev, "Trying to probe TTL output\n");
 	/* set the port so the encoder can find us */
 	op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 0);
 
