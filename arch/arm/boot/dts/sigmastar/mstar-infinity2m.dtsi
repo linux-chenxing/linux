@@ -32,6 +32,11 @@
 };
 
 &riu {
+	rtc@6800 {
+		compatible = "mstar,ssd202d-rtc";
+		reg = <0x6800 0x200>;
+	};
+
 	smpctrl: smpctrl@204000 {
 		reg = <0x204000 0x200>;
 		status = "disabled";
