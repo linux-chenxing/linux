@@ -145,7 +145,9 @@ static int mstar_op2_enable_vblank(struct drm_crtc *crtc)
 {
 	struct mstar_drv *drv = crtc->dev->dev_private;
 
-	if (drv->top)
+	WARN_ON(!drv->top);
+
+	if (likely(drv->top))
 		mstar_top_enable_vblank(drv->top);
 
 	return 0;
@@ -155,7 +157,9 @@ static void mstar_op2_disable_vblank(struct drm_crtc *crtc)
 {
 	struct mstar_drv *drv = crtc->dev->dev_private;
 
-	if (drv->top)
+	WARN_ON(!drv->top);
+
+	if (likely(drv->top))
 		mstar_top_disable_vblank(drv->top);
 }
 
@@ -242,6 +246,7 @@ static int mstar_op2_bind(struct device *dev, struct device *master,
 {
 	struct mstar_op2 *op2 = dev_get_drvdata(dev);
 	struct drm_device *drm = data;
+	struct mstar_drv *drv = drm->dev_private;
 	struct drm_plane *plane = NULL, *primary = NULL, *cursor = NULL;
 	int ret;
 	u32 output;

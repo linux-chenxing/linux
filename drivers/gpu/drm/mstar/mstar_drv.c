@@ -79,7 +79,7 @@ static int mstar_drv_bind(struct device *dev)
 
 	ret = component_bind_all(drm->dev, drm);
 	if (ret) {
-		dev_err(drm->dev, "Couldn't bind all pipelines components\n");
+		dev_err(drm->dev, "Couldn't bind all pipelines components: %d\n", ret);
 		goto cleanup_mode_config;
 	}
 
