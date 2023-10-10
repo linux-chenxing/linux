@@ -271,7 +271,7 @@ static struct i2c_driver ea3056_regulator_driver = {
 		.name = "ea3056",
 		.of_match_table	= of_match_ptr(ea3056_i2c_of_match),
 	},
-	.probe_new = ea3056_i2c_probe,
+	.probe = ea3056_i2c_probe,
 	.id_table = ea3056_i2c_id,
 };
 module_i2c_driver(ea3056_regulator_driver);
