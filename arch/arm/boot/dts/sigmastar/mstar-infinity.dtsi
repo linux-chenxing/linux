@@ -38,6 +38,16 @@
 	};
 };
 
+&soc {
+	pm_pwm: pwm@1f001da0 {
+		compatible = "mstar,msc313-pwm";
+		reg = <0x1f001da0 0xc>;
+		#pwm-cells = <2>;
+		clocks = <&xtal_div2>;
+		status = "disabled";
+	};
+};
+
 &cpu0 {
 	operating-points-v2 = <&cpu0_opp_table>;
 };
