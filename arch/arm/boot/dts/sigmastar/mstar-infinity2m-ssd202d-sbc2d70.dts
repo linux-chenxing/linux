@@ -11,6 +11,10 @@
 	model = "SBC2D70 (SSD202D)";
 	compatible = "ido,sbc2d70", "mstar,infinity2m";
 
+	chosen {
+		bootargs = "console=ttyS0,115200 clk_ignore_unused earlyprintk root=/dev/sda1 rw rootwait";
+	};
+
 	leds {
 		compatible = "gpio-leds";
 		sys_led {
