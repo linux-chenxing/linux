@@ -49,7 +49,7 @@
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
 			#size-cells = <1>;
-			ubi@2c0000-0x000008000000 {
+			ubi: ubi@2c0000-0x000008000000 {
 				label = "ubi";
 				reg = <0x2c0000 0x7d40000>;
 			};
