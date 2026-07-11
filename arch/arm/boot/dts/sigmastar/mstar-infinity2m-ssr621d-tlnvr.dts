@@ -31,6 +31,43 @@
 		regulator-max-microvolt = <1500000>;
 		regulator-boot-on;
 	};
+
+// This doesn't seem to work: As soon as the pin becomes an output
+// the supply goes to ~1v and setting it low or high doesn't bring
+// it back down
+#if 0
+	reg_vcc_core: regulator-vcc-core {
+		compatible = "regulator-gpio";
+		regulator-name = "vcc_core";
+		regulator-type = "voltage";
+		regulator-min-microvolt = <900000>;
+		regulator-max-microvolt = <1000000>;
+		regulator-boot-on;
+		regulator-ramp-delay = <12000>;
+		gpios = <&sar 1 0>;
+		states = <1000000 0x1
+				  900000  0x0>;
+	};
+#endif
+
+	leds {
+		compatible = "gpio-leds";
+		green_led {
+			gpios = <&gpio SSD20XD_GPIO_TTL7 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "heartbeat";
+		};
+		red_led {
+			gpios = <&gpio SSD20XD_GPIO_TTL8 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&cpu0 {
+//	cpu-supply = <&reg_vcc_core>;
+};
+
+&cpu1 {
+//	cpu-supply = <&reg_vcc_core>;
 };
 
 &pm_uart {
@@ -52,6 +89,15 @@
 		reg = <0>;
 		spi-max-frequency = <40000000>;
 		spi-rx-bus-width = <4>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			rootfs: rootfs@20bc00 {
+				label = "rootfs";
+				reg = <0x20bc00 0xda0000>;
+			};
+		};
 	};
 };
 
