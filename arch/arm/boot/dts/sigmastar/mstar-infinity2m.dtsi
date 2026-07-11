@@ -179,11 +179,21 @@
 		interconnect-names = "dma-mem";
 	};
 
-	hdmitx_dtop: xxx@224A00 {
-	}
-
-	hdmitx_atop: xxx@224c00 {
-	}
+	hdmitx: hdmitx@224A00 {
+		compatible = "sstar,ssd20xd-hdmi";
+		reg = <0x224A00 0x400>;
+		status = "disabled";
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			port@0 {
+				reg = <0>;
+				hdmitx_in: endpoint {
+					remote-endpoint = <&op2_hdmitx>;
+				};
+			};
+		};
+	};
 
 	displaytop: top@225000 {
 		compatible = "sstar,ssd20xd-display-top";
@@ -211,6 +221,11 @@
 			port@1 {
 				reg = <1>;
 				op2_dsi: endpoint {
+				};
+			};
+			port@2 {
+				reg = <2>;
+				op2_hdmitx: endpoint {
 				};
 			};
 		};
