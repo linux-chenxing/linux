@@ -244,6 +244,7 @@ static int mstar_op2_bind(struct device *dev, struct device *master,
 	struct drm_device *drm = data;
 	struct drm_plane *plane = NULL, *primary = NULL, *cursor = NULL;
 	int ret;
+	u8 output;
 
 	drm_for_each_plane(plane, drm) {
 		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
@@ -266,22 +267,24 @@ static int mstar_op2_bind(struct device *dev, struct device *master,
 
 	drm_crtc_helper_add(&op2->drm_crtc, &mstar_op2_helper_funcs);
 
+	/* Try to work out what is connected, default to TTL */
+	ret = of_property_read_u8(dev->of_node,"mstar,op2-output", &output);
+	if (!ret && output != 0)
+		goto dsi_hdmi;
+
 	/* set the port so the encoder can find us */
 	op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 0);
 
 	/* create a fake encoder for ttl output */
 	ret = mstar_ttl_init(drm, dev->of_node);
 
-	/*
-	 * There is nothing connected to the TTL output,
-	 * use mipi.
-	 */
+	return ret;
+
+dsi_hdmi:
+	/* */
 	printk("%s:%d - %d\n", __func__, __LINE__, ret);
-	if (ret == -ENODEV) {
-		//op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 1);
-		op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, 2);
-		return 0;
-	}
+	op2->drm_crtc.port = of_graph_get_port_by_id(dev->of_node, output);
+
 	return 0;
 }
 
