@@ -189,6 +189,11 @@
 	 */
 	/delete-node/ pinctrl@203c00;
 
+	por: por@c00 {
+		/* this seems to just be a lump of NVRAM */
+		reg = <0xc00 0x20>;
+	};
+
 	pwm: pwm@3400 {
 		compatible = "mstar,msc313e-pwm";
 		reg = <0x3400 0x400>;
