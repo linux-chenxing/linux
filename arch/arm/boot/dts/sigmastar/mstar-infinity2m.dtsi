@@ -120,6 +120,11 @@
 	interrupt-parent = <&gpi>;
 };
 
+&timer0 {
+	compatible = "sstar,ssd20xd-timer";
+	clocks = <&clk_timer>;
+};
+
 &timer1 {
 	compatible = "sstar,ssd20xd-timer";
 	clocks = <&clk_timer>;
