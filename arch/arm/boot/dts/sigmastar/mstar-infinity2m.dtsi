@@ -248,6 +248,7 @@
 		compatible = "sstar,ssd20xd-op2";
 		reg = <0x225200 0x200>;
 		status = "disabled";
+		mstar,op2-output = <0>;
 		ports {
 			#address-cells = <1>;
 			#size-cells = <0>;
