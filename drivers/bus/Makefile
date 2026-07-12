@@ -42,4 +42,4 @@ obj-$(CONFIG_DA8XX_MSTPRI)	+= da8xx-mstpri.o
 # MHI
 obj-y				+= mhi/
 
-obj-$(CONFIG_ARCH_MSTAR)	+= msc313-mcm.o
+obj-$(CONFIG_ARCH_MSTARV7)	+= msc313-mcm.o mstar-riu.o
