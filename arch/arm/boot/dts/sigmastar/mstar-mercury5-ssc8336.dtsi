@@ -5,6 +5,8 @@
  */
 
 #include <dt-bindings/gpio/mstar.h>
+#include <dt-bindings/gpio/msc313-gpio.h>
+#include <dt-bindings/gpio/msc313-gpio-pm.h>
 #include <dt-bindings/pinctrl/mstar.h>
 
 #include "mstar-mercury5.dtsi"
@@ -18,7 +20,7 @@
 
 &gpio {
 	compatible = "mstar,ssc8336-gpio";
-	gpio-ranges = <&pinctrl SSC8336_SPI0_CK PIN_SSC8336N_SPI0_CK 1>;
+	gpio-ranges = <&pinctrl SSC8336_GPIO_SPI0_CZ PIN_SSC8336N_SPI0_CK 1>;
 	status = "okay";
 };
 
