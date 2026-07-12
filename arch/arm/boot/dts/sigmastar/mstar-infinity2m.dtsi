@@ -136,6 +136,11 @@
 };
 
 &riu {
+	por: por@c00 {
+		/* this seems to just be a lump of NVRAM */
+		reg = <0xc00 0x20>;
+	};
+
 	mmu: mmu@2600 {
 	};
 
