@@ -513,6 +513,15 @@ static int msc313_bach_pcm_open(struct snd_soc_component *component,
 		snd_soc_set_runtime_hwparams(substream, &msc313_bach_pcm_playback_hardware);
 		bach_runtime->sub_channel = &bach->dma_channels[0].reader_writer[0];
 		bach->dma_channels[0].reader_writer[0].substream = substream;
+		/*
+		 * The DMA engine works in MSC313_BACH_ALIGNMENT-byte units, and
+		 * prepare rejects an unaligned buffer/period, so constrain ALSA to
+		 * pick aligned sizes rather than failing hw_params for the app.
+		 */
+		snd_pcm_hw_constraint_step(runtime, 0,
+				SNDRV_PCM_HW_PARAM_PERIOD_BYTES, MSC313_BACH_ALIGNMENT);
+		snd_pcm_hw_constraint_step(runtime, 0,
+				SNDRV_PCM_HW_PARAM_BUFFER_BYTES, MSC313_BACH_ALIGNMENT);
 		break;
 	default:
 		/*
@@ -832,7 +841,7 @@ static int msc313_bach_pcm_prepare(struct snd_soc_component *component,
 	int i, ret;
 
 	if ((runtime->dma_addr % MSC313_BACH_ALIGNMENT) ||
-			(runtime->dma_bytes & MSC313_BACH_ALIGNMENT)) {
+			(runtime->dma_bytes % MSC313_BACH_ALIGNMENT)) {
 		dev_err(dev, "dma_addr and/or dma_bytes not aligned\n");
 		return -EINVAL;
 	}
