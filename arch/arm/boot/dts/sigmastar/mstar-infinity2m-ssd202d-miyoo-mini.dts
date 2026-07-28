@@ -223,6 +223,9 @@
 &sdio {
 	vmmc-supply = <&reg_vdd_sd>;
 	vqmmc-supply = <&reg_vcc_io>;
+	/* The microSD slot has no write-protect switch; say so, otherwise the
+	 * core warns "host does not support reading read-only switch". */
+	disable-wp;
 	status = "okay";
 };
 

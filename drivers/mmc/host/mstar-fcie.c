@@ -470,8 +470,16 @@ static int mstar_fcie_request_capturecmdresult(struct msc313_fcie *fcie,
 	 * error interrupt and zero in the status.
 	 */
 	if (status & SD_STS_NORSP) {
-		dev_err(fcie->dev, "no response from card, removed?\n");
-		cmd->error = -EIO;
+		/*
+		 * No response to the command. This is expected and normal for
+		 * the optional probe commands the MMC core always issues -
+		 * CMD5/CMD52 (SDIO) and CMD8 - to a plain SD memory card that
+		 * does not implement them. Report it as a timeout (which is
+		 * what it is) and stay quiet; the core interprets that as
+		 * "feature not present" and carries on enumerating the card.
+		 */
+		dev_dbg(fcie->dev, "no response to cmd %d\n", cmd->opcode);
+		cmd->error = -ETIMEDOUT;
 		return cmd->error;
 	}
 
@@ -559,8 +567,14 @@ static void mstar_fcie_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	/* If there is just a command, send it and return */
 	if (data == NULL) {
 		if(mstar_fcie_request_prepcmd_and_tx(fcie, cmd)) {
-			dev_err(fcie->dev, "failed to send command; cmd: %d arg: 0x%08x\n",
-					cmd->opcode, cmd->arg);
+			/*
+			 * A timeout here is an expected non-response to an
+			 * optional probe command (see SD_STS_NORSP above), so
+			 * only shout about genuine failures.
+			 */
+			if (cmd->error != -ETIMEDOUT)
+				dev_err(fcie->dev, "failed to send command; cmd: %d arg: 0x%08x\n",
+						cmd->opcode, cmd->arg);
 			goto tfr_err;
 		}
 		mmc_request_done(mmc, mrq);
