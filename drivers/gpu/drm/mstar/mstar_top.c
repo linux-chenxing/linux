@@ -123,6 +123,35 @@ static int mstar_top_probe(struct platform_device *pdev)
 	if(IS_ERR(regmap))
 		return PTR_ERR(regmap);
 
+	/*
+	 * Allocate the regmap fields before the IRQ handler can run: the vsync
+	 * handler writes vsync_pos_flag, so it must exist first. (The shared
+	 * handler could otherwise fire - from a co-registered device, or a
+	 * latched vsync - the instant devm_request_irq() returns, dereferencing
+	 * a NULL field and oopsing in hard-IRQ context.)
+	 */
+	top->reset = devm_regmap_field_alloc(dev, regmap, reset_field);
+	if (IS_ERR(top->reset))
+		return PTR_ERR(top->reset);
+	top->vsync_pos_flag = devm_regmap_field_alloc(dev, regmap, irq_vsync_pos_flag_field);
+	if (IS_ERR(top->vsync_pos_flag))
+		return PTR_ERR(top->vsync_pos_flag);
+	top->vsync_pos_mask = devm_regmap_field_alloc(dev, regmap, irq_vsync_pos_mask_field);
+	if (IS_ERR(top->vsync_pos_mask))
+		return PTR_ERR(top->vsync_pos_mask);
+
+	regmap_field_force_write(top->reset, 1);
+	mdelay(10);
+	regmap_field_force_write(top->reset, 0);
+
+	/*
+	 * Mask the vsync interrupt and clear any latched flag before registering
+	 * the handler, so it stays quiet until the CRTC enables vblank (and so a
+	 * pending vsync can't fire the handler before probe is done).
+	 */
+	regmap_field_write(top->vsync_pos_mask, 1);
+	regmap_field_force_write(top->vsync_pos_flag, 1);
+
 	irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
 	if (!irq)
 		return -ENODEV;
@@ -131,14 +160,6 @@ static int mstar_top_probe(struct platform_device *pdev)
 		dev_name(&pdev->dev), top);
 	if (ret)
 		return ret;
-
-	top->reset = devm_regmap_field_alloc(dev, regmap, reset_field);
-	top->vsync_pos_flag = devm_regmap_field_alloc(dev, regmap, irq_vsync_pos_flag_field);
-	top->vsync_pos_mask = devm_regmap_field_alloc(dev, regmap, irq_vsync_pos_mask_field);
-
-	regmap_field_force_write(top->reset, 1);
-	mdelay(10);
-	regmap_field_force_write(top->reset, 0);
 
 	//
 	struct clk *clk;
