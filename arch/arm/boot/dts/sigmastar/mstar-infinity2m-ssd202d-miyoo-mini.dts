@@ -219,6 +219,11 @@
 	//		  <&sc_gp_ctrl_muxes SSD20XD_SC_GP_HDMI_GATE_MUX>;
 	//assigned-clock-parents = <&clkgen MSC313_CLKGEN_DIVIDERS MSC313_CLKGEN_GATE_9 GATE9_DIVIDEBY_4>;
 	//			 <&clkgen MSC313_CLKGEN_DEGLITCHES SSD20XD_CLKGEN_SC_PIXEL 0>;
+	/* Route the CRTC to the DSI (port@1); the default is TTL (port@0), which
+	 * has no panel wired so the driver's bind fails with -ENODEV. The driver
+	 * reads this with of_property_read_u8, so it must be a byte (/bits/ 8) -
+	 * a plain <1> cell reads back as 0 (its first big-endian byte) = TTL. */
+	mstar,op2-output = /bits/ 8 <1>;
 	status = "okay";
 };
 
