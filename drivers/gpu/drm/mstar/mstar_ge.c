@@ -377,7 +377,12 @@ static int mstar_ge_do_line(struct mstar_ge *ge,
 	bool ymajor = h > w;
 	unsigned int length = (ymajor ? h : w) + 1;
 	const unsigned int factor = 0x1000;
-	int delta = (w * factor) / h;
+	/*
+	 * delta is the minor-axis fractional step. A horizontal line has h == 0
+	 * (and a single point w == h == 0); guard the division so those don't
+	 * fault with a kernel divide error - the minor step is simply 0 then.
+	 */
+	int delta = h ? (w * factor) / h : 0;
 
 	//if (ymajor) {
 	//	if (y0 > y1)
@@ -548,6 +553,15 @@ static int mstar_ge_do_strblt(struct mstar_ge *ge, unsigned int width,
 
 
 	int frac = 0x1000;
+
+	/*
+	 * A zero-width or zero-height destination rectangle has nothing to
+	 * scale into and would divide by zero in the scale-factor maths below,
+	 * faulting the kernel. Reject it (the coordinates come straight from the
+	 * QUEUE ioctl and are otherwise unvalidated).
+	 */
+	if (dstw == 0 || dsth == 0)
+		return -EINVAL;
 
 	int inidx = ((srcw - dstw) * frac) / (dstw * 2);
 	int inidy = ((srch - dsth) * frac) / (dsth * 2);
@@ -1309,6 +1323,8 @@ free_job:
 
 static int mstar_ge_validate_buffer(struct mstar_ge *ge, struct mstar_ge_buf *buf, int number)
 {
+	const struct drm_format_info *info;
+
 	dev_dbg(ge->dev, "buffer: %d, fd %d %dpx x %dpx, pitch %d, format %p4cc\n",
 			 number, buf->fd, buf->cfg.width, buf->cfg.height, buf->cfg.pitch,
 			 &buf->cfg.fourcc);
@@ -1318,6 +1334,21 @@ static int mstar_ge_validate_buffer(struct mstar_ge *ge, struct mstar_ge_buf *bu
 
 	if (mstar_ge_drm_color_to_gop(buf->cfg.fourcc) < 0) {
 		dev_warn(ge->dev, "Unhandled buffer type: %p4cc\n", &buf->cfg.fourcc);
+		return -EINVAL;
+	}
+
+	/*
+	 * Geometry comes straight from userspace and is programmed into the GE
+	 * as the DMA pitch / dimensions, so reject anything degenerate or where
+	 * a pixel row would not fit inside the stride (which would let the
+	 * engine walk off the end of each row). The whole surface is bounded
+	 * against the imported dma-buf size in mstar_ge_ioctl_queue().
+	 */
+	info = drm_format_info(buf->cfg.fourcc);
+	if (!info || !buf->cfg.width || !buf->cfg.height ||
+	    buf->cfg.pitch < (u64)buf->cfg.width * info->cpp[0]) {
+		dev_warn(ge->dev, "bad buffer geometry %ux%u pitch %u\n",
+			 buf->cfg.width, buf->cfg.height, buf->cfg.pitch);
 		return -EINVAL;
 	}
 
@@ -1409,6 +1440,28 @@ static long mstar_ge_ioctl_queue(struct mstar_ge *ge, unsigned long arg)
 		if (IS_ERR(dma_bufs[i])) {
 			dev_err(ge->dev, "failed to get dma_buf for buffer\n");
 			return PTR_ERR(dma_bufs[i]);
+		}
+
+		/*
+		 * The whole surface (pitch * height) must fit within the actual
+		 * imported buffer, otherwise the GE would DMA past its end and
+		 * corrupt unrelated memory. pitch/height were sanity-checked in
+		 * mstar_ge_validate_buffer(); this bounds them against the fd.
+		 */
+		if ((u64)buf->cfg.pitch * buf->cfg.height > dma_bufs[i]->size) {
+			dev_err(ge->dev,
+				"buffer %d geometry (%ux%u pitch %u) exceeds dma-buf size %zu\n",
+				i, buf->cfg.width, buf->cfg.height, buf->cfg.pitch,
+				dma_bufs[i]->size);
+			dma_buf_put(dma_bufs[i]);
+			while (i-- > 0) {
+				dma_buf_unmap_attachment(dma_attachs[i], dma_mappings[i],
+							 dma_dirs[i]);
+				dma_buf_detach(dma_bufs[i], dma_attachs[i]);
+				dma_buf_put(dma_bufs[i]);
+			}
+			ret = -EINVAL;
+			goto free_ops;
 		}
 
 		dma_attachs[i] = dma_buf_attach(dma_bufs[i], ge->dev);
