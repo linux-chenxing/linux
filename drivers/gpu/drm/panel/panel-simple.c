@@ -4777,7 +4777,9 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
 };
 
 static const struct drm_display_mode samsung_lms279cc01_mode = {
-	.clock = 154500,
+	/* 740 htotal * 505 vtotal * 60 Hz = 22.42 MHz pixel clock (matches the
+	 * u-boot timing). The old 154500 was ~7x too fast, so the panel rolled. */
+	.clock = 22422,
 	.hdisplay = 640,
 	.hsync_start = 640 + 46,  // bp is 46?
 	.hsync_end = 640 + 46 + 3, // hsync is 3
