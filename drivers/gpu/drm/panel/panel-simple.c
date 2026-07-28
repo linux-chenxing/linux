@@ -4777,17 +4777,23 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
 };
 
 static const struct drm_display_mode samsung_lms279cc01_mode = {
-	/* 740 htotal * 505 vtotal * 60 Hz = 22.42 MHz pixel clock (matches the
-	 * u-boot timing). The old 154500 was ~7x too fast, so the panel rolled. */
-	.clock = 22422,
+	/*
+	 * Exactly the timing the vendor u-boot programs, which locks the panel:
+	 * 640x480 with porches hfp=48 hsw=4 hbp=48 and vfp=10 vsw=4 vbp=10, so
+	 * htotal=740, vtotal=504 and 740 * 504 * 60 = 22.3776 MHz. The kernel's
+	 * op2/DSI timing is derived from this mode, so it has to match u-boot's
+	 * numbers or the panel rolls (earlier values 22422/46/3/50/... were close
+	 * but not exact - wrong porches and htotal/vtotal off by one).
+	 */
+	.clock = 22378,
 	.hdisplay = 640,
-	.hsync_start = 640 + 46,  // bp is 46?
-	.hsync_end = 640 + 46 + 3, // hsync is 3
-	.htotal = 640 + 46 + 3 + 50, // 740
-	.vdisplay =  480,
-	.vsync_start = 480 + 10, // bp is 10
-	.vsync_end = 480 + 10 + 3,// vsync is 3
-	.vtotal = 480 + 10 + 4 + 11, // 505
+	.hsync_start = 640 + 48,
+	.hsync_end = 640 + 48 + 4,
+	.htotal = 640 + 48 + 4 + 48,	/* 740 */
+	.vdisplay = 480,
+	.vsync_start = 480 + 10,
+	.vsync_end = 480 + 10 + 4,
+	.vtotal = 480 + 10 + 4 + 10,	/* 504 */
 	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
 };
 
@@ -4804,7 +4810,7 @@ static const struct panel_desc_dsi samsung_lms279cc01 = {
 	},
 	.flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_CLOCK_NON_CONTINUOUS,
 	.format = MIPI_DSI_FMT_RGB888,
-	.lanes = 4,
+	.lanes = 2,	/* the Miyoo panel is wired 2-lane, as the vendor u-boot drives it */
 };
 
 static const struct of_device_id dsi_of_match[] = {
