@@ -514,10 +514,16 @@ static int msc313_bach_pcm_open(struct snd_soc_component *component,
 		bach_runtime->sub_channel = &bach->dma_channels[0].reader_writer[0];
 		bach->dma_channels[0].reader_writer[0].substream = substream;
 		break;
-	case SNDRV_PCM_STREAM_CAPTURE:
-		snd_soc_set_runtime_hwparams(substream, &msc313_bach_pcm_capture_hardware);
-		break;
 	default:
+		/*
+		 * Only playback is wired up; capture would leave
+		 * bach_runtime->sub_channel NULL and crash in prepare/trigger/
+		 * pointer. Fail the open cleanly instead of exposing a stream
+		 * that oopses the kernel.
+		 */
+		dev_warn(dev, "capture is not supported\n");
+		kfree(bach_runtime);
+		runtime->private_data = NULL;
 		return -EINVAL;
 	}
 
@@ -945,6 +951,18 @@ static irqreturn_t msc313_bach_irq(int irq, void *data)
 		level = msc313_bach_get_level(&bach->dma_channels[i].reader_writer[0]);
 		/* Handle reader flags */
 		substream = dma_channel->reader_writer[0].substream;
+
+		/*
+		 * No reader stream is open: this is a shared or spurious IRQ, or
+		 * one racing pcm_close(). Ack any pending flag and move on rather
+		 * than dereferencing a NULL substream in hard-IRQ context.
+		 */
+		if (!substream) {
+			regmap_field_force_write(dma_channel->rd_int_clear, 1);
+			regmap_field_force_write(dma_channel->rd_int_clear, 0);
+			spin_unlock_irqrestore(&dma_channel->lock, flags);
+			continue;
+		}
 
 		runtime = substream->runtime;
 		bach_runtime = runtime->private_data;
@@ -1507,13 +1525,15 @@ static int msc313_bach_probe(struct platform_device *pdev)
 
 	/* Get the resources we need to probe the components */
 	bach = devm_kzalloc(dev, sizeof(*bach), GFP_KERNEL);
-	if(IS_ERR(bach))
-		return PTR_ERR(bach);
+	if (!bach)
+		return -ENOMEM;
 
 	bach->dev = dev;
 	bach->data = match_data;
 
 	bach->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(bach->clk))
+		return PTR_ERR(bach->clk);
 	clk_prepare_enable(bach->clk);
 
 	base = devm_platform_ioremap_resource(pdev, 0);
