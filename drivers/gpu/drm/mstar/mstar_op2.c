@@ -170,35 +170,59 @@ static const struct drm_crtc_funcs mstar_op2_crtc_funcs = {
 	.disable_vblank		= mstar_op2_disable_vblank,
 };
 
+/* MIPI/DSI output nudges the active H window earlier by this many dot clocks. */
+#define OP2_MIPI_HDE_OFFSET	58
+
 static void mstar_op2_mode_set_nofb(struct drm_crtc *crtc)
 {
 	struct mstar_op2 *op2 = crtc_to_op2(crtc);
 	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+	/*
+	 * Program the timing generator the way the vendor u-boot does - its
+	 * config is what locks the panel. The hardware layout is NOT the DRM
+	 * mode's coordinates:
+	 *   - the sync pulse sits at the START of the line/frame (0 .. sync-1),
+	 *     followed by the back porch, then the active window;
+	 *   - the active DE window therefore starts at (hsync + back porch),
+	 *     not at 0;
+	 *   - VTT is the raw vertical total (no -1, unlike HTT).
+	 * Writing the DRM hsync_start / DE=0 verbatim (as before) mis-places the
+	 * active window and the panel rolls. Derive the porches from the mode and
+	 * lay the registers out like u-boot's mstar_op2_enable().
+	 */
+	u16 hact = mode->hdisplay;
+	u16 vact = mode->vdisplay;
+	u16 hsw = mode->hsync_end - mode->hsync_start;
+	u16 hbp = mode->htotal - mode->hsync_end;
+	u16 vsw = mode->vsync_end - mode->vsync_start;
+	u16 vbp = mode->vtotal - mode->vsync_end;
+	u16 hstart = hsw + hbp;			/* active H DE start */
+	u16 vstart = vsw + vbp;			/* active V DE start */
+	u16 hde_st = hstart > OP2_MIPI_HDE_OFFSET ?
+		     hstart - OP2_MIPI_HDE_OFFSET : hstart;
 
-	dev_info(op2->dev, "set mode: %d(%d) x %d(%d)\n", mode->hdisplay, mode->htotal, mode->vdisplay, mode->vtotal);
-	dev_info(op2->dev, "set mode: hsync s %d, hsync e %d\n", mode->hsync_start, mode->hsync_end);
-	dev_info(op2->dev, "set mode: vsync s %d, vsync e %d\n", mode->vsync_start, mode->vsync_end);
+	dev_info(op2->dev, "set mode: %dx%d htt %d vtt %d hstart %d vstart %d\n",
+		 hact, vact, mode->htotal, mode->vtotal, hstart, vstart);
 
-	/* total area */
-	regmap_field_write(op2->htt, mode->htotal -1);
-	regmap_field_write(op2->vtt, mode->vtotal -1);
+	/* totals: HTT is total-1, VTT is the raw total */
+	regmap_field_write(op2->htt, mode->htotal - 1);
+	regmap_field_write(op2->vtt, mode->vtotal);
 
-	/* active area */
-	regmap_field_write(op2->hfde_start, 0);
-	regmap_field_write(op2->hfde_end, mode->hdisplay - 1);
-	regmap_field_write(op2->hde_start, 0);
-	regmap_field_write(op2->hde_end, mode->hdisplay - 1);
+	/* sync pulses, at the start of the line/frame */
+	regmap_field_write(op2->hsync_start, 0);
+	regmap_field_write(op2->hsync_end, hsw - 1);
+	regmap_field_write(op2->vsync_start, 0);
+	regmap_field_write(op2->vsync_end, vsw - 1);
 
-	regmap_field_write(op2->vfde_start, 0);
-	regmap_field_write(op2->vfde_end, mode->vdisplay - 1);
-	regmap_field_write(op2->vde_start, 0);
-	regmap_field_write(op2->vde_end, mode->vdisplay - 1);
-
-	/* sync */
-	regmap_field_write(op2->hsync_start, mode->hsync_start);
-	regmap_field_write(op2->hsync_end, mode->hsync_end);
-	regmap_field_write(op2->vsync_start, mode->vsync_start);
-	regmap_field_write(op2->vsync_end, mode->vsync_end);
+	/* active DE windows (MIPI: vertical DE offset by 1) */
+	regmap_field_write(op2->hfde_start, hde_st);
+	regmap_field_write(op2->hfde_end, hde_st + hact - 1);
+	regmap_field_write(op2->vfde_start, vstart + 1);
+	regmap_field_write(op2->vfde_end, vstart + vact);
+	regmap_field_write(op2->hde_start, hde_st);
+	regmap_field_write(op2->hde_end, hde_st + hact - 1);
+	regmap_field_write(op2->vde_start, vstart + 1);
+	regmap_field_write(op2->vde_end, vstart + vact);
 
 	mstar_op2_dump_config(op2);
 }
