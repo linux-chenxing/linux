@@ -206,6 +206,16 @@
 	cpu-supply = <&reg_vcc_core>;
 };
 
+/*
+ * The shared 4 MiB CMA pool is too small for the display: a double-buffered
+ * 640x480 primary already needs ~2.4 MiB, and the DRM/KMS stack needs another
+ * scan-out buffer to compensate for the upside-down panel (see DirectFB2's
+ * drmkms layer). Give it comfortable headroom.
+ */
+&cma {
+	size = <0x1000000>; /* 16 MiB */
+};
+
 &pm_uart {
 	status = "okay";
 };
