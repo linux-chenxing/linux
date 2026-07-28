@@ -167,7 +167,13 @@
 		regulator-name = "sd_vdd";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
-		gpio = <&gpio SSD20XD_GPIO_GPIO0 0>;
+		/*
+		 * The card is powered by driving GPIO0 LOW (confirmed on hardware).
+		 * regulator-fixed takes the enable polarity from this gpio flag, so
+		 * it must be GPIO_ACTIVE_LOW - a plain 0 (active-high) would drive
+		 * GPIO0 high and leave the card unpowered.
+		 */
+		gpio = <&gpio SSD20XD_GPIO_GPIO0 GPIO_ACTIVE_LOW>;
 	};
 
 	reg_vbat: regulator-vbat {
