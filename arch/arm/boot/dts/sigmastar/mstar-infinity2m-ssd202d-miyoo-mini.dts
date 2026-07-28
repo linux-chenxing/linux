@@ -190,7 +190,13 @@
 		compatible = "pwm-backlight";
 		pwms = <&pwm 0 50000>;
 		brightness-levels = <0 4 8 16 32 64 128 255>;
-		default-brightness-level = <6>;
+		/*
+		 * TODO: only the top (max) level currently lights the panel - the
+		 * LED-boost driver seems to want a different PWM frequency/response.
+		 * Default to max (index 7 = 255) so the screen is visible until that
+		 * is tuned properly.
+		 */
+		default-brightness-level = <7>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&pwm0_mode3_pins>;
 	};
