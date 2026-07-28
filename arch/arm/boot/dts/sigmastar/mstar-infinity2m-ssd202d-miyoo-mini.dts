@@ -275,3 +275,8 @@
 		};
         };
 };
+
+/* On-chip BACH audio (codec + I2S), for the speaker/headphone output. */
+&bach {
+	status = "okay";
+};
