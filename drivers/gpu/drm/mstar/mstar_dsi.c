@@ -798,6 +798,14 @@ static int mstar_dsi_host_attach(struct mipi_dsi_host *host,
 
 	printk("%s\n", __func__);
 
+	/*
+	 * lanes is used as a divisor when computing the D-PHY data rate in
+	 * mstar_dsi_poweron(); a panel/DT reporting 0 lanes would divide by
+	 * zero on the next modeset. Reject anything the controller can't drive.
+	 */
+	if (device->lanes < 1 || device->lanes > 4)
+		return -EINVAL;
+
 	dsi->lanes = device->lanes;
 	dsi->format = device->format;
 	dsi->mode_flags = device->mode_flags;
@@ -939,8 +947,9 @@ static ssize_t mstar_dsi_host_transfer(struct mipi_dsi_host *host,
 	if (recv_cnt)
 		memcpy(msg->rx_buf, src_addr, recv_cnt);
 
+	/* tx_buf may be NULL for a 0-parameter read; don't deref it. */
 	DRM_INFO("dsi get %d byte data from the panel address(0x%x)\n",
-		 recv_cnt, *((u8 *)(msg->tx_buf)));
+		 recv_cnt, msg->tx_len ? *((const u8 *)msg->tx_buf) : 0);
 
 	return recv_cnt;
 }
