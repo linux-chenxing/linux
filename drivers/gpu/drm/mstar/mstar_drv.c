@@ -15,6 +15,7 @@
 #include <drm/drm_fb_dma_helper.h>
 #include <drm/drm_fb_helper.h>
 #include <drm/drm_gem_dma_helper.h>
+#include <drm/drm_gem_framebuffer_helper.h>
 #include <drm/drm_of.h>
 #include <drm/drm_probe_helper.h>
 #include <drm/drm_vblank.h>
@@ -40,6 +41,13 @@ static const struct drm_driver mstar_drv_driver = {
 };
 
 static const struct drm_mode_config_funcs drv_mode_config_funcs = {
+	/*
+	 * Without an fb_create hook, userspace DRM_IOCTL_MODE_ADDFB[2] returns
+	 * -EINVAL, so no userspace client (a GE demo, a KMS app, ...) can create
+	 * a framebuffer to scan out - only the in-kernel fbdev worked. Use the
+	 * standard GEM helper (buffers are drm_gem_dma objects).
+	 */
+	.fb_create = drm_gem_fb_create,
 	.atomic_check = drm_atomic_helper_check,
 	.atomic_commit = drm_atomic_helper_commit,
 };
